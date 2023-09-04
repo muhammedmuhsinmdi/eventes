@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "309676427106",
+    "project_id": "eventes-dd7bd",
+    "storage_bucket": "eventes-dd7bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309676427106:android:d13ae0e31507747490ce3b",
+        "android_client_info": {
+          "package_name": "com.techgebra.evantez"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "309676427106-466fpoll3vdveo1enr94g8sdllgs8rqf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCz94vg22OhaffDEkP24r-5TlC6cySwt2Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "309676427106-466fpoll3vdveo1enr94g8sdllgs8rqf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "309676427106-igga16psofdfvineqkgdv8hvlhd2fd5d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.evantez"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
