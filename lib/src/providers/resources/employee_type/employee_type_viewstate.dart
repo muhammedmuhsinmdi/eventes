@@ -9,9 +9,9 @@ class EmployeeTypeViewstate extends ChangeNotifier {
   TextEditingController codeEditingController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  EmployeeTypeViewstate() {
-    employeeTypeRepo = Services.employeeTypeRepo;
-  }
+  // EmployeeTypeViewstate() {
+  //   employeeTypeRepo = Services.employeeTypeRepo;
+  // }
 
   int _selectedIndex = 0;
   int get selectedIndex => _selectedIndex;

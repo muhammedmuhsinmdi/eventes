@@ -1,4 +1,6 @@
 import 'package:evantez/app/router/router_constant.dart';
+import 'package:evantez/src/model/repository/auth/auth_controller.dart';
+import 'package:evantez/src/model/repository/events/events_controller.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
 import 'package:evantez/src/view/core//widgets/custom_textfield.dart';
@@ -6,6 +8,7 @@ import 'package:evantez/src/view/view/dashboard/events_view/widgets/event_tile.d
 import 'package:evantez/src/view/core//widgets/tab_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/constants/app_images.dart';
 import '../../../core/constants/app_strings.dart';
@@ -14,13 +17,13 @@ import '../../../core/themes/colors.dart';
 class EventsView extends StatelessWidget {
   final bool? isBoy;
   EventsView({super.key, this.isBoy});
+
   final GlobalKey<ScaffoldState> _key = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
     return Scaffold(
-      // appBar: appBar(context, kSize),
       body: SizedBox(
         height: kSize.height,
         width: kSize.width,
@@ -29,7 +32,7 @@ class EventsView extends StatelessWidget {
             SizedBox(
               height: kSize.height * 0.032,
             ),
-            tabBar(),
+            // tabBar(),
             SizedBox(
               height: kSize.height * 0.032,
             ),
@@ -37,7 +40,7 @@ class EventsView extends StatelessWidget {
             SizedBox(
               height: kSize.height * 0.014,
             ),
-            eventsListing(kSize),
+            eventsListing(kSize, context),
           ],
         ),
       ),
@@ -48,7 +51,8 @@ class EventsView extends StatelessWidget {
     return AppBar(
       elevation: 0,
       leading: Padding(
-        padding: const EdgeInsets.fromLTRB(AppConstants.basePadding, AppConstants.basePadding, 0, 0),
+        padding: const EdgeInsets.fromLTRB(
+            AppConstants.basePadding, AppConstants.basePadding, 0, 0),
         child: IconButton(
             style: IconButton.styleFrom(),
             onPressed: () {
@@ -86,7 +90,8 @@ class EventsView extends StatelessWidget {
 
   Widget tabBar() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
+      padding:
+          const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
       child: CustomTabBarView(
         tabItems: const ["Ongoing", "Upcoming", "Completed"],
         selectedTap: (tab) {
@@ -98,7 +103,8 @@ class EventsView extends StatelessWidget {
 
   Widget searchField(Size kSize) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
+      padding:
+          const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -108,10 +114,12 @@ class EventsView extends StatelessWidget {
               text: '',
               hintText: AppStrings.searchText,
               suffixIcon: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
                 child: SvgPicture.asset(
                   AppImages.search,
-                  colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                      AppColors.primaryColor, BlendMode.srcIn),
                 ),
               ),
             ),
@@ -124,14 +132,16 @@ class EventsView extends StatelessWidget {
             child: TextButton(
                 style: TextButton.styleFrom(
                   backgroundColor: AppColors.transparent,
-                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 12.0, horizontal: 8.0),
                 ),
                 onPressed: () {
                   //
                 },
                 child: SvgPicture.asset(
                   AppImages.filter,
-                  colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                      AppColors.primaryColor, BlendMode.srcIn),
                 )),
           )
         ],
@@ -139,34 +149,45 @@ class EventsView extends StatelessWidget {
     );
   }
 
-  Widget eventsListing(Size kSize) {
+  Widget eventsListing(Size kSize, BuildContext context) {
+    final controller = context.watch<EventController>();
+    final authcontroller = context.watch<AuthController>();
     return Expanded(
-        child: ListView.separated(
-            separatorBuilder: (context, index) {
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: kSize.height * 0.018),
-                child: Divider(
-                  color: AppColors.secondaryColor.withOpacity(0.1),
-                ),
-              );
-            },
-            itemCount: 10,
-            padding: EdgeInsets.only(
-                bottom: kSize.height * 0.16,
-                left: AppConstants.baseBorderRadius,
-                right: AppConstants.baseBorderRadius),
-            itemBuilder: (context, index) {
-              return InkWell(
-                highlightColor: AppColors.transparent,
-                splashColor: AppColors.transparent,
-                onTap: () {
-                  Navigator.pushNamed(context, RouterConstants.eventDetailRoute);
-                },
-                child: EventTile(
-                  index: index,
-                  itemCount: 10,
-                ),
-              );
-            }));
+        child: RefreshIndicator(
+      onRefresh: () {
+        return controller.events(authcontroller.accesToken ?? '');
+      },
+      child: ListView.separated(
+          separatorBuilder: (context, index) {
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: kSize.height * 0.018),
+              child: Divider(
+                color: AppColors.secondaryColor.withOpacity(0.1),
+              ),
+            );
+          },
+          itemCount: controller.eventList.length,
+          padding: EdgeInsets.only(
+              bottom: kSize.height * 0.16,
+              left: AppConstants.baseBorderRadius,
+              right: AppConstants.baseBorderRadius),
+          itemBuilder: (context, index) {
+            return InkWell(
+              highlightColor: AppColors.transparent,
+              splashColor: AppColors.transparent,
+              onTap: () {
+                controller.eventsDetails(
+                    token: authcontroller.accesToken ?? "",
+                    id: controller.eventList[index].id ?? 0);
+                Navigator.pushNamed(context, RouterConstants.eventDetailRoute);
+              },
+              child: EventTile(
+                eventList: controller.eventList,
+                i: index,
+                itemCount: 10,
+              ),
+            );
+          }),
+    ));
   }
 }

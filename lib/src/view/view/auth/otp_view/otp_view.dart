@@ -30,12 +30,12 @@ class _OTPViewState extends State<OTPView> {
   bool isDisable = true;
   final List<TextEditingController> controllers = <TextEditingController>[];
   final List<FocusNode> focusNodes = <FocusNode>[];
-  late OtpViewstate otpState;
+  // late OtpViewstate otpState;
 
   @override
   Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
-    otpState = Provider.of<OtpViewstate>(context);
+    // otpState = Provider.of<OtpViewstate>(context);
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: appBar(context),
@@ -43,13 +43,15 @@ class _OTPViewState extends State<OTPView> {
         height: kSize.height,
         width: kSize.width,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
+          padding: const EdgeInsets.symmetric(
+              horizontal: AppConstants.baseBorderRadius),
           child: Column(
             children: [
               Text(
                 AppStrings.otpDescriptionText,
-                style: AppTypography.poppinsRegular
-                    .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.4)),
+                style: AppTypography.poppinsRegular.copyWith(
+                    fontSize: 14,
+                    color: AppColors.secondaryColor.withOpacity(0.4)),
               ),
               SizedBox(
                 height: kSize.height * 0.04,
@@ -70,10 +72,12 @@ class _OTPViewState extends State<OTPView> {
                         if (value.isNotEmpty) {
                           if (controllers[index].text.isNotEmpty) {
                             if (index != 5) {
-                              FocusScope.of(context).requestFocus(focusNodes[index + 1]);
+                              FocusScope.of(context)
+                                  .requestFocus(focusNodes[index + 1]);
                             }
                             if (index <= 5) {
-                              var sumofText = controllers.fold("", (sum, controller) {
+                              var sumofText =
+                                  controllers.fold("", (sum, controller) {
                                 return sum + controller.text;
                               });
                               otp = sumofText;
@@ -81,10 +85,12 @@ class _OTPViewState extends State<OTPView> {
                           }
                         } else {
                           if (index != 0) {
-                            FocusScope.of(context).requestFocus(focusNodes[index - 1]);
+                            FocusScope.of(context)
+                                .requestFocus(focusNodes[index - 1]);
                           }
                           if (index >= 0) {
-                            var sumofText = controllers.fold("", (sum, controller) {
+                            var sumofText =
+                                controllers.fold("", (sum, controller) {
                               return sum + controller.text;
                             });
                             otp = sumofText;
@@ -173,8 +179,8 @@ class _OTPViewState extends State<OTPView> {
           if (otp.isNotEmpty && otp.length == 6) {
             isLoading.value = true;
             log(otp);
-            PhoneAuthCredential credential =
-                PhoneAuthProvider.credential(verificationId: widget.phonVerfy.verificationId, smsCode: otp);
+            PhoneAuthCredential credential = PhoneAuthProvider.credential(
+                verificationId: widget.phonVerfy.verificationId, smsCode: otp);
             try {
               var userCredential = await auth.signInWithCredential(credential);
               log("Result >>>>> $userCredential");
@@ -186,7 +192,7 @@ class _OTPViewState extends State<OTPView> {
               } else {
                 String? token = await auth.currentUser!.getIdToken();
                 if (token != null) {
-                  otpState.otpVerify(token);
+                  // otpState.otpVerify(token);
                   // AppPrefs.token = token;
                   // AppPrefs.writeLocalCaches();
                   // log(token);
@@ -213,12 +219,15 @@ class _OTPViewState extends State<OTPView> {
         textAlign: TextAlign.center,
         text: TextSpan(
             text: "Didn't receive code? ",
-            style: AppTypography.poppinsMedium.copyWith(color: AppColors.secondaryColor.withOpacity(0.4)),
+            style: AppTypography.poppinsMedium
+                .copyWith(color: AppColors.secondaryColor.withOpacity(0.4)),
             children: [
               TextSpan(
-                  recognizer: TapGestureRecognizer()..onTap = () => Navigator.pop(context),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () => Navigator.pop(context),
                   text: "  ${AppStrings.resendCodeText}",
-                  style: AppTypography.poppinsMedium.copyWith(color: AppColors.primaryColor))
+                  style: AppTypography.poppinsMedium
+                      .copyWith(color: AppColors.primaryColor))
             ]));
   }
 }

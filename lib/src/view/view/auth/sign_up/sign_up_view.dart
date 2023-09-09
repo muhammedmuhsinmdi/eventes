@@ -18,10 +18,10 @@ import '../../../core/themes/typography.dart';
 
 class SignUpView extends StatelessWidget {
   SignUpView({super.key});
-  late SignupViewState signupState;
+  // late SignupViewState signupState;
   @override
   Widget build(BuildContext context) {
-    signupState = Provider.of<SignupViewState>(context);
+    // signupState = Provider.of<SignupViewState>(context);
     final kSize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -39,13 +39,14 @@ class SignUpView extends StatelessWidget {
         ),
       ),
       body: Form(
-        key: signupState.signupFormKey,
+        // key: signupState.signupFormKey,
         child: SizedBox(
           height: kSize.height,
           width: kSize.width,
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppConstants.baseBorderRadius),
               child: Column(
                 children: [
                   SizedBox(
@@ -123,7 +124,8 @@ class SignUpView extends StatelessWidget {
           ),
           child: SvgPicture.asset(
             AppImages.camera,
-            colorFilter: const ColorFilter.mode(AppColors.secondaryColor, BlendMode.srcIn),
+            colorFilter: const ColorFilter.mode(
+                AppColors.secondaryColor, BlendMode.srcIn),
             // color: AppColors.secondaryColor,
           ),
         ),
@@ -143,12 +145,12 @@ class SignUpView extends StatelessWidget {
       required: true,
       text: AppStrings.fullNameText,
       hintText: AppStrings.fillNameHint,
-      validator: signupState.fullNameValidator,
-      onSave: (val) {
-        if (val!.isNotEmpty) {
-          signupState.signupModel.fullName = val;
-        }
-      },
+      // validator: signupState.fullNameValidator,
+      // onSave: (val) {
+      //   if (val!.isNotEmpty) {
+      //     signupState.signupModel.fullName = val;
+      //   }
+      // },
     );
   }
 
@@ -157,12 +159,12 @@ class SignUpView extends StatelessWidget {
       required: true,
       text: AppStrings.phoneText,
       hintText: AppStrings.phoneHint,
-      validator: signupState.phoneValidator,
-      onSave: (val) {
-        if (val!.isNotEmpty) {
-          signupState.signupModel.phoneNumber = val;
-        }
-      },
+      // validator: signupState.phoneValidator,
+      // onSave: (val) {
+      //   if (val!.isNotEmpty) {
+      //     signupState.signupModel.phoneNumber = val;
+      //   }
+      // },
     );
   }
 
@@ -171,12 +173,12 @@ class SignUpView extends StatelessWidget {
       required: true,
       text: AppStrings.homeContactText,
       hintText: AppStrings.homeContactHint,
-      validator: signupState.homeContactValidator,
-      onSave: (val) {
-        if (val!.isNotEmpty) {
-          signupState.signupModel.homeContact = val;
-        }
-      },
+      // validator: signupState.homeContactValidator,
+      // onSave: (val) {
+      //   if (val!.isNotEmpty) {
+      //     signupState.signupModel.homeContact = val;
+      //   }
+      // },
     );
   }
 
@@ -198,9 +200,9 @@ class SignUpView extends StatelessWidget {
             firstDate: DateTime(1960),
             lastDate: DateTime(2050));
         if (dob != null) {
-          signupState.signupModel.dateOfBirth = dob;
-          String formattedDate = DateFormat('yyyy-MM-dd').format(dob!);
-          dobController.text = formattedDate;
+          // signupState.signupModel.dateOfBirth = dob;
+          // String formattedDate = DateFormat('yyyy-MM-dd').format(dob!);
+          // dobController.text = formattedDate;
         }
       },
       suffixIcon: SizedBox(
@@ -210,7 +212,8 @@ class SignUpView extends StatelessWidget {
           padding: const EdgeInsets.all(6.0),
           child: SvgPicture.asset(
             AppImages.calender,
-            colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+            colorFilter:
+                const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
             fit: BoxFit.contain,
           ),
         ),
@@ -222,12 +225,12 @@ class SignUpView extends StatelessWidget {
     return CustomTextField(
       text: AppStrings.email,
       hintText: 'Enter your Email',
-      validator: signupState.emailValidator,
-      onSave: (val) {
-        if (val!.isNotEmpty) {
-          signupState.signupModel.emailId = val;
-        }
-      },
+      // validator: signupState.emailValidator,
+      // onSave: (val) {
+      //   if (val!.isNotEmpty) {
+      //     signupState.signupModel.emailId = val;
+      //   }
+      // },
     );
   }
 
@@ -237,12 +240,12 @@ class SignUpView extends StatelessWidget {
       maxLines: 2,
       hintText: 'Enter your address',
       required: true,
-      validator: signupState.addressValidator,
-      onSave: (val) {
-        if (val!.isNotEmpty) {
-          signupState.signupModel.address = val;
-        }
-      },
+      // validator: signupState.addressValidator,
+      // onSave: (val) {
+      //   if (val!.isNotEmpty) {
+      //     signupState.signupModel.address = val;
+      //   }
+      // },
     );
   }
 
@@ -252,10 +255,10 @@ class SignUpView extends StatelessWidget {
       required: true,
       items: const ['Aadhaar Card', 'Driving Licence', "Voter ID"],
       hintText: AppStrings.proofSelectionText,
-      validator: signupState.idProofValidator,
-      onSave: (val) {
-        signupState.signupModel.idProof = val;
-      },
+      // validator: signupState.idProofValidator,
+      // onSave: (val) {
+      //   signupState.signupModel.idProof = val;
+      // },
     );
   }
 
@@ -264,12 +267,12 @@ class SignUpView extends StatelessWidget {
       text: "ID Number",
       hintText: 'Enter ID Number',
       required: true,
-      validator: signupState.idNumberValidator,
-      onSave: (val) {
-        if (val!.isNotEmpty) {
-          signupState.signupModel.idNumber = val;
-        }
-      },
+      // validator: signupState.idNumberValidator,
+      // onSave: (val) {
+      //   if (val!.isNotEmpty) {
+      //     signupState.signupModel.idNumber = val;
+      //   }
+      // },
     );
   }
 
@@ -277,18 +280,22 @@ class SignUpView extends StatelessWidget {
     return RichText(
         text: TextSpan(
             text: 'By signing up you agree to our ',
-            style: AppTypography.poppinsRegular.copyWith(color: AppColors.secondaryColor.withOpacity(0.4)),
+            style: AppTypography.poppinsRegular
+                .copyWith(color: AppColors.secondaryColor.withOpacity(0.4)),
             children: [
           TextSpan(
               text: 'Terms & Condition ',
-              style: AppTypography.poppinsRegular.copyWith(color: AppColors.secondaryColor)),
+              style: AppTypography.poppinsRegular
+                  .copyWith(color: AppColors.secondaryColor)),
           TextSpan(
             text: ' and ',
-            style: AppTypography.poppinsRegular.copyWith(color: AppColors.secondaryColor.withOpacity(0.4)),
+            style: AppTypography.poppinsRegular
+                .copyWith(color: AppColors.secondaryColor.withOpacity(0.4)),
           ),
           TextSpan(
               text: 'Privacy Policy.*',
-              style: AppTypography.poppinsRegular.copyWith(color: AppColors.secondaryColor)),
+              style: AppTypography.poppinsRegular
+                  .copyWith(color: AppColors.secondaryColor)),
         ]));
   }
 
@@ -296,11 +303,11 @@ class SignUpView extends StatelessWidget {
     return FooterButton(
         label: 'Continue',
         onTap: () async {
-          if (await signupState.signUp() == "Ok") {
-            if (context.mounted) {
-              navigate(context, RouterConstants.loginRoute);
-            }
-          }
+          // if (await signupState.signUp() == "Ok") {
+          //   if (context.mounted) {
+          //     navigate(context, RouterConstants.loginRoute);
+          //   }
+          // }
         });
   }
 
@@ -308,12 +315,15 @@ class SignUpView extends StatelessWidget {
     return RichText(
         text: TextSpan(
             text: "Already have an account? ",
-            style: AppTypography.poppinsMedium.copyWith(color: AppColors.secondaryColor.withOpacity(0.4)),
+            style: AppTypography.poppinsMedium
+                .copyWith(color: AppColors.secondaryColor.withOpacity(0.4)),
             children: [
           TextSpan(
-              recognizer: TapGestureRecognizer()..onTap = () => Navigator.pop(context),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () => Navigator.pop(context),
               text: "  ${AppStrings.loginText}",
-              style: AppTypography.poppinsMedium.copyWith(color: AppColors.primaryColor))
+              style: AppTypography.poppinsMedium
+                  .copyWith(color: AppColors.primaryColor))
         ]));
   }
 }

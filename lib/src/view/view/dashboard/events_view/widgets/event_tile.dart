@@ -1,13 +1,22 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:evantez/src/serializer/models/event_response.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
+import 'package:evantez/src/view/core/widgets/time.dart';
 import 'package:flutter/material.dart';
 
 class EventTile extends StatelessWidget {
-  final int index;
+  final int i;
   final int itemCount;
   final bool? isBoy;
-  const EventTile({super.key, required this.index, required this.itemCount, this.isBoy = false});
+  List<EventsList> eventList;
+  EventTile(
+      {super.key,
+      required this.i,
+      required this.itemCount,
+      required this.eventList,
+      this.isBoy = false});
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +32,14 @@ class EventTile extends StatelessWidget {
             children: [
               Container(
                 clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(8)),
                 margin: EdgeInsets.only(right: kSize.width * 0.024),
                 height: kSize.height * 0.085,
                 width: kSize.height * 0.085,
-                child: const Placeholder(),
+                child: CachedNetworkImage(
+                  imageUrl: eventList[i].image ?? "",
+                ),
               ),
               Expanded(
                 child: Column(
@@ -35,15 +47,16 @@ class EventTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Janata Auditorium',
-                      style:
-                          AppTypography.poppinsMedium.copyWith(color: AppColors.secondaryColor, fontSize: 14),
+                      eventList[i].name ?? '',
+                      style: AppTypography.poppinsMedium.copyWith(
+                          color: AppColors.secondaryColor, fontSize: 14),
                     ),
                     SizedBox(
                       height: kSize.height * 0.003,
                     ),
                     Text(
-                      '12-03-2023',
+                      apiFormat
+                          .format(eventList[i].createdAt ?? DateTime.now()),
                       style: AppTypography.poppinsRegular.copyWith(
                         color: AppColors.secondaryColor,
                         fontSize: 12,

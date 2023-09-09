@@ -1,7 +1,9 @@
 import 'package:evantez/app/router/router_constant.dart';
-import 'package:evantez/src/model/core/app_prefs/app_prefs.dart';
+import 'package:evantez/src/model/repository/events/events_controller.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
+import 'package:evantez/src/model/repository/auth/auth_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SplashView extends StatelessWidget {
   const SplashView({super.key});
@@ -9,7 +11,7 @@ class SplashView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
-    navigate(context);
+    loadCurrentUser(context);
     return Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: SizedBox(
@@ -29,17 +31,20 @@ class SplashView extends StatelessWidget {
             )));
   }
 
-  navigate(BuildContext context) async {
-    await Future.delayed(const Duration(seconds: 3));
-    await AppPrefs.readLocalCaches();
-    if (AppPrefs.token != null && AppPrefs.token!.isNotEmpty) {
-      if (context.mounted) {
-        Navigator.pushReplacementNamed(context, RouterConstants.dashboardRoute);
+  Future<void> loadCurrentUser(BuildContext context) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EventController eventController =
+          Provider.of<EventController>(context, listen: false);
+      NavigatorState navigator = Navigator.of(context);
+      AuthController authController =
+          Provider.of<AuthController>(context, listen: false);
+
+      if (await authController.loadCurrentUser() != null) {
+        navigator.popAndPushNamed(RouterConstants.dashboardRoute);
+        eventController.events(authController.accesToken ?? '');
+      } else {
+        navigator.popAndPushNamed(RouterConstants.loginRoute);
       }
-    } else {
-      if (context.mounted) {
-        Navigator.pushReplacementNamed(context, RouterConstants.loginRoute);
-      }
-    }
+    });
   }
 }
