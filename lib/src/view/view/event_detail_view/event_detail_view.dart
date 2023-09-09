@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:evantez/app/router/router_constant.dart';
 import 'package:evantez/src/model/repository/events/events_controller.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//widgets/custom_back_btn.dart';
@@ -54,7 +56,8 @@ class _EventDetailViewState extends State<EventDetailView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: kSize.height * 0.016),
-                        eventImage(kSize, context, selectedeventStatus.value),
+                        eventImage(kSize, context, selectedeventStatus.value,
+                            controller.eventsDetail?.image ?? ""),
                         SizedBox(height: kSize.height * 0.024),
                         Text(
                           controller.eventsDetail?.name ?? '',
@@ -78,23 +81,22 @@ class _EventDetailViewState extends State<EventDetailView> {
                           color: AppColors.secondaryColor.withOpacity(0.2),
                         ),
                         SizedBox(height: kSize.height * 0.024),
-                        CustomDropdownSearch(
-                          label: AppStrings.changeEventStatusTo,
-                          textAlignCenter: true,
-                          hintText: 'Select Event Status',
-                          items: const [
-                            "Upcoming - Hold",
-                            "Upcoming - Open",
-                            "Upcoming - Filled",
-                            "Ongoing",
-                            "Settlement",
-                            "Completed",
-                          ],
-                          onChanged: (value) {
-                            selectedeventStatus.value = value ?? '';
-                          },
-                        ),
-                        SizedBox(height: kSize.height * 0.024),
+                        // CustomDropdownSearch(
+                        //   label: AppStrings.changeEventStatusTo,
+                        //   textAlignCenter: true,
+                        //   hintText: 'Select Event Status',
+                        //   items: const [
+                        //     "Upcoming - Hold",
+                        //     "Upcoming - Open",
+                        //     "Upcoming - Filled",
+                        //     "Ongoing",
+                        //     "Settlement",
+                        //     "Completed",
+                        //   ],
+                        //   onChanged: (value) {
+                        //     selectedeventStatus.value = value ?? '';
+                        //   },
+                        // ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -132,6 +134,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                             },
                           ),
                         },
+                        SizedBox(height: kSize.height * 0.024),
                         SizedBox(height: kSize.height * 0.024),
                         Divider(
                           color: AppColors.secondaryColor.withOpacity(0.2),
@@ -234,7 +237,23 @@ class _EventDetailViewState extends State<EventDetailView> {
                           SizedBox(height: kSize.height * 0.024),
                           urgentEmpNeed(context),
                           SizedBox(height: kSize.height * 0.1),
-                        }
+                        },
+                        InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, RouterConstants.applystatus);
+                          },
+                          child: Container(
+                            height: kSize.height * 0.05,
+                            width: kSize.width,
+                            decoration: BoxDecoration(
+                                color: AppColors.primaryColor,
+                                borderRadius: BorderRadius.circular(
+                                  AppConstants.baseBorderRadius,
+                                )),
+                            child: const Center(child: Text('Apply')),
+                          ),
+                        )
                       ],
                     );
                   }),
@@ -376,7 +395,8 @@ class _EventDetailViewState extends State<EventDetailView> {
     );
   }
 
-  Widget eventImage(Size kSize, BuildContext context, String eventStatus) {
+  Widget eventImage(
+      Size kSize, BuildContext context, String eventStatus, String image) {
     return Stack(
       clipBehavior: Clip.antiAlias,
       children: [
@@ -389,8 +409,8 @@ class _EventDetailViewState extends State<EventDetailView> {
               borderRadius: BorderRadius.circular(
                 AppConstants.basePadding,
               )),
-          child: Image.network(
-            "https://upload.wikimedia.org/wikipedia/commons/5/58/TRUE_ICON_HALL.jpg",
+          child: CachedNetworkImage(
+            imageUrl: image ?? '',
             fit: BoxFit.cover,
           ),
         ),
@@ -456,13 +476,14 @@ class _EventDetailViewState extends State<EventDetailView> {
   }
 
   AppBar appBar(BuildContext context, Size kSize) {
+    final controller = context.watch<EventController>();
     return AppBar(
       elevation: 0,
       leading: const CustomBackButton(),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       centerTitle: true,
       title: Text(
-        "EV #123",
+        controller.eventsDetail?.name ?? '',
         style: AppTypography.poppinsSemiBold.copyWith(),
       ),
       actions: [

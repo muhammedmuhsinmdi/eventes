@@ -36,23 +36,28 @@ class _NotificationViewState extends State<NotificationView> {
             valueListenable: selectedTab,
             builder: (context, value, child) {
               return Padding(
-                padding: const EdgeInsets.fromLTRB(AppConstants.baseBorderRadius,
-                    AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, 0),
+                padding: const EdgeInsets.fromLTRB(
+                    AppConstants.baseBorderRadius,
+                    AppConstants.baseBorderRadius,
+                    AppConstants.baseBorderRadius,
+                    0),
                 child: Column(children: [
-                  CustomTabBarView(
-                      selectedTap: (value) {
-                        //
-                        selectedTab.value = value;
-                      },
-                      tabItems: const [
-                        AppStrings.paymentText,
-                        AppStrings.requestText,
-                        AppStrings.applicationText
-                      ]),
+                  // CustomTabBarView(
+                  //     selectedTap: (value) {
+                  //       //
+                  //       selectedTab.value = value;
+                  //     },
+                  //     tabItems: const [
+                  //       // AppStrings.paymentText,
+                  //       // AppStrings.requestText,
+                  //       // AppStrings.applicationText
+                  //     ]),
                   searchField(kSize, context),
-                  if (selectedTab.value == 0) paymentNotificationListing(kSize, context),
+                  if (selectedTab.value == 0)
+                    paymentNotificationListing(kSize, context),
                   if (selectedTab.value == 1) requestingListing(kSize, context),
-                  if (selectedTab.value == 2) applicationListing(kSize, context),
+                  if (selectedTab.value == 2)
+                    applicationListing(kSize, context),
                 ]),
               );
             }),
@@ -103,13 +108,15 @@ class _NotificationViewState extends State<NotificationView> {
             },
             itemCount: 10,
             itemBuilder: (context, index) {
-              return NotificationTile(paymentStatus: index % 2 == 0 ? "Recieved" : "Paid");
+              return NotificationTile(
+                  paymentStatus: index % 2 == 0 ? "Recieved" : "Paid");
             }));
   }
 
   Widget searchField(Size kSize, BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppConstants.baseBorderRadius),
+      padding:
+          const EdgeInsets.symmetric(vertical: AppConstants.baseBorderRadius),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -119,10 +126,12 @@ class _NotificationViewState extends State<NotificationView> {
               text: '',
               hintText: AppStrings.searchText,
               suffixIcon: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
                 child: SvgPicture.asset(
                   AppImages.search,
-                  colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                      AppColors.primaryColor, BlendMode.srcIn),
                 ),
               ),
             ),
@@ -135,7 +144,8 @@ class _NotificationViewState extends State<NotificationView> {
             child: TextButton(
                 style: TextButton.styleFrom(
                   backgroundColor: AppColors.transparent,
-                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 12.0, horizontal: 8.0),
                 ),
                 onPressed: () {
                   //
@@ -144,8 +154,10 @@ class _NotificationViewState extends State<NotificationView> {
                       isScrollControlled: true,
                       shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(AppConstants.basePadding),
-                              topRight: Radius.circular(AppConstants.basePadding))),
+                              topLeft:
+                                  Radius.circular(AppConstants.basePadding),
+                              topRight:
+                                  Radius.circular(AppConstants.basePadding))),
                       backgroundColor: AppColors.accentDark,
                       builder: (context) {
                         return NotificationFilter();
@@ -153,7 +165,8 @@ class _NotificationViewState extends State<NotificationView> {
                 },
                 child: SvgPicture.asset(
                   AppImages.filter,
-                  colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                      AppColors.primaryColor, BlendMode.srcIn),
                 )),
           )
         ],

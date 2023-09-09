@@ -81,7 +81,8 @@ class EventSettleMentSlot extends StatelessWidget {
                             vertical: kSize.height * 0.01,
                           ),
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(AppConstants.basePadding),
+                              borderRadius: BorderRadius.circular(
+                                  AppConstants.basePadding),
                               border: Border.all(color: AppColors.accentColor),
                               color: AppColors.accentDark),
                           margin: EdgeInsets.only(bottom: kSize.height * 0.016),
@@ -96,12 +97,14 @@ class EventSettleMentSlot extends StatelessWidget {
                                   // Callback that sets the selected popup menu item.
                                   onSelected: (item) {
                                     if (item == 'see profile') {
-                                      Navigator.pushNamed(context, RouterConstants.empPerformanceRoute,
+                                      Navigator.pushNamed(context,
+                                          RouterConstants.empPerformanceRoute,
                                           arguments: eventStatus);
                                     }
                                   },
                                   clipBehavior: Clip.antiAlias,
-                                  padding: EdgeInsets.zero, //symmetric(horizontal: kSize.height * 0.024),
+                                  padding: EdgeInsets
+                                      .zero, //symmetric(horizontal: kSize.height * 0.024),
                                   shape: RoundedRectangleBorder(
                                       side: const BorderSide(
                                         color: AppColors.accentColor,
@@ -110,7 +113,8 @@ class EventSettleMentSlot extends StatelessWidget {
                                         AppConstants.basePadding,
                                       )),
 
-                                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                                  itemBuilder: (BuildContext context) =>
+                                      <PopupMenuEntry<String>>[
                                     PopupMenuItem<String>(
                                       onTap: () {
                                         // selectedCaptain.value = index;
@@ -122,7 +126,8 @@ class EventSettleMentSlot extends StatelessWidget {
                                       child: Text(
                                         'Make Captain',
                                         textAlign: TextAlign.start,
-                                        style: AppTypography.poppinsMedium.copyWith(),
+                                        style: AppTypography.poppinsMedium
+                                            .copyWith(),
                                       ),
                                     ),
                                     PopupMenuItem<String>(
@@ -133,7 +138,8 @@ class EventSettleMentSlot extends StatelessWidget {
                                       child: Text(
                                         'See Profile',
                                         textAlign: TextAlign.start,
-                                        style: AppTypography.poppinsMedium.copyWith(),
+                                        style: AppTypography.poppinsMedium
+                                            .copyWith(),
                                       ),
                                     ),
                                   ],
@@ -162,7 +168,8 @@ class EventSettleMentSlot extends StatelessWidget {
                                     Text(
                                       'Suhail',
                                       overflow: TextOverflow.ellipsis,
-                                      style: AppTypography.poppinsMedium.copyWith(
+                                      style:
+                                          AppTypography.poppinsMedium.copyWith(
                                         fontSize: 14,
                                       ),
                                     ),
@@ -170,12 +177,14 @@ class EventSettleMentSlot extends StatelessWidget {
                                       height: kSize.height * 0.004,
                                     ),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           'Head',
                                           overflow: TextOverflow.ellipsis,
-                                          style: AppTypography.poppinsRegular.copyWith(
+                                          style: AppTypography.poppinsRegular
+                                              .copyWith(
                                             fontSize: 12,
                                           ),
                                         ),
@@ -187,7 +196,8 @@ class EventSettleMentSlot extends StatelessWidget {
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Container(
                                       margin: EdgeInsets.only(
@@ -196,8 +206,9 @@ class EventSettleMentSlot extends StatelessWidget {
                                       height: kSize.height * 0.01,
                                       width: kSize.height * 0.01,
                                       decoration: BoxDecoration(
-                                        color:
-                                            index != 2 ? AppColors.statusSuccess : AppColors.statusCritical,
+                                        color: index != 2
+                                            ? AppColors.statusSuccess
+                                            : AppColors.statusCritical,
                                         shape: BoxShape.circle,
                                       ),
                                     ),

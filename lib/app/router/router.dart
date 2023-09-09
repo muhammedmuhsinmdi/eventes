@@ -17,6 +17,7 @@ import 'package:evantez/src/view/view/common/messages/boy_event_remove.dart';
 import 'package:evantez/src/view/view/common/messages/boy_exit_record.dart';
 import 'package:evantez/src/view/view/common/messages/boy_settled_success.dart';
 import 'package:evantez/src/view/view/dashboard/dashboard_view.dart';
+import 'package:evantez/src/view/view/event_detail_view/widgets/applied_completed.dart';
 import 'package:evantez/src/view/view/reports/day_book/day_book_report.dart';
 import 'package:evantez/src/view/view/reports/employee_dues/employee_dues_report.dart';
 import 'package:evantez/src/view/view/reports/event_dues/event_dues_report.dart';
@@ -141,7 +142,7 @@ class AppRouter {
         );
       case RouterConstants.notificationRoute:
         return MaterialPageRoute<NotificationView>(
-          builder: (_) => NotificationView(),
+          builder: (_) => const NotificationView(),
         );
       case RouterConstants.newQuotationRoute:
         return MaterialPageRoute<NewQuotationView>(
@@ -221,6 +222,10 @@ class AppRouter {
       case RouterConstants.boyEditProfileRoute:
         return MaterialPageRoute<BoyEditProfile>(
           builder: (_) => BoyEditProfile(),
+        );
+      case RouterConstants.applystatus:
+        return MaterialPageRoute<ApplyCompleted>(
+          builder: (_) => const ApplyCompleted(),
         );
 
       default:
