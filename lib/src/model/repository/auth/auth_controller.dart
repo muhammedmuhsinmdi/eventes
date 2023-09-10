@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:evantez/app/app.dart';
 import 'package:evantez/app/router/router_constant.dart';
 import 'package:evantez/src/model/components/snackbar_widget.dart';
@@ -84,12 +86,8 @@ class AuthController extends ChangeNotifier {
       final response = await EventsAuth().login(
           email: signInEmailController.text.trim(),
           password: signInPasswordController.text.trim());
-      if (response.runtimeType == ErrorResponse) {
-        Navigator.pop(context);
-        return rootScaffoldMessengerKey.currentState?.showSnackBar(
-          snackBarWidget((response as ErrorResponse).detail!),
-        );
-      } else if ((response as AuthResponse).access != null) {
+      if ((response as AuthResponse).access != null) {
+        log('message');
         authResponse = response;
         SharedPreferences sharedPreferences =
             await SharedPreferences.getInstance();
@@ -104,7 +102,9 @@ class AuthController extends ChangeNotifier {
         eventController.events(accesToken ?? '');
       }
     } catch (e) {
-      Navigator.pop(context);
+      log('fghgh');
+      return rootScaffoldMessengerKey.currentState
+          ?.showSnackBar(snackBarWidget(e.toString()));
     }
   }
 }
