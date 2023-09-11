@@ -81,22 +81,22 @@ class _EventDetailViewState extends State<EventDetailView> {
                           color: AppColors.secondaryColor.withOpacity(0.2),
                         ),
                         SizedBox(height: kSize.height * 0.024),
-                        // CustomDropdownSearch(
-                        //   label: AppStrings.changeEventStatusTo,
-                        //   textAlignCenter: true,
-                        //   hintText: 'Select Event Status',
-                        //   items: const [
-                        //     "Upcoming - Hold",
-                        //     "Upcoming - Open",
-                        //     "Upcoming - Filled",
-                        //     "Ongoing",
-                        //     "Settlement",
-                        //     "Completed",
-                        //   ],
-                        //   onChanged: (value) {
-                        //     selectedeventStatus.value = value ?? '';
-                        //   },
-                        // ),
+                        CustomDropdownSearch(
+                          label: AppStrings.changeEventStatusTo,
+                          textAlignCenter: true,
+                          hintText: 'Select Event Status',
+                          items: const [
+                            "Upcoming - Hold",
+                            "Upcoming - Open",
+                            "Upcoming - Filled",
+                            "Ongoing",
+                            "Settlement",
+                            "Completed",
+                          ],
+                          onChanged: (value) {
+                            selectedeventStatus.value = value ?? '';
+                          },
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -238,22 +238,23 @@ class _EventDetailViewState extends State<EventDetailView> {
                           urgentEmpNeed(context),
                           SizedBox(height: kSize.height * 0.1),
                         },
-                        InkWell(
-                          onTap: () {
-                            Navigator.pushNamed(
-                                context, RouterConstants.applystatus);
-                          },
-                          child: Container(
-                            height: kSize.height * 0.05,
-                            width: kSize.width,
-                            decoration: BoxDecoration(
-                                color: AppColors.primaryColor,
-                                borderRadius: BorderRadius.circular(
-                                  AppConstants.baseBorderRadius,
-                                )),
-                            child: const Center(child: Text('Apply')),
-                          ),
-                        )
+                        if (selectedeventStatus.value == "Upcoming - Open")
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, RouterConstants.applystatus);
+                            },
+                            child: Container(
+                              height: kSize.height * 0.05,
+                              width: kSize.width,
+                              decoration: BoxDecoration(
+                                  color: AppColors.primaryColor,
+                                  borderRadius: BorderRadius.circular(
+                                    AppConstants.baseBorderRadius,
+                                  )),
+                              child: const Center(child: Text('Apply')),
+                            ),
+                          )
                       ],
                     );
                   }),
@@ -487,15 +488,15 @@ class _EventDetailViewState extends State<EventDetailView> {
         style: AppTypography.poppinsSemiBold.copyWith(),
       ),
       actions: [
-        IconButton(
-            onPressed: () {},
-            icon: SvgPicture.asset(
-              AppImages.edit,
-              colorFilter: const ColorFilter.mode(
-                AppColors.primaryColor,
-                BlendMode.srcIn,
-              ),
-            ))
+        // IconButton(
+        //     onPressed: () {},
+        //     icon: SvgPicture.asset(
+        //       AppImages.edit,
+        //       colorFilter: const ColorFilter.mode(
+        //         AppColors.primaryColor,
+        //         BlendMode.srcIn,
+        //       ),
+        //     ))
       ],
     );
   }

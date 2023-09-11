@@ -127,23 +127,23 @@ class EventsView extends StatelessWidget {
           SizedBox(
             width: kSize.width * 0.032,
           ),
-          SizedBox(
-            width: kSize.width * 0.1,
-            child: TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: AppColors.transparent,
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 12.0, horizontal: 8.0),
-                ),
-                onPressed: () {
-                  //
-                },
-                child: SvgPicture.asset(
-                  AppImages.filter,
-                  colorFilter: const ColorFilter.mode(
-                      AppColors.primaryColor, BlendMode.srcIn),
-                )),
-          )
+          // SizedBox(
+          //   width: kSize.width * 0.1,
+          //   child: TextButton(
+          //       style: TextButton.styleFrom(
+          //         backgroundColor: AppColors.transparent,
+          //         padding: const EdgeInsets.symmetric(
+          //             vertical: 12.0, horizontal: 8.0),
+          //       ),
+          //       onPressed: () {
+          //         //
+          //       },
+          //       child: SvgPicture.asset(
+          //         AppImages.filter,
+          //         colorFilter: const ColorFilter.mode(
+          //             AppColors.primaryColor, BlendMode.srcIn),
+          //       )),
+          // )
         ],
       ),
     );
