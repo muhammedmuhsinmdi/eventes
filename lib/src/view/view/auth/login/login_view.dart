@@ -1,4 +1,6 @@
 import 'dart:developer';
+
+import 'package:evantez/src/model/repository/auth/auth_controller.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//constants/app_strings.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
@@ -6,7 +8,6 @@ import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
 import 'package:evantez/src/view/core//widgets/custom_textfield.dart';
 import 'package:evantez/src/view/core//widgets/footer_button.dart';
-import 'package:evantez/src/model/repository/auth/auth_controller.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -102,7 +103,8 @@ class LoginView extends StatelessWidget {
                               //     navigate(context, RouterConstants.bottomNavRoute);
                               //   }
                               // } else {}
-                              controller.login(context);
+                              await controller.login(context);
+                              isloading.value = false;
                             }
                           },
                         );
