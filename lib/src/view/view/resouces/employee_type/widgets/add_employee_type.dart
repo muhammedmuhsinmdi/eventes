@@ -1,3 +1,4 @@
+import 'package:evantez/src/model/repository/resource/employee_repository.dart';
 import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
 import 'package:evantez/src/view/core//widgets/footer_button.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ import '../../../../core/widgets/custom_textfield.dart';
 
 class AddEmployeeType {
   BuildContext context;
-  EmployeeTypeViewstate state;
+  EmployeesController state;
   AddEmployeeType(this.context, this.state);
 
   Future show() async {
@@ -25,10 +26,14 @@ class AddEmployeeType {
         backgroundColor: AppColors.accentDark,
         builder: (context) {
           return Padding(
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Padding(
-              padding: EdgeInsets.fromLTRB(AppConstants.baseBorderRadius, AppConstants.baseBorderRadius,
-                  AppConstants.baseBorderRadius, kSize.height * 0.044),
+              padding: EdgeInsets.fromLTRB(
+                  AppConstants.baseBorderRadius,
+                  AppConstants.baseBorderRadius,
+                  AppConstants.baseBorderRadius,
+                  kSize.height * 0.044),
               child: employeeType(context, kSize),
             ),
           );
@@ -37,7 +42,7 @@ class AddEmployeeType {
 
   Widget employeeType(BuildContext context, Size kSize) {
     return Form(
-      key: state.formKey,
+      // key: state.formKey,
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -61,8 +66,9 @@ class AddEmployeeType {
                     },
                     child: Text(
                       AppStrings.closeText,
-                      style: AppTypography.poppinsMedium
-                          .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.6)),
+                      style: AppTypography.poppinsMedium.copyWith(
+                          fontSize: 14,
+                          color: AppColors.secondaryColor.withOpacity(0.6)),
                     ))
               ],
             ),

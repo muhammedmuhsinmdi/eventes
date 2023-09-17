@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:evantez/src/model/repository/resource/employee_repository.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//widgets/custom_toggle_btn.dart';
@@ -8,6 +9,7 @@ import 'package:evantez/src/view/view/resouces/employee/employee_view/widgets/ch
 import 'package:evantez/src/view/view/history_view/widgets/history_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/themes/colors.dart';
 import '../../../../core/themes/typography.dart';
@@ -29,8 +31,8 @@ class EmployeeDetailView extends StatelessWidget {
         height: kSize.height,
         width: kSize.width,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-              AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, 0),
+          padding: const EdgeInsets.fromLTRB(AppConstants.baseBorderRadius,
+              AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, 0),
           child: Column(
             children: [
               empProPicDetail(kSize: kSize, context: context),
@@ -53,7 +55,9 @@ class EmployeeDetailView extends StatelessWidget {
               ValueListenableBuilder<int>(
                   valueListenable: selectedTab,
                   builder: (context, value, child) {
-                    return value == 0 ? basicInfo(context, kSize) : historySection(context, kSize);
+                    return value == 0
+                        ? basicInfo(context, kSize)
+                        : historySection(context, kSize);
                   })
             ],
           ),
@@ -63,6 +67,8 @@ class EmployeeDetailView extends StatelessWidget {
   }
 
   Widget empProPicDetail({required Size kSize, required BuildContext context}) {
+    final controller = context.watch<EmployeesController>();
+
     return Row(
       children: [
         CircleAvatar(
@@ -81,10 +87,15 @@ class EmployeeDetailView extends StatelessWidget {
             ),
             Row(
               children: [
-                Text(
-                  'Supervisor',
-                  style: AppTypography.poppinsMedium.copyWith(fontSize: 14),
+                Wrap(
+                  children: List.generate(
+                      controller.selectedEmpList.value.length,
+                      (index) => Text(controller.selectedEmpList.value[index])),
                 ),
+                // Text(
+                //   'Supervisor',
+                //   style: AppTypography.poppinsMedium.copyWith(fontSize: 14),
+                // ),
                 SizedBox(
                   width: kSize.width * 0.01,
                 ),
@@ -100,7 +111,9 @@ class EmployeeDetailView extends StatelessWidget {
                         'A Boy',
                         "B Boy"
                       ];
-                      ChangeEmpPosition(parentContext: context, positions: positions).show();
+                      ChangeEmpPosition(
+                              parentContext: context, positions: positions)
+                          .show();
                     },
                     icon: SvgPicture.asset(AppImages.edit,
                         height: kSize.height * 0.025,
@@ -132,6 +145,7 @@ class EmployeeDetailView extends StatelessWidget {
   }
 
   Widget basicInfo(BuildContext context, Size kSize) {
+    final controller = context.watch<EmployeesController>();
     return Expanded(
       child: SingleChildScrollView(
         child: Padding(
@@ -172,19 +186,21 @@ class EmployeeDetailView extends StatelessWidget {
               SizedBox(
                 height: kSize.height * 0.024,
               ),
-              proInfo('Age', '26'),
+              proInfo('Age', '${controller.employeeData?.dob?.day}'),
               SizedBox(
                 height: kSize.height * 0.016,
               ),
-              proInfo(AppStrings.bloodGroup, 'O+ve'),
+              proInfo(AppStrings.bloodGroup,
+                  '${controller.employeeData?.bloodGroup}'),
               SizedBox(
                 height: kSize.height * 0.024,
               ),
-              proInfo(AppStrings.phoneText, '+91 9999999999'),
+              proInfo(AppStrings.phoneText, ''),
               SizedBox(
                 height: kSize.height * 0.024,
               ),
-              proInfo(AppStrings.homeContactText, '+91 9999999999'),
+              proInfo(AppStrings.homeContactText,
+                  '${controller.employeeData?.homeContact}'),
               SizedBox(
                 height: kSize.height * 0.032,
               ),
@@ -205,7 +221,7 @@ class EmployeeDetailView extends StatelessWidget {
                 height: kSize.height * 0.024,
               ),
               Text(
-                "Pallikkal House.\nKondotty PO\n676085, Malappuram",
+                controller.employeeData?.address ?? "",
                 maxLines: 4,
                 style: AppTypography.poppinsRegular.copyWith(
                   color: AppColors.secondaryColor.withOpacity(0.6),
@@ -243,7 +259,7 @@ class EmployeeDetailView extends StatelessWidget {
                 height: kSize.height * 0.01,
               ),
               Text(
-                "1231348567496789\nIFHDF123\nHDFC BANK\nThondayad Branch",
+                "${controller.employeePayment?.bankName ?? ''}\n ${controller.employeePayment?.branchName ?? ''}\n${controller.employeePayment?.ifscCode ?? ''}",
                 maxLines: 4,
                 style: AppTypography.poppinsRegular.copyWith(
                   color: AppColors.secondaryColor.withOpacity(0.6),
@@ -404,10 +420,12 @@ class EmployeeDetailView extends StatelessWidget {
             text: '',
             hintText: AppStrings.searchText,
             suffixIcon: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
               child: SvgPicture.asset(
                 AppImages.search,
-                colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(
+                    AppColors.primaryColor, BlendMode.srcIn),
               ),
             ),
           ),
@@ -420,7 +438,8 @@ class EmployeeDetailView extends StatelessWidget {
           child: TextButton(
               style: TextButton.styleFrom(
                 backgroundColor: AppColors.transparent,
-                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
               ),
               onPressed: () {
                 // history filter
@@ -428,7 +447,8 @@ class EmployeeDetailView extends StatelessWidget {
               },
               child: SvgPicture.asset(
                 AppImages.filter,
-                colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(
+                    AppColors.primaryColor, BlendMode.srcIn),
               )),
         )
       ],

@@ -45,7 +45,8 @@ class UrgentEmpSheet extends StatelessWidget {
               ),
               maxLines: 5,
               controller: TextEditingController(
-                  text: '10 A boys needed near Crown theater in half hour. call 91123123132'),
+                  text:
+                      '10 A boys needed near Crown theater in half hour. call 91123123132'),
             ),
             /* Container(
               color: AppColors.transparent.withOpacity(0.1),
@@ -90,7 +91,8 @@ class UrgentEmpSheet extends StatelessWidget {
                             },
                             icon: SvgPicture.asset(
                               AppImages.minuscircle,
-                              colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                              colorFilter: const ColorFilter.mode(
+                                  AppColors.primaryColor, BlendMode.srcIn),
                             )),
                         Text(
                           '${count.value}',
@@ -105,7 +107,8 @@ class UrgentEmpSheet extends StatelessWidget {
                             },
                             icon: SvgPicture.asset(
                               AppImages.addCircle,
-                              colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                              colorFilter: const ColorFilter.mode(
+                                  AppColors.primaryColor, BlendMode.srcIn),
                             )),
                       ],
                     ),
@@ -115,7 +118,8 @@ class UrgentEmpSheet extends StatelessWidget {
             ),
             SizedBox(height: kSize.height * 0.024),
 
-            FooterButton(fillColor: AppColors.transparent, label: 'Add +', onTap: () {}),
+            FooterButton(
+                fillColor: AppColors.transparent, label: 'Add +', onTap: () {}),
             SizedBox(height: kSize.height * 0.024),
             Divider(
               color: AppColors.secondaryColor.withOpacity(0.2),

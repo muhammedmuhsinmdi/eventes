@@ -23,10 +23,11 @@ class NewQuotationView extends StatelessWidget {
         height: kSize.height,
         width: kSize.width,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-              AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, 0),
+          padding: const EdgeInsets.fromLTRB(AppConstants.baseBorderRadius,
+              AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, 0),
           child: SingleChildScrollView(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               quoteNo(kSize),
               Padding(
                 padding: EdgeInsets.only(bottom: kSize.height * 0.024),
@@ -63,8 +64,10 @@ class NewQuotationView extends StatelessWidget {
                   ],
                 ),
               ),
-              CustomServiceCounter(label: "", items: const ['Ceramic Plates', 'House ']),
-              CustomServiceCounter(label: "", items: const ['Ceramic Plates', 'House ']),
+              CustomServiceCounter(
+                  label: "", items: const ['Ceramic Plates', 'House ']),
+              CustomServiceCounter(
+                  label: "", items: const ['Ceramic Plates', 'House ']),
               SizedBox(
                 height: kSize.height * 0.032,
               ),
@@ -90,7 +93,8 @@ class NewQuotationView extends StatelessWidget {
                 ),
               ),
               CustomServiceCounter(label: "", items: const ['Head', 'A Boy ']),
-              CustomServiceCounter(label: "", items: const ['B Boy', 'Captain']),
+              CustomServiceCounter(
+                  label: "", items: const ['B Boy', 'Captain']),
               SizedBox(
                 height: kSize.height * 0.032,
               ),

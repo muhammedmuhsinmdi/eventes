@@ -23,8 +23,8 @@ class NewInvoiceView extends StatelessWidget {
         height: kSize.height,
         width: kSize.width,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-              AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, 0),
+          padding: const EdgeInsets.fromLTRB(AppConstants.baseBorderRadius,
+              AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, 0),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,13 +63,21 @@ class NewInvoiceView extends StatelessWidget {
                 const CustomDropdownSearch(
                   label: AppStrings.customerName,
                   hintText: 'Enter Customer Name',
-                  items: ['Orange - Kotakkal', "Shifa - Manjeri", 'Palacio - Malappuram'],
+                  items: [
+                    'Orange - Kotakkal',
+                    "Shifa - Manjeri",
+                    'Palacio - Malappuram'
+                  ],
                 ),
                 SizedBox(height: kSize.height * 0.024),
                 const CustomDropdownSearch(
                   label: 'Event Venue',
                   hintText: 'Enter Event Venue',
-                  items: ['Janata Auditorium, Palazhi', "VP Hall, Manjeri", 'Nassan , Irumbuzhi'],
+                  items: [
+                    'Janata Auditorium, Palazhi',
+                    "VP Hall, Manjeri",
+                    'Nassan , Irumbuzhi'
+                  ],
                 ),
                 SizedBox(height: kSize.height * 0.024),
                 const CustomDropdownSearch(
@@ -211,7 +219,11 @@ class NewInvoiceView extends StatelessWidget {
           children: List.generate(
               2,
               (index) => CustomServiceCounter(
-                    items: const ['Table Setting', "Plate Washing", 'Stage work'],
+                    items: const [
+                      'Table Setting',
+                      "Plate Washing",
+                      'Stage work'
+                    ],
                     label: 'Select Setting work ',
                   )),
         ),

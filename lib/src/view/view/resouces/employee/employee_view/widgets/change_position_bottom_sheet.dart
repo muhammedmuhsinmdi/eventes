@@ -1,7 +1,11 @@
+import 'dart:developer';
+
+import 'package:evantez/src/model/repository/resource/employee_repository.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../core/constants/app_images.dart';
 import '../../../../../core/constants/app_strings.dart';
@@ -14,6 +18,7 @@ class ChangeEmpPosition {
   ChangeEmpPosition({required this.parentContext, required this.positions});
 
   Future show() async {
+    // final controller = context.watch();
     final kSize = MediaQuery.of(parentContext).size;
     await showModalBottomSheet(
         context: parentContext,
@@ -25,8 +30,8 @@ class ChangeEmpPosition {
                 topRight: Radius.circular(AppConstants.basePadding))),
         builder: (context) {
           return Padding(
-            padding: EdgeInsets.fromLTRB(
-                AppConstants.baseBorderRadius, kSize.height * 0.032, AppConstants.baseBorderRadius, 0),
+            padding: EdgeInsets.fromLTRB(AppConstants.baseBorderRadius,
+                kSize.height * 0.032, AppConstants.baseBorderRadius, 0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -46,6 +51,7 @@ class ChangeEmpPosition {
   }
 
   Widget postitonListing(BuildContext context, Size kSize) {
+    final controller = context.watch<EmployeesController>();
     return SizedBox(
       height: kSize.height * 0.4,
       width: kSize.width,
@@ -60,14 +66,27 @@ class ChangeEmpPosition {
             return Container(
               margin: EdgeInsets.only(bottom: kSize.height * 0.008),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(AppConstants.basePadding / 2),
+                  borderRadius:
+                      BorderRadius.circular(AppConstants.basePadding / 2),
                   color: AppColors.secondaryColor.withOpacity(0.1)),
               padding: const EdgeInsets.symmetric(
-                  horizontal: AppConstants.basePadding / 2, vertical: AppConstants.basePadding / 2),
+                  horizontal: AppConstants.basePadding / 2,
+                  vertical: AppConstants.basePadding / 2),
               child: Row(
                 children: [
-                  Text(
-                    positions[index],
+                  InkWell(
+                    onTap: () {
+                      var data = controller.selectedEmpList.value
+                          .where((element) => positions[index] == element);
+
+                      log("OK${positions[index]}");
+                      log("4${controller.selectedEmpList.value}");
+
+                      print(controller.selectedEmpList.value.length);
+                    },
+                    child: Text(
+                      positions[index],
+                    ),
                   )
                 ],
               ),
@@ -88,10 +107,12 @@ class ChangeEmpPosition {
             text: '',
             hintText: AppStrings.searchText,
             suffixIcon: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
               child: SvgPicture.asset(
                 AppImages.search,
-                colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(
+                    AppColors.primaryColor, BlendMode.srcIn),
               ),
             ),
           ),
@@ -104,14 +125,16 @@ class ChangeEmpPosition {
           child: TextButton(
               style: TextButton.styleFrom(
                 backgroundColor: AppColors.transparent,
-                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
               ),
               onPressed: () async {
                 //
               },
               child: SvgPicture.asset(
                 AppImages.filter,
-                colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(
+                    AppColors.primaryColor, BlendMode.srcIn),
               )),
         )
       ],
@@ -138,8 +161,9 @@ class ChangeEmpPosition {
             },
             child: Text(
               AppStrings.clearText,
-              style: AppTypography.poppinsMedium
-                  .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.6)),
+              style: AppTypography.poppinsMedium.copyWith(
+                  fontSize: 14,
+                  color: AppColors.secondaryColor.withOpacity(0.6)),
             ))
       ],
     );

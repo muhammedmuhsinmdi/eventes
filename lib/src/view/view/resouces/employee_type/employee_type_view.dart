@@ -1,3 +1,4 @@
+import 'package:evantez/src/model/repository/resource/employee_repository.dart';
 import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
 import 'package:evantez/src/model/core/models/employeetype/employeetype_model.dart';
 import 'package:evantez/src/model/core/models/menu/menu_model.dart';
@@ -28,7 +29,7 @@ class _EmployeeTypeViewState extends State<EmployeeTypeView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      Provider.of<EmployeeTypeViewstate>(context, listen: false).getAll();
+      Provider.of<EmployeesController>(context, listen: false).getAll();
     });
   }
 
@@ -37,7 +38,7 @@ class _EmployeeTypeViewState extends State<EmployeeTypeView> {
     final kSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: appBar(context, kSize),
-      body: Consumer<EmployeeTypeViewstate>(builder: (context, value, child) {
+      body: Consumer<EmployeesController>(builder: (context, value, child) {
         final empTypes = value.employeeTypes;
         return SizedBox(
           height: kSize.height,
@@ -72,9 +73,10 @@ class _EmployeeTypeViewState extends State<EmployeeTypeView> {
       actions: [
         IconButton(
             onPressed: () async {
-              EmployeeTypeViewstate empTypeAddViewstate = EmployeeTypeViewstate();
-              empTypeAddViewstate.employeeType = EmployeeType(id: 0, name: '', code: '');
-              AddEmployeeType(context, empTypeAddViewstate).show();
+              EmployeesController empTypeAddViewstate = EmployeesController();
+              empTypeAddViewstate.employeeType =
+                  EmployeeType(id: 0, name: '', code: '');
+              // AddEmployeeType(context, empTypeAddViewstate).show();
             },
             icon: SvgPicture.asset(
               AppImages.addCircle,
@@ -89,7 +91,8 @@ class _EmployeeTypeViewState extends State<EmployeeTypeView> {
 
   Widget searchField(Size kSize, BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
+      padding:
+          const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -99,10 +102,12 @@ class _EmployeeTypeViewState extends State<EmployeeTypeView> {
               text: '',
               hintText: AppStrings.searchText,
               suffixIcon: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
                 child: SvgPicture.asset(
                   AppImages.search,
-                  colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                      AppColors.primaryColor, BlendMode.srcIn),
                 ),
               ),
             ),

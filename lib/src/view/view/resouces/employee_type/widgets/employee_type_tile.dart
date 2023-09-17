@@ -13,7 +13,7 @@ class EmployeeTypeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var empTypeState = Provider.of<EmployeeTypeViewstate>(context);
+    var empTypeState = Provider.of<EmployeeProvider>(context);
     final kSize = MediaQuery.of(context).size;
     return Container(
       width: kSize.width,
@@ -43,8 +43,9 @@ class EmployeeTypeTile extends StatelessWidget {
               RichText(
                 text: TextSpan(
                     text: '${employeeType.code}',
-                    style: AppTypography.poppinsMedium
-                        .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.5)),
+                    style: AppTypography.poppinsMedium.copyWith(
+                        fontSize: 14,
+                        color: AppColors.secondaryColor.withOpacity(0.5)),
                     children: [
                       TextSpan(
                           text: ' 121',
@@ -65,11 +66,11 @@ class EmployeeTypeTile extends StatelessWidget {
               onSelected: (item) {
                 // setState(() {
                 if (item == 'edit') {
-                  empTypeState.employeeType = employeeType;
-                  empTypeState.nameEditingController.text = employeeType.name!;
-                  empTypeState.codeEditingController.text = employeeType.code!;
-                  empTypeState.employeeType = employeeType;
-                  AddEmployeeType(context, empTypeState).show();
+                  // empTypeState.employeeType = employeeType;
+                  // empTypeState.nameEditingController.text = employeeType.name!;
+                  // empTypeState.codeEditingController.text = employeeType.code!;
+                  // empTypeState.employeeType = employeeType;
+                  // AddEmployeeType(context, empTypeState).show();
                 }
                 // });
               },

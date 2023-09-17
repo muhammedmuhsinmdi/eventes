@@ -1,74 +1,83 @@
-import 'package:evantez/src/model/core/models/employeetype/employeetype_model.dart';
-import 'package:evantez/src/model/services/services.dart';
-import 'package:evantez/src/model/repository/resource/employeetype_repository.dart';
-import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:evantez/src/model/core/base_api_utilities.dart';
 
-class EmployeeTypeViewstate extends ChangeNotifier {
-  late IEmployeeTypeRepository employeeTypeRepo;
-  TextEditingController nameEditingController = TextEditingController();
-  TextEditingController codeEditingController = TextEditingController();
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+import 'package:evantez/src/serializer/models/employee_details_response.dart';
+import 'package:evantez/src/serializer/models/employee_list_response.dart';
+import 'package:evantez/src/serializer/models/employee_payment_details.dart';
+import 'package:evantez/src/serializer/models/employee_request.dart';
+import 'package:evantez/src/serializer/models/employee_types_response.dart';
+import 'package:evantez/src/view/core/event_api.dart';
 
-  // EmployeeTypeViewstate() {
-  //   employeeTypeRepo = Services.employeeTypeRepo;
-  // }
+class EmployeeProvider extends EventApi {
+  Future<List<EmployeeListResponse>> loadEmployee(
+      {required String token}) async {
+    Response response =
+        await get('users/employee/', headers: apiHeaders(token));
+    switch (response.statusCode) {
+      case 200:
+        return (response.data['results'] as List)
+            .map((e) => EmployeeListResponse.fromJson(e))
+            .toList();
 
-  int _selectedIndex = 0;
-  int get selectedIndex => _selectedIndex;
-  set selectedIndex(int val) {
-    _selectedIndex = val;
-    notifyListeners();
-  }
-
-  late EmployeeType _employeeType;
-  EmployeeType get employeeType => _employeeType;
-  set employeeType(EmployeeType val) {
-    _employeeType = val;
-    notifyListeners();
-  }
-
-  late List<EmployeeType> _employeeTypes;
-  List<EmployeeType> get employeeTypes => _employeeTypes;
-  set employeeTypes(List<EmployeeType> val) {
-    _employeeTypes = val;
-    notifyListeners();
-  }
-
-  // validators
-  String? nameValidator(String? value) {
-    if (value!.isEmpty) {
-      return "Name Required..";
-    } else {
-      return null;
+      default:
+        throw Exception('Response Error');
     }
   }
 
-  // validators
-  String? codeValidator(String? value) {
-    if (value!.isEmpty) {
-      return "Code Required..";
-    } else {
-      return null;
+  //=-=-=-=-=-=-= Employee Details =-=-=-=-=-=-=
+  Future<EmployeeDetails> loadEmployeeDetails(
+      {required String token, required int id}) async {
+    Response response =
+        await get('users/employee/$id', headers: apiHeaders(token));
+    switch (response.statusCode) {
+      case 200:
+        return EmployeeDetails.fromJson(response.data);
+      default:
+        throw Exception('Response Error');
     }
   }
 
-  Future save() async {
-    if (formKey.currentState!.validate()) {
-      formKey.currentState!.save();
-      if (employeeType.id != null && employeeType.id! > 0) {
-        await employeeTypeRepo.update(employeeType);
-      } else {
-        await employeeTypeRepo.save(employeeType);
-      }
+  //=-=-=-=-=-=-=-= Employees Types =-=-=-=-=-=-=
+  Future<List<EmployeesTypesList>> loadEmployeesTypes(
+      {required String token}) async {
+    Response response =
+        await get('users/employee-type/', headers: apiHeaders(token));
+    switch (response.statusCode) {
+      case 200:
+        return (response.data['results'] as List)
+            .map((e) => EmployeesTypesList.fromJson(e))
+            .toList();
+
+      default:
+        throw Exception('Response Error');
     }
   }
 
-  Future getAll() async {
-    employeeTypes = List<EmployeeType>.empty(growable: true);
-    try {
-      employeeTypes = await employeeTypeRepo.getAll();
-    } catch (e) {
-      employeeTypes = List<EmployeeType>.empty(growable: true);
+  //=-=-=-=-=-=-= Employee Details =-=-=-=-=-=-=
+  Future<EmployeeBank> employeePayment(
+      {required String token, required int id}) async {
+    Response response = await get('users/employee-payment-detail/$id',
+        headers: apiHeaders(token));
+    switch (response.statusCode) {
+      case 200:
+        return EmployeeBank.fromJson(response.data);
+      default:
+        throw Exception('Response Error');
+    }
+  }
+
+  //=-=-=-=-=-=-= Employee ADdd =-=-=-=-=-=-=
+  Future<EmployeeDetails> addEmployee(
+      {required String token,
+      required int id,
+      required EmployeeRequest data}) async {
+    Response response = await post('users/employee',
+        data: data.toJson(), headers: apiHeaders(token));
+    switch (response.statusCode) {
+      case 200:
+        return EmployeeDetails.fromJson(response.data);
+      default:
+        throw Exception('Response Error');
     }
   }
 }

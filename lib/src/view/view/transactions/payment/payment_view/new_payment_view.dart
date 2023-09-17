@@ -22,7 +22,8 @@ class NewPaymentView extends StatelessWidget {
 
   final ValueNotifier<bool> boyPayType = ValueNotifier<bool>(false);
 
-  final ValueNotifier<String> selectedPayType = ValueNotifier<String>('Event Based');
+  final ValueNotifier<String> selectedPayType =
+      ValueNotifier<String>('Event Based');
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,8 @@ class NewPaymentView extends StatelessWidget {
               height: kSize.height,
               width: kSize.width,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppConstants.baseBorderRadius),
                 child: Column(
                   children: [
                     appBar(context, kSize),
@@ -92,18 +94,20 @@ class NewPaymentView extends StatelessWidget {
           ),
           CustomTextField(
             text: AppStrings.customerName,
-            style: AppTypography.poppinsRegular.copyWith(color: AppColors.secondaryColor),
-            labelStyle:
-                AppTypography.poppinsMedium.copyWith(color: AppColors.secondaryColor.withOpacity(0.6)),
+            style: AppTypography.poppinsRegular
+                .copyWith(color: AppColors.secondaryColor),
+            labelStyle: AppTypography.poppinsMedium
+                .copyWith(color: AppColors.secondaryColor.withOpacity(0.6)),
           ),
           SizedBox(
             height: kSize.height * 0.024,
           ),
           CustomTextField(
             text: AppStrings.invAmountText,
-            style: AppTypography.poppinsMedium.copyWith(fontSize: 16, color: AppColors.secondaryColor),
-            labelStyle:
-                AppTypography.poppinsMedium.copyWith(color: AppColors.secondaryColor.withOpacity(0.6)),
+            style: AppTypography.poppinsMedium
+                .copyWith(fontSize: 16, color: AppColors.secondaryColor),
+            labelStyle: AppTypography.poppinsMedium
+                .copyWith(color: AppColors.secondaryColor.withOpacity(0.6)),
             prefixIcon: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               child: Text(
@@ -267,7 +271,8 @@ class NewPaymentView extends StatelessWidget {
         builder: (context, value, child) {
           return Text(
             "Due Amount : ₹ $value",
-            style: AppTypography.poppinsRegular.copyWith(color: AppColors.secondaryColor.withOpacity(0.6)),
+            style: AppTypography.poppinsRegular
+                .copyWith(color: AppColors.secondaryColor.withOpacity(0.6)),
           );
         });
   }

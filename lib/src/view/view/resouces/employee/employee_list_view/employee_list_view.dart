@@ -1,9 +1,12 @@
 import 'package:evantez/app/router/router_constant.dart';
+import 'package:evantez/src/model/repository/auth/auth_controller.dart';
+import 'package:evantez/src/model/repository/resource/employee_repository.dart';
 import 'package:evantez/src/view/core/widgets/custom_back_btn.dart';
 import 'package:evantez/src/view/view/resouces/employee/employee_list_view/widgets/employee_filter.dart';
 import 'package:evantez/src/view/view/resouces/employee/employee_list_view/widgets/employee_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../core/constants/app_images.dart';
 import '../../../../core/constants/app_strings.dart';
@@ -40,6 +43,8 @@ class EmployeeListView extends StatelessWidget {
   }
 
   AppBar appBar(BuildContext context, Size kSize) {
+    final controller = context.watch<EmployeesController>();
+    final auth = context.watch<AuthController>();
     return AppBar(
       elevation: 0,
       leading: const CustomBackButton(),
@@ -53,7 +58,10 @@ class EmployeeListView extends StatelessWidget {
         IconButton(
             onPressed: () {
               //
-              Navigator.pushNamed(context, RouterConstants.addEmployeeViewRoute);
+
+              controller.employeeTypesData(token: auth.accesToken ?? '');
+              Navigator.pushNamed(
+                  context, RouterConstants.addEmployeeViewRoute);
             },
             icon: SvgPicture.asset(
               AppImages.addCircle,
@@ -68,7 +76,8 @@ class EmployeeListView extends StatelessWidget {
 
   Widget searchField(BuildContext context, Size kSize) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
+      padding:
+          const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -78,10 +87,12 @@ class EmployeeListView extends StatelessWidget {
               text: '',
               hintText: AppStrings.searchText,
               suffixIcon: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
                 child: SvgPicture.asset(
                   AppImages.search,
-                  colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                      AppColors.primaryColor, BlendMode.srcIn),
                 ),
               ),
             ),
@@ -94,7 +105,8 @@ class EmployeeListView extends StatelessWidget {
             child: TextButton(
                 style: TextButton.styleFrom(
                   backgroundColor: AppColors.transparent,
-                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 12.0, horizontal: 8.0),
                 ),
                 onPressed: () async {
                   //
@@ -103,7 +115,8 @@ class EmployeeListView extends StatelessWidget {
                       isScrollControlled: true,
                       shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(AppConstants.basePadding),
+                              topLeft:
+                                  Radius.circular(AppConstants.basePadding),
                               topRight: Radius.circular(
                                 AppConstants.basePadding,
                               ))),
@@ -115,7 +128,8 @@ class EmployeeListView extends StatelessWidget {
                 },
                 child: SvgPicture.asset(
                   AppImages.filter,
-                  colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                      AppColors.primaryColor, BlendMode.srcIn),
                 )),
           )
         ],
@@ -124,9 +138,11 @@ class EmployeeListView extends StatelessWidget {
   }
 
   Widget employeeList(BuildContext context, Size kSize) {
+    final controller = context.watch<EmployeesController>();
+    final auth = context.watch<AuthController>();
     return Expanded(
         child: ListView.builder(
-            itemCount: 2,
+            itemCount: controller.employeeLists.length,
             padding: EdgeInsets.only(
                 bottom: kSize.height * 0.08,
                 left: AppConstants.baseBorderRadius,
@@ -138,7 +154,15 @@ class EmployeeListView extends StatelessWidget {
                 onTap: () {
                   //
 
-                  Navigator.pushNamed(context, RouterConstants.employeeDetailViewRoute);
+                  controller.employeeDetails(
+                      token: auth.accesToken ?? '',
+                      id: controller.employeeLists[index].id ?? 0);
+                  controller.employeePayments(
+                      token: auth.accesToken ?? '',
+                      id: controller.employeeLists[index].id ?? 0);
+
+                  Navigator.pushNamed(
+                      context, RouterConstants.employeeDetailViewRoute);
                 },
                 child: EmployeeTile(
                   index: index,

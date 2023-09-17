@@ -1,11 +1,14 @@
+import 'package:evantez/src/model/repository/resource/employee_repository.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//widgets/custom_dropdown_search.dart';
 import 'package:evantez/src/view/core//widgets/custom_textfield.dart';
 import 'package:evantez/src/view/core//widgets/footer_button.dart';
+import 'package:evantez/src/view/core/widgets/common_drop_down.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../core/themes/typography.dart';
@@ -16,6 +19,7 @@ class AddEmployeeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<EmployeesController>();
     final kSize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -25,8 +29,11 @@ class AddEmployeeView extends StatelessWidget {
         width: kSize.width,
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(AppConstants.baseBorderRadius, AppConstants.baseBorderRadius,
-                AppConstants.baseBorderRadius, 0),
+            padding: const EdgeInsets.fromLTRB(
+                AppConstants.baseBorderRadius,
+                AppConstants.baseBorderRadius,
+                AppConstants.baseBorderRadius,
+                0),
             child: Column(
               children: [
                 uploadProImage(kSize),
@@ -41,6 +48,12 @@ class AddEmployeeView extends StatelessWidget {
                 SizedBox(
                   height: kSize.height * 0.040,
                 ),
+                CommonDropdown(
+                    hintText: 'Select Employee Type',
+                    dropDownValue: controller.types,
+                    onChanged: (value) {
+                      controller.chnage(value);
+                    }),
                 const CustomDropdownSearch(
                   label: AppStrings.employeeTypeText,
                   hintText: 'Select Employee Type',
@@ -140,7 +153,8 @@ class AddEmployeeView extends StatelessWidget {
           ),
           child: SvgPicture.asset(
             AppImages.camera,
-            colorFilter: const ColorFilter.mode(AppColors.secondaryColor, BlendMode.srcIn),
+            colorFilter: const ColorFilter.mode(
+                AppColors.secondaryColor, BlendMode.srcIn),
             // color: AppColors.secondaryColor,
           ),
         ),

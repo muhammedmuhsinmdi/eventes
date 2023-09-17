@@ -36,15 +36,23 @@ class AddingEmployeeSheet extends StatefulWidget {
 }
 
 class _AddingEmployeeSheetState extends State<AddingEmployeeSheet> {
-  List<String> empList = <String>['Olive Yew', 'Aida Bugg', "Roshan", "Suhail", "Muhsin", "Sameer"];
-  final ValueNotifier<List<String>> selectedEmpList = ValueNotifier<List<String>>([]);
+  List<String> empList = <String>[
+    'Olive Yew',
+    'Aida Bugg',
+    "Roshan",
+    "Suhail",
+    "Muhsin",
+    "Sameer"
+  ];
+  final ValueNotifier<List<String>> selectedEmpList =
+      ValueNotifier<List<String>>([]);
 
   @override
   Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
     return Padding(
-        padding: EdgeInsets.fromLTRB(
-            AppConstants.baseBorderRadius, kSize.height * 0.032, AppConstants.baseBorderRadius, 0),
+        padding: EdgeInsets.fromLTRB(AppConstants.baseBorderRadius,
+            kSize.height * 0.032, AppConstants.baseBorderRadius, 0),
         child: ValueListenableBuilder(
           valueListenable: selectedEmpList,
           builder: (context, value, child) {
@@ -88,7 +96,8 @@ class _AddingEmployeeSheetState extends State<AddingEmployeeSheet> {
                     crossAxisAlignment: WrapCrossAlignment.start,
                     children: List.generate(
                       selectedEmpList.value.length,
-                      (index) => selecteEmployeeTile(kSize, selectedEmpList.value[index]),
+                      (index) => selecteEmployeeTile(
+                          kSize, selectedEmpList.value[index]),
                     ),
                   ),
                 ),
@@ -109,8 +118,10 @@ class _AddingEmployeeSheetState extends State<AddingEmployeeSheet> {
                               splashColor: AppColors.transparent,
                               onTap: () {
                                 setState(() {
-                                  if (selectedEmpList.value.contains(empList[index])) {
-                                    selectedEmpList.value.remove(empList[index]);
+                                  if (selectedEmpList.value
+                                      .contains(empList[index])) {
+                                    selectedEmpList.value
+                                        .remove(empList[index]);
                                     if (kDebugMode) {
                                       print(selectedEmpList.value.length);
                                     }
@@ -138,7 +149,8 @@ Widget employeeTile(Size kSize, String emp) {
     margin: const EdgeInsets.only(bottom: 8, right: AppConstants.marginSpace),
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
     decoration: BoxDecoration(
-        color: AppColors.secondaryColor.withOpacity(0.1), borderRadius: BorderRadius.circular(6)),
+        color: AppColors.secondaryColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(6)),
     child: RichText(
         text: TextSpan(
             text: "$emp  ",
@@ -198,7 +210,8 @@ Widget searchField(BuildContext context, Size kSize) {
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
       child: SvgPicture.asset(
         AppImages.search,
-        colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+        colorFilter:
+            const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
       ),
     ),
   );

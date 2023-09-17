@@ -50,7 +50,8 @@ class CustomDropdownSearch extends StatelessWidget {
                       text: label,
                       style: AppTypography.poppinsMedium.copyWith(
                         fontSize: 16,
-                        color: labelTextColor ?? AppColors.secondaryColor.withOpacity(0.6),
+                        color: labelTextColor ??
+                            AppColors.secondaryColor.withOpacity(0.6),
                       ))
                 ],
               ),
@@ -62,13 +63,16 @@ class CustomDropdownSearch extends StatelessWidget {
           child: DropdownButtonHideUnderline(
               child: DecoratedBox(
             decoration: const BoxDecoration(
-                border: Border(bottom: BorderSide(width: 2, color: AppColors.primaryColor))),
+                border: Border(
+                    bottom:
+                        BorderSide(width: 2, color: AppColors.primaryColor))),
             child: DropdownSearch<String>(
                 dropdownButtonProps: DropdownButtonProps(
                   hoverColor: Colors.transparent,
                   icon: SvgPicture.asset(
                     AppImages.arrowDropDown,
-                    colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                    colorFilter: const ColorFilter.mode(
+                        AppColors.primaryColor, BlendMode.srcIn),
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -79,8 +83,10 @@ class CustomDropdownSearch extends StatelessWidget {
                     contentPadding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
                     suffixIconColor: AppColors.primaryColor,
                     errorBorder: const UnderlineInputBorder(
-                        borderSide:
-                            BorderSide(width: 2, style: BorderStyle.solid, color: AppColors.statusCritical)),
+                        borderSide: BorderSide(
+                            width: 2,
+                            style: BorderStyle.solid,
+                            color: AppColors.statusCritical)),
                   ),
                   baseStyle: AppTypography.poppinsRegular.copyWith(
                     color: AppColors.secondaryColor,
@@ -90,8 +96,9 @@ class CustomDropdownSearch extends StatelessWidget {
                 popupProps: PopupProps.bottomSheet(
                     showSelectedItems: true,
                     title: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius, vertical: 16),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppConstants.baseBorderRadius,
+                          vertical: 16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -110,7 +117,8 @@ class CustomDropdownSearch extends StatelessWidget {
                             },
                             child: Text(AppStrings.closeText,
                                 style: AppTypography.poppinsMedium.copyWith(
-                                  color: AppColors.secondaryColor.withOpacity(0.4),
+                                  color:
+                                      AppColors.secondaryColor.withOpacity(0.4),
                                 )),
                           )
                         ],
@@ -120,8 +128,9 @@ class CustomDropdownSearch extends StatelessWidget {
                       backgroundColor: AppColors.darkBgColor2,
                       clipBehavior: Clip.antiAlias,
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16)),
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(16),
+                            topLeft: Radius.circular(16)),
                       ),
                     )),
                 validator: validator,
