@@ -60,6 +60,7 @@ class EmployeeListView extends StatelessWidget {
               //
 
               controller.employeeTypesData(token: auth.accesToken ?? '');
+              controller.employeeIdList(token: auth.accesToken ?? '');
               Navigator.pushNamed(
                   context, RouterConstants.addEmployeeViewRoute);
             },

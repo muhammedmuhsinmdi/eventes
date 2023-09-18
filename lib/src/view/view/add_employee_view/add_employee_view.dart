@@ -1,3 +1,4 @@
+import 'package:evantez/src/model/repository/auth/auth_controller.dart';
 import 'package:evantez/src/model/repository/resource/employee_repository.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
+import '../../../model/components/date_time_picker.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/themes/typography.dart';
 import '../../core/widgets/custom_back_btn.dart';
@@ -20,6 +22,7 @@ class AddEmployeeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<EmployeesController>();
+    final auth = context.watch<AuthController>();
     final kSize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -40,7 +43,8 @@ class AddEmployeeView extends StatelessWidget {
                 SizedBox(
                   height: kSize.height * 0.040,
                 ),
-                const CustomTextField(
+                CustomTextField(
+                  controller: controller.nameController,
                   text: AppStrings.fullNameText,
                   required: true,
                   hintText: "Enter ${AppStrings.fullNameText}",
@@ -54,16 +58,12 @@ class AddEmployeeView extends StatelessWidget {
                     onChanged: (value) {
                       controller.chnage(value);
                     }),
-                const CustomDropdownSearch(
-                  label: AppStrings.employeeTypeText,
-                  hintText: 'Select Employee Type',
-                  required: true,
-                  items: ["Head", "Supervisor", "Captain"],
-                ),
+
                 SizedBox(
                   height: kSize.height * 0.040,
                 ),
-                const CustomTextField(
+                CustomTextField(
+                  controller: controller.phoneController,
                   text: AppStrings.phoneText,
                   required: true,
                   hintText: AppStrings.phoneHint,
@@ -71,15 +71,37 @@ class AddEmployeeView extends StatelessWidget {
                 SizedBox(
                   height: kSize.height * 0.040,
                 ),
-                const CustomTextField(
-                  text: AppStrings.phoneText,
+                CustomTextField(
+                  controller: controller.emailController,
+                  text: 'Email',
                   required: true,
-                  hintText: AppStrings.phoneHint,
+                  hintText: 'Email',
+                ),
+                // SizedBox(
+                //   height: kSize.height * 0.040,
+                // ),
+                // const CustomTextField(
+                //   text: AppStrings.phoneText,
+                //   required: true,
+                //   hintText: AppStrings.phoneHint,
+                // ),
+                SizedBox(
+                  height: kSize.height * 0.040,
+                ),
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: smallLabelText('Date Of Birth')),
+                DatePickerContainer(
+                  changeDate: (v) {
+                    controller.changeDate(v);
+                  },
+                  hintText: 'DOB',
                 ),
                 SizedBox(
                   height: kSize.height * 0.040,
                 ),
-                const CustomTextField(
+                CustomTextField(
+                  controller: controller.homeContact,
                   text: AppStrings.homeContactText,
                   required: true,
                   hintText: AppStrings.homeContactHint,
@@ -87,7 +109,8 @@ class AddEmployeeView extends StatelessWidget {
                 SizedBox(
                   height: kSize.height * 0.040,
                 ),
-                const CustomTextField(
+                CustomTextField(
+                  controller: controller.addressController,
                   text: AppStrings.address,
                   required: true,
                   maxLines: 3,
@@ -96,11 +119,18 @@ class AddEmployeeView extends StatelessWidget {
                 SizedBox(
                   height: kSize.height * 0.040,
                 ),
-                idproof(),
+                // idproof(),
+                CommonDropdown(
+                    hintText: 'Id Proof',
+                    dropDownValue: controller.employeeIdLists,
+                    onChanged: (value) {
+                      controller.changeId(value);
+                    }),
                 SizedBox(
                   height: kSize.height * 0.040,
                 ),
-                const CustomTextField(
+                CustomTextField(
+                  controller: controller.idNumber,
                   text: AppStrings.panCardText,
                   required: true,
                   hintText: AppStrings.panCardText,
@@ -108,10 +138,20 @@ class AddEmployeeView extends StatelessWidget {
                 SizedBox(
                   height: kSize.height * 0.040,
                 ),
+                CustomTextField(
+                  controller: controller.bloodGroupController,
+                  text: '',
+                  required: true,
+                  hintText: 'Blood Group',
+                ),
+                SizedBox(
+                  height: kSize.height * 0.040,
+                ),
                 FooterButton(
                   label: 'Add Employee',
                   onTap: () {
-                    //
+                    controller.employeeAdd(
+                        token: auth.accesToken ?? '', context: context);
                   },
                 ),
                 SizedBox(
@@ -181,4 +221,26 @@ class AddEmployeeView extends StatelessWidget {
       },
     );
   }
+}
+
+Widget smallLabelText(String label,
+    {double? topPadding, double bottomPadding = 5, bool isRequired = false}) {
+  return Padding(
+      padding: EdgeInsets.only(bottom: bottomPadding, top: topPadding ?? 15),
+      child: RichText(
+        text: TextSpan(text: label, style: const TextStyle(), children: [
+          if (isRequired)
+            const TextSpan(
+                text: ' *',
+                style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15))
+        ]),
+      )
+      // Text(label,
+      //     style: isRequired
+      //         ? smallLabelStyle.copyWith(color: redColor)
+      //         : smallLabelStyle),
+      );
 }

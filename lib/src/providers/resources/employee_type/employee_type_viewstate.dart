@@ -1,12 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:evantez/src/model/core/base_api_utilities.dart';
-
 import 'package:evantez/src/serializer/models/employee_details_response.dart';
 import 'package:evantez/src/serializer/models/employee_list_response.dart';
 import 'package:evantez/src/serializer/models/employee_payment_details.dart';
 import 'package:evantez/src/serializer/models/employee_request.dart';
 import 'package:evantez/src/serializer/models/employee_types_response.dart';
 import 'package:evantez/src/view/core/event_api.dart';
+
+import '../../../serializer/models/employee_proof_response.dart';
 
 class EmployeeProvider extends EventApi {
   Future<List<EmployeeListResponse>> loadEmployee(
@@ -68,14 +69,29 @@ class EmployeeProvider extends EventApi {
 
   //=-=-=-=-=-=-= Employee ADdd =-=-=-=-=-=-=
   Future<EmployeeDetails> addEmployee(
-      {required String token,
-      required int id,
-      required EmployeeRequest data}) async {
-    Response response = await post('users/employee',
+      {required String token, required EmployeeRequest data}) async {
+    Response response = await post('users/employee/',
         data: data.toJson(), headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
+      case 201:
         return EmployeeDetails.fromJson(response.data);
+      default:
+        throw Exception('Response Error');
+    }
+  }
+
+  //=-=-=-=-=-=-=-= Employee ID =-=-=-=-=-=-=
+
+  Future<List<EmployeeIdList>> employeeId({required String token}) async {
+    Response response =
+        await get('users/employee-id-proof-type/', headers: apiHeaders(token));
+    switch (response.statusCode) {
+      case 200:
+        return (response.data['results'] as List)
+            .map((e) => EmployeeIdList.fromJson(e))
+            .toList();
+
       default:
         throw Exception('Response Error');
     }

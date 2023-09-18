@@ -1,7 +1,8 @@
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: unnecessary_null_comparison, use_build_context_synchronously
 
 import 'dart:developer';
 
+import 'package:evantez/app/app.dart';
 import 'package:evantez/src/model/core/models/employeetype/employeetype_model.dart';
 import 'package:evantez/src/model/repository/resource/employeetype_repository.dart';
 import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
@@ -11,8 +12,10 @@ import 'package:evantez/src/serializer/models/employee_payment_details.dart';
 import 'package:evantez/src/serializer/models/employee_request.dart';
 import 'package:evantez/src/serializer/models/employee_types_response.dart';
 import 'package:evantez/src/view/core/widgets/drop_down_value.dart';
-import 'package:evantez/src/view/view/resouces/employee/employee_view/employee_view.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+
+import '../../../serializer/models/employee_proof_response.dart';
+import '../../components/snackbar_widget.dart';
 
 class EmployeesController extends ChangeNotifier {
   late IEmployeeTypeRepository employeeTypeRepo;
@@ -168,12 +171,73 @@ class EmployeesController extends ChangeNotifier {
 
   //=-=-=-=-=-=-=-= Add Employee  =-=-=-=-=-=-=-=
 
-  Future<void> employeeAdd({required String token, required int id}) async {
+  Future<void> employeeAdd(
+      {required String token, required BuildContext context}) async {
     try {
       isloading = true;
-      final response = await EmployeeProvider()
-          .addEmployee(token: token, id: id, data: EmployeeRequest());
+      final response = await EmployeeProvider().addEmployee(
+          token: token,
+          data: EmployeeRequest(
+              name: nameController.text,
+              address: addressController.text,
+              phone: int.parse(phoneController.text),
+              homeContact: homeContact.text,
+              email: emailController.text,
+              employeeType: selectedItem?.id,
+              idProofType: selectedId?.id,
+              idProofNumber: idNumber.text,
+              currentRating: "0",
+              isActive: true,
+              code: 'String',
+              user: 1,
+              dob: date,
+              bloodGroup: bloodGroupController.text));
       if (response != null) {
+        rootScaffoldMessengerKey.currentState!.showSnackBar(
+            snackBarWidget('Successfully added!', color: Colors.green));
+        Navigator.pop(context);
+        notifyListeners();
+      }
+      isloading = false;
+    } catch (e) {
+      log('message');
+      isloading = false;
+    }
+  }
+
+  //=-=-=-=-=-=-= TextField =-=-=-=-=-=-=-=
+  TextEditingController nameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController homeContact = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController idNumber = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController bloodGroupController = TextEditingController();
+
+  //=-=-=-=-=-= Change Employee Id =--=--=-=-=-=
+  DropDownValue? selectedId;
+  void changeId(value) {
+    selectedId = value;
+  }
+
+  DateTime? date;
+  changeDate(value) {
+    date = value;
+  }
+
+//=-=-=-=-=-=-=-= Employee Id =-=-=-=-=-=-=-=
+  List<EmployeeIdList> employeeId = [];
+  List<DropDownValue> employeeIdLists = [];
+
+  Future<void> employeeIdList({required String token}) async {
+    try {
+      isloading = true;
+      final response = await EmployeeProvider().employeeId(token: token);
+      if (response != null) {
+        employeeId = response;
+        employeeIdLists = response
+            .map((e) => DropDownValue(id: e.id, value: e.name))
+            .toList();
         notifyListeners();
       }
       isloading = false;
