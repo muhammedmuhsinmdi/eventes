@@ -14,6 +14,7 @@ class CustomServiceCounter extends StatelessWidget {
   final List<String> items;
   final String? intialValue;
   final bool? isEmployeeAssign;
+  final Function()? onSelected;
   final Function(List<String>)? onSelectedEmp;
   CustomServiceCounter(
       {super.key,
@@ -23,7 +24,8 @@ class CustomServiceCounter extends StatelessWidget {
       this.isEmployeeAssign,
       this.onSelectedEmp,
       this.required,
-      this.labelTextColor});
+      this.labelTextColor,
+      this.onSelected});
 
   final TextEditingController _totalController = TextEditingController();
 
@@ -33,8 +35,7 @@ class CustomServiceCounter extends StatelessWidget {
 
   final ValueNotifier<int> count = ValueNotifier<int>(1);
 
-  final ValueNotifier<List<String>> selectedEmpList =
-      ValueNotifier<List<String>>([]);
+  final ValueNotifier<List<String>> selectedEmpList = ValueNotifier<List<String>>([]);
 
   @override
   Widget build(BuildContext context) {
@@ -97,18 +98,15 @@ class CustomServiceCounter extends StatelessWidget {
                                     if (count.value > 1) {
                                       if (wageController.text.isNotEmpty) {
                                         count.value--;
-                                        double wg =
-                                            double.parse(wageController.text);
-                                        _totalController.text =
-                                            "${(wg * count.value).toInt()}";
+                                        double wg = double.parse(wageController.text);
+                                        _totalController.text = "${(wg * count.value).toInt()}";
                                       }
                                     }
                                   },
                                   icon: SvgPicture.asset(
                                     AppImages.minuscircle,
-                                    colorFilter: const ColorFilter.mode(
-                                        AppColors.primaryColor,
-                                        BlendMode.srcIn),
+                                    colorFilter:
+                                        const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
                                   )),
                               Text(
                                 '${count.value}',
@@ -121,17 +119,14 @@ class CustomServiceCounter extends StatelessWidget {
                                   onPressed: () {
                                     if (wageController.text.isNotEmpty) {
                                       count.value++;
-                                      double wg =
-                                          double.parse(wageController.text);
-                                      _totalController.text =
-                                          "${(wg * count.value).toInt()}";
+                                      double wg = double.parse(wageController.text);
+                                      _totalController.text = "${(wg * count.value).toInt()}";
                                     }
                                   },
                                   icon: SvgPicture.asset(
                                     AppImages.addCircle,
-                                    colorFilter: const ColorFilter.mode(
-                                        AppColors.primaryColor,
-                                        BlendMode.srcIn),
+                                    colorFilter:
+                                        const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
                                   )),
                               const SizedBox(
                                 width: 14,

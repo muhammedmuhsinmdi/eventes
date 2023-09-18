@@ -1,4 +1,5 @@
-import 'package:evantez/src/view/core//constants/app_images.dart';
+import 'dart:developer';
+
 import 'package:evantez/src/view/core//constants/app_strings.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
@@ -8,15 +9,20 @@ import 'package:evantez/src/view/core//widgets/custom_drop_down.dart';
 import 'package:evantez/src/view/core//widgets/custom_textfield.dart';
 import 'package:evantez/src/view/core//widgets/footer_button.dart';
 import 'package:evantez/src/view/view/transactions/new_event/widgets/custom_service_counter.dart';
+import 'package:evantez/src/view/view/transactions/new_event/widgets/event_image_upload.dart';
 import 'package:evantez/src/view/view/transactions/new_event/widgets/filter_boys_rating.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/themes/typography.dart';
 
-class NewEventView extends StatelessWidget {
-  NewEventView({super.key});
+class NewEventView extends StatefulWidget {
+  const NewEventView({super.key});
 
+  @override
+  State<NewEventView> createState() => _NewEventViewState();
+}
+
+class _NewEventViewState extends State<NewEventView> {
   final List<String> serviceReq = [
     "Head",
     "Captain",
@@ -44,7 +50,13 @@ class NewEventView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 eventID(),
-                uploadImage(kSize),
+                EventImageUpload(
+                  onPicked: (eventImage) {
+                    // You will the image file here
+                    // eventImage
+                    log(eventImage.path);
+                  },
+                ),
                 SizedBox(
                   height: kSize.height * 0.032,
                 ),
@@ -194,43 +206,11 @@ class NewEventView extends StatelessWidget {
         ]));
   }
 
-  Widget uploadImage(Size kSize) {
-    return Container(
-      margin: EdgeInsets.only(top: kSize.height * 0.032),
-      decoration: BoxDecoration(
-          color: AppColors.greyColor,
-          borderRadius: BorderRadius.circular(
-            AppConstants.basePadding,
-          )),
-      height: kSize.height * 0.2,
-      width: kSize.width,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            AppImages.uploadImg,
-            height: kSize.height * 0.085,
-            width: kSize.height * 0.085,
-            colorFilter: const ColorFilter.mode(AppColors.darkGreyColor, BlendMode.srcIn),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: kSize.height * 0.012),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(AppConstants.baseBorderRadius),
-              color: AppColors.blackColor.withOpacity(0.6),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: kSize.width * 0.032, vertical: kSize.height * 0.003),
-            child: Text(
-              "Upload Image",
-              style: AppTypography.poppinsMedium.copyWith(fontSize: 14),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
+  /*  Widget uploadImage(
+      {required BuildContext context, required Size kSize, required Function(File) onPickedImage}) {
+    File? image;
+    return ;
+  } */
   Widget eventType() {
     return CustomDropDown(
       label: "Type of Event",
@@ -334,7 +314,12 @@ class NewEventView extends StatelessWidget {
         children: List.generate(
           serviceReq.length + 1,
           (index) => serviceReq.length == index
-              ? FooterButton(fillColor: AppColors.transparent, label: "Add +", onTap: () {})
+              ? FooterButton(
+                  fillColor: AppColors.transparent,
+                  label: "Add +",
+                  onTap: () {
+                    serviceReq.length++;
+                  })
               : CustomServiceCounter(
                   label: "",
                   items: serviceReq,
@@ -343,10 +328,4 @@ class NewEventView extends StatelessWidget {
       ),
     );
   }
-
-  // Widget filterRatingBoys() {
-  //   return CustomDropDown(
-  //     items: [] ,
-  //   );
-  // }
 }
