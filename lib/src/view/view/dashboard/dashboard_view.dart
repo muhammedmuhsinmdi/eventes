@@ -143,6 +143,10 @@ class _DashBoardViewState extends State<DashBoardView> {
                                                 controller.employeeList(
                                                     token:
                                                         auth.accesToken ?? '');
+
+                                                controller.employeeTypesData(
+                                                    token:
+                                                        auth.accesToken ?? '');
                                               }
                                             },
                                             child: Padding(

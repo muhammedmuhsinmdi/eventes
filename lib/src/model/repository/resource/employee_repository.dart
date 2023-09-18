@@ -4,7 +4,6 @@ import 'dart:developer';
 
 import 'package:evantez/app/app.dart';
 import 'package:evantez/src/model/core/models/employeetype/employeetype_model.dart';
-import 'package:evantez/src/model/repository/resource/employeetype_repository.dart';
 import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
 import 'package:evantez/src/serializer/models/employee_details_response.dart';
 import 'package:evantez/src/serializer/models/employee_list_response.dart';
@@ -18,7 +17,7 @@ import '../../../serializer/models/employee_proof_response.dart';
 import '../../components/snackbar_widget.dart';
 
 class EmployeesController extends ChangeNotifier {
-  late IEmployeeTypeRepository employeeTypeRepo;
+  // late IEmployeeTypeRepository employeeTypeRepo;
   TextEditingController nameEditingController = TextEditingController();
   TextEditingController codeEditingController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -26,26 +25,26 @@ class EmployeesController extends ChangeNotifier {
   //   employeeTypeRepo = Services.employeeTypeRepo;
   // }
 
-  int _selectedIndex = 0;
-  int get selectedIndex => _selectedIndex;
-  set selectedIndex(int val) {
-    _selectedIndex = val;
-    notifyListeners();
-  }
+  // int _selectedIndex = 0;
+  // int get selectedIndex => _selectedIndex;
+  // set selectedIndex(int val) {
+  //   _selectedIndex = val;
+  //   notifyListeners();
+  // }
 
-  late EmployeeType _employeeType;
-  EmployeeType get employeeType => _employeeType;
-  set employeeType(EmployeeType val) {
-    _employeeType = val;
-    notifyListeners();
-  }
+  // late EmployeeType _employeeType;
+  // EmployeeType get employeeType => _employeeType;
+  // set employeeType(EmployeeType val) {
+  //   _employeeType = val;
+  //   notifyListeners();
+  // }
 
-  late List<EmployeeType> _employeeTypes;
-  List<EmployeeType> get employeeTypes => _employeeTypes;
-  set employeeTypes(List<EmployeeType> val) {
-    _employeeTypes = val;
-    notifyListeners();
-  }
+  // late List<EmployeeType> _employeeTypes;
+  // List<EmployeeType> get employeeTypes => _employeeTypes;
+  // set employeeTypes(List<EmployeeType> val) {
+  //   _employeeTypes = val;
+  //   notifyListeners();
+  // }
 
   // validators
   String? nameValidator(String? value) {
@@ -65,25 +64,25 @@ class EmployeesController extends ChangeNotifier {
     }
   }
 
-  Future save() async {
-    if (formKey.currentState!.validate()) {
-      formKey.currentState!.save();
-      if (employeeType.id != null && employeeType.id! > 0) {
-        await employeeTypeRepo.update(employeeType);
-      } else {
-        await employeeTypeRepo.save(employeeType);
-      }
-    }
-  }
+  // Future save() async {
+  //   if (formKey.currentState!.validate()) {
+  //     formKey.currentState!.save();
+  //     if (employeeType.id != null && employeeType.id! > 0) {
+  //       await employeeTypeRepo.update(employeeType);
+  //     } else {
+  //       await employeeTypeRepo.save(employeeType);
+  //     }
+  //   }
+  // }
 
-  Future getAll() async {
-    employeeTypes = List<EmployeeType>.empty(growable: true);
-    try {
-      employeeTypes = await employeeTypeRepo.getAll();
-    } catch (e) {
-      employeeTypes = List<EmployeeType>.empty(growable: true);
-    }
-  }
+  // Future getAll() async {
+  //   employeeTypes = List<EmployeeType>.empty(growable: true);
+  //   try {
+  //     employeeTypes = await employeeTypeRepo.getAll();
+  //   } catch (e) {
+  //     employeeTypes = List<EmployeeType>.empty(growable: true);
+  //   }
+  // }
 
   bool isloading = false;
   List<EmployeeListResponse> employeeLists = [];
@@ -244,6 +243,77 @@ class EmployeesController extends ChangeNotifier {
     } catch (e) {
       log('message');
       isloading = false;
+    }
+  }
+
+  //=-=-=-=-=-=-=-= Add Employee  =-=-=-=-=-=-=-=
+  TextEditingController nameTypeController = TextEditingController();
+  TextEditingController codeController = TextEditingController();
+  TextEditingController amount = TextEditingController();
+
+  Future<void> employeeTypeAdd(
+      {required String token, required BuildContext context}) async {
+    try {
+      isloading = true;
+      final response = await EmployeeProvider().addEmployeeType(
+        token: token,
+        name: nameTypeController.text,
+        code: codeController.text,
+        amount: int.parse(amount.text),
+      );
+      if (response != null) {
+        rootScaffoldMessengerKey.currentState!.showSnackBar(
+            snackBarWidget('Successfully added!', color: Colors.green));
+        Navigator.pop(context);
+        notifyListeners();
+      }
+      isloading = false;
+    } catch (e) {
+      log('message');
+      isloading = false;
+    }
+  }
+
+//=-=-==-=-=-=-=-=-= Employee Types Edit =-=-=-=-=-=
+  Future<void> editEmployeeType({
+    required String token,
+    required BuildContext context,
+    required int id,
+  }) async {
+    try {
+      isloading = true;
+      final response = await EmployeeProvider().editEmployeeType(
+          token: token,
+          name: nameTypeController.text,
+          code: codeController.text,
+          amount: amount.text,
+          id: id);
+      if (response != null) {
+        rootScaffoldMessengerKey.currentState!.showSnackBar(
+            snackBarWidget('Successfully upadted!', color: Colors.green));
+        Navigator.pop(context);
+        notifyListeners();
+      }
+      isloading = false;
+    } catch (e, s) {
+      log('message', stackTrace: s);
+      isloading = false;
+    }
+  }
+
+  //=-=-=-=-=-=-= Init State Loading =-=-=-=-==-=-=-=
+  bool isEdit = false;
+  void initStateLoading({EmployeesTypesList? data}) {
+    if (data == null) {
+      nameTypeController.clear();
+      codeController.clear();
+      amount.clear();
+      isEdit = false;
+    } else {
+      isEdit = true;
+      nameTypeController.text = data.name ?? '';
+      codeController.text = data.code ?? '';
+      amount.text = data.amount ?? '';
     }
   }
 }
