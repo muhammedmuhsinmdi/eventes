@@ -95,6 +95,7 @@ class _NewEventViewState extends State<NewEventView> {
                   hintText: "Name",
                   onChanged: (customerName) {
                     log(customerName);
+                    // you will get customer name here
                   },
                 ),
                 SizedBox(
