@@ -1,3 +1,5 @@
+
+
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//widgets/custom_dropdown_search.dart';
@@ -57,6 +59,44 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              /* SizedBox(
+                width: kSize.width * 0.05,
+                child: PopupMenuButton<String>(
+                  icon: const Icon(
+                    Icons.more_vert,
+                    color: AppColors.primaryColor,
+                  ),
+                  // color: AppColors.primaryColor,
+                  initialValue: 'remove',
+                  // Callback that sets the selected popup menu item.
+                  onSelected: (item) {
+                    // setState(() {
+                    log(item);
+                    // });
+                  },
+                  clipBehavior: Clip.antiAlias,
+                  shape: RoundedRectangleBorder(
+                      side: const BorderSide(
+                        color: AppColors.accentColor,
+                      ),
+                      borderRadius: BorderRadius.circular(
+                        AppConstants.basePadding,
+                      )),
+                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                    PopupMenuItem<String>(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: kSize.width * 0.05,
+                      ),
+                      value: "remove",
+                      child: Text(
+                        'Remove Item',
+                        textAlign: TextAlign.start,
+                        style: AppTypography.poppinsMedium.copyWith(),
+                      ),
+                    ),
+                  ],
+                ),
+              ), */
               const Icon(
                 Icons.more_vert,
                 color: AppColors.primaryColor,
@@ -71,6 +111,7 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
                         width: kSize.width * 0.55,
                         child: CustomDropdownSearch(
                           items: widget.items,
+                          label: "Service Boys",
                         ),
                       ),
                       const SizedBox(
