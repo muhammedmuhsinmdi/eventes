@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:evantez/src/model/repository/resource/employee_repository.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
+import 'package:evantez/src/view/core/widgets/drop_down_value.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -14,8 +15,11 @@ import '../../../../../core/widgets/custom_textfield.dart';
 
 class ChangeEmpPosition {
   BuildContext parentContext;
-  List<String> positions;
-  ChangeEmpPosition({required this.parentContext, required this.positions});
+  List<DropDownValue> positions;
+  ChangeEmpPosition({
+    required this.parentContext,
+    required this.positions,
+  });
 
   Future show() async {
     // final controller = context.watch();
@@ -76,16 +80,13 @@ class ChangeEmpPosition {
                 children: [
                   InkWell(
                     onTap: () {
-                      var data = controller.selectedEmpList.value
-                          .where((element) => positions[index] == element);
+                      log("Selected Position = ${positions[index].toJson()}");
 
-                      log("OK${positions[index]}");
-                      log("4${controller.selectedEmpList.value}");
-
-                      print(controller.selectedEmpList.value.length);
+                      controller.changePosition(positions[index]);
+                      Navigator.pop(context);
                     },
                     child: Text(
-                      positions[index],
+                      positions[index].value!,
                     ),
                   )
                 ],

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:evantez/src/model/repository/auth/auth_controller.dart';
 import 'package:evantez/src/model/repository/resource/employee_repository.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
@@ -25,6 +26,16 @@ class EmployeeDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final EmployeesController controller =
+          context.read<EmployeesController>();
+
+      if (controller.types.isEmpty) {
+        controller.employeeTypesData(token: AuthController().accesToken ?? '');
+      }
+    });
+
     return Scaffold(
       appBar: appBar(context, kSize),
       body: SizedBox(
@@ -92,28 +103,29 @@ class EmployeeDetailView extends StatelessWidget {
                       controller.selectedEmpList.value.length,
                       (index) => Text(controller.selectedEmpList.value[index])),
                 ),
-                // Text(
-                //   'Supervisor',
-                //   style: AppTypography.poppinsMedium.copyWith(fontSize: 14),
-                // ),
+                Text(
+                  controller.selectedPosition?.value ?? '',
+                  style: AppTypography.poppinsMedium.copyWith(fontSize: 14),
+                ),
                 SizedBox(
                   width: kSize.width * 0.01,
                 ),
                 IconButton(
                     onPressed: () {
                       //
-                      List<String> positions = [
-                        "Supervisor",
-                        "Head",
-                        'Captain',
-                        "Vice Captain",
-                        "Main Boy",
-                        'A Boy',
-                        "B Boy"
-                      ];
+                      // List<String> positions = [
+                      //   "Supervisor",
+                      //   "Head",
+                      //   'Captain',
+                      //   "Vice Captain",
+                      //   "Main Boy",
+                      //   'A Boy',
+                      //   "B Boy"
+                      // ];
                       ChangeEmpPosition(
-                              parentContext: context, positions: positions)
-                          .show();
+                        parentContext: context,
+                        positions: controller.types,
+                      ).show();
                     },
                     icon: SvgPicture.asset(AppImages.edit,
                         height: kSize.height * 0.025,

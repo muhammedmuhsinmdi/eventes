@@ -106,10 +106,13 @@ class EmployeesController extends ChangeNotifier {
   Future<void> employeeDetails({required String token, required int id}) async {
     try {
       isloading = true;
+      selectedPosition = null;
       final response =
           await EmployeeProvider().loadEmployeeDetails(token: token, id: id);
       if (response != null) {
         employeeData = response;
+        selectedPosition = types
+            .firstWhere((element) => element.id == employeeData?.employeeType);
         notifyListeners();
       }
       isloading = false;
@@ -125,8 +128,14 @@ class EmployeesController extends ChangeNotifier {
     log("${selectedItem?.value}");
   }
 
+  void changePosition(DropDownValue value) {
+    selectedPosition = value;
+    notifyListeners();
+  }
+
   List<EmployeesTypesList> employeeTypesList = [];
   List<DropDownValue> types = [];
+  DropDownValue? selectedPosition;
   Future<void> employeeTypesData({required String token}) async {
     try {
       isloading = true;
@@ -137,6 +146,7 @@ class EmployeesController extends ChangeNotifier {
         types = response
             .map((e) => DropDownValue(id: e.id, value: e.name))
             .toList();
+
         notifyListeners();
       }
       isloading = false;
