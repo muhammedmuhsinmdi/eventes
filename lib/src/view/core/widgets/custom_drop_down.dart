@@ -12,13 +12,18 @@ class CustomDropDown extends StatelessWidget {
   final String? hintText;
   final List<String>? items;
   final List<Widget>? widgetItems;
-  CustomDropDown({super.key, this.label, this.required, this.items, this.hintText, this.widgetItems});
+  final Function(String)? onSelected;
+  CustomDropDown(
+      {super.key, this.label, this.required, this.items, this.hintText, this.widgetItems, this.onSelected});
 
   final ValueNotifier<String> dropDownValue = ValueNotifier<String>('');
 
   @override
   Widget build(BuildContext context) {
     dropDownValue.value = items!.first;
+    if (onSelected != null) {
+      onSelected!(dropDownValue.value);
+    }
     final kSize = MediaQuery.of(context).size;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,6 +83,9 @@ class CustomDropDown extends StatelessWidget {
                     onChanged: (val) {
                       // if (val != null) {
                       dropDownValue.value = val ?? '';
+                      if (onSelected != null) {
+                        onSelected!(dropDownValue.value);
+                      }
                       // }
 
                       // widget.onSelected(ConvertService.convertString(val));

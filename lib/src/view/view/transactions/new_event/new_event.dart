@@ -47,7 +47,7 @@ class _NewEventViewState extends State<NewEventView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                eventID(),
+                eventID("EV24215"),
                 EventImageUpload(
                   onPicked: (eventImage) {
                     // You will the image file here
@@ -64,46 +64,71 @@ class _NewEventViewState extends State<NewEventView> {
                 SizedBox(
                   height: kSize.height * 0.024,
                 ),
-                eventType(),
+                eventType(
+                  eventTypes: const ["Marriage Function", "Nikkhah", "Meetings", "House Warming"],
+                  onSelected: (eventType) {
+                    log(eventType);
+                  },
+                ),
                 SizedBox(
                   height: kSize.height * 0.024,
                 ),
-                eventVenue(),
+                eventVenue(
+                    eventVenues: const ["Malappuram", "Valenchery", "Palakkad", "Manjeri"],
+                    onSelected: (venue) {
+                      log(venue);
+                    }),
                 SizedBox(
                   height: kSize.height * 0.024,
                 ),
-                dateTime(),
+                dateTime(onSelectDate: (date) {
+                  log(date);
+                }, onSelectTime: (time) {
+                  log(time);
+                }),
                 SizedBox(
                   height: kSize.height * 0.024,
                 ),
-                const CustomTextField(
+                CustomTextField(
                   text: AppStrings.customerName,
                   required: true,
                   hintText: "Name",
+                  onChanged: (customerName) {
+                    log(customerName);
+                  },
                 ),
                 SizedBox(
                   height: kSize.height * 0.024,
                 ),
-                const CustomTextField(
+                CustomTextField(
                   text: AppStrings.phoneText,
                   required: true,
                   hintText: "Phone Number",
+                  onChanged: (phone) {
+                    log(phone);
+                  },
                 ),
                 SizedBox(
                   height: kSize.height * 0.024,
                 ),
-                const CustomTextField(
+                CustomTextField(
                   text: AppStrings.address,
                   required: true,
                   maxLines: 2,
                   hintText: "Address",
+                  onChanged: (address) {
+                    log(address);
+                  },
                 ),
                 SizedBox(
                   height: kSize.height * 0.024,
                 ),
-                const CustomTextField(
+                CustomTextField(
                   text: 'Additional Information',
                   hintText: "Notes/Instructions",
+                  onChanged: (notes) {
+                    log(notes);
+                  },
                 ),
                 SizedBox(
                   height: kSize.height * 0.032,
@@ -123,7 +148,14 @@ class _NewEventViewState extends State<NewEventView> {
                 SizedBox(
                   height: kSize.height * 0.018,
                 ),
-                overTimeDetail(kSize),
+                overTimeDetail(
+                    kSize: kSize,
+                    getNormalHours: (workingHours) {
+                      log(workingHours);
+                    },
+                    getOverTimeRate: (overTimeRate) {
+                      log(overTimeRate);
+                    }),
                 SizedBox(
                   height: kSize.height * 0.032,
                 ),
@@ -140,7 +172,6 @@ class _NewEventViewState extends State<NewEventView> {
                     items: serviceReq,
                     onSelected: (serviceBoysList) {
                       //
-                      
                     }),
                 SizedBox(
                   height: kSize.height * 0.032,
@@ -160,7 +191,11 @@ class _NewEventViewState extends State<NewEventView> {
                 SizedBox(
                   height: kSize.height * 0.018,
                 ),
-                const FilterBoysRating(),
+                FilterBoysRating(
+                  onSelected: (rating) {
+                    log(rating);
+                  },
+                ),
                 SizedBox(
                   height: kSize.height * 0.032,
                 ),
@@ -194,14 +229,14 @@ class _NewEventViewState extends State<NewEventView> {
     );
   }
 
-  Widget eventID() {
+  Widget eventID(String eventCode) {
     return RichText(
         text: TextSpan(
             text: AppStrings.eventCodeText,
             style: AppTypography.poppinsMedium.copyWith(fontSize: 16, color: AppColors.secondaryColor),
             children: [
           TextSpan(
-              text: "     EV24215",
+              text: "     $eventCode",
               style: AppTypography.poppinsRegular.copyWith(
                 fontSize: 16,
                 color: AppColors.secondaryColor.withOpacity(0.6),
@@ -214,39 +249,58 @@ class _NewEventViewState extends State<NewEventView> {
     File? image;
     return ;
   } */
-  Widget eventType() {
+  Widget eventType({required List<String> eventTypes, required Function(String) onSelected}) {
     return CustomDropDown(
       label: "Type of Event",
       required: true,
       hintText: "Select Event Type",
-      items: const ["Marriage Function", "Nikkhah", "Meetings", "House Warming"],
+      onSelected: (eventType) {
+        onSelected(eventType);
+      },
+      items: eventTypes,
     );
   }
 
-  Widget eventVenue() {
+  Widget eventVenue({required List<String> eventVenues, required Function(String) onSelected}) {
     return CustomDropDown(
       label: "Event Venue",
       required: true,
+      onSelected: (eventVenue) {
+        log(eventVenue);
+      },
       hintText: "Select Event Venue",
-      items: const ["Malappuram", "Valenchery", "Palakkad", "Manjeri"],
+      items: eventVenues, // const ["Malappuram", "Valenchery", "Palakkad", "Manjeri"],
     );
   }
 
-  Widget dateTime() {
+  Widget dateTime({required Function(String) onSelectDate, required Function(String) onSelectTime}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         CustomDatePicker(
-            controller: TextEditingController(), type: "Date", label: "Date", onChanged: (value) {}),
+            controller: TextEditingController(),
+            type: "Date",
+            label: "Date",
+            onChanged: (value) {
+              onSelectDate(value);
+            }),
         CustomDatePicker(
-            controller: TextEditingController(), type: 'Time', label: 'Time', onChanged: (valu) {})
+            controller: TextEditingController(),
+            type: 'Time',
+            label: 'Time',
+            onChanged: (value) {
+              onSelectTime(value);
+            })
       ],
     );
   }
 
-  Widget overTimeDetail(Size kSize) {
+  Widget overTimeDetail(
+      {required Size kSize,
+      required Function(String) getNormalHours,
+      required Function(String) getOverTimeRate}) {
     return Row(
       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -267,6 +321,9 @@ class _NewEventViewState extends State<NewEventView> {
           child: CustomTextField(
             text: '',
             keyboardType: TextInputType.number,
+            onChanged: (workingHours) {
+              getNormalHours(workingHours);
+            },
             suffixIcon: Padding(
               padding: EdgeInsets.only(top: kSize.height * 0.015),
               child: Text(
@@ -300,10 +357,13 @@ class _NewEventViewState extends State<NewEventView> {
         SizedBox(
           width: kSize.width * 0.015,
         ),
-        const Flexible(
+        Flexible(
           child: CustomTextField(
             keyboardType: TextInputType.number,
             text: '',
+            onChanged: (rate) {
+              getOverTimeRate(rate);
+            },
           ),
         ),
       ],

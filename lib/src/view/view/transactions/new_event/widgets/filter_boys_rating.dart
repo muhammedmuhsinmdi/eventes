@@ -10,8 +10,10 @@ import '../../../../core/constants/constants.dart';
 import '../../../../core/themes/typography.dart';
 
 class FilterBoysRating extends StatefulWidget {
+  final Function(String) onSelected;
   const FilterBoysRating({
     super.key,
+    required this.onSelected,
   });
 
   @override
@@ -20,6 +22,12 @@ class FilterBoysRating extends StatefulWidget {
 
 class _FilterBoysRatingState extends State<FilterBoysRating> {
   List<String> ratingWidgets = List.generate(5, (index) => "${index + 1}");
+
+  @override
+  void initState() {
+    widget.onSelected(ratingWidgets.first);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +41,15 @@ class _FilterBoysRatingState extends State<FilterBoysRating> {
             child: CustomRatingStar(
               onRating: (value) {
                 log('$value');
+                widget.onSelected("$value");
               },
               initialRating: double.parse(val),
             ),
           );
         }).toList(),
-        onChanged: (value) {},
+        onChanged: (value) {
+          widget.onSelected("$value");
+        },
         icon: const SizedBox(),
         borderRadius: BorderRadius.circular(24),
         decoration: InputDecoration(

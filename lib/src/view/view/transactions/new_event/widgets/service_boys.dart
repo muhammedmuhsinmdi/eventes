@@ -43,6 +43,7 @@ class _ServiceBoysState extends State<ServiceBoys> {
                             fillColor: AppColors.transparent,
                             label: "Add +",
                             onTap: () {
+                              widget.onSelected(serviceItems);
                               if (serviceBoysCount.value <= serviceItems.length) {
                                 serviceBoysCount.value++;
                               }
