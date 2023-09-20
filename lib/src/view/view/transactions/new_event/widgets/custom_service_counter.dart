@@ -7,7 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../core/themes/typography.dart';
 
-class CustomServiceCounter extends StatelessWidget {
+class CustomServiceCounter extends StatefulWidget {
   final String label;
   final bool? required;
   final Color? labelTextColor;
@@ -16,7 +16,7 @@ class CustomServiceCounter extends StatelessWidget {
   final bool? isEmployeeAssign;
   final Function()? onSelected;
   final Function(List<String>)? onSelectedEmp;
-  CustomServiceCounter(
+  const CustomServiceCounter(
       {super.key,
       required this.label,
       required this.items,
@@ -27,6 +27,11 @@ class CustomServiceCounter extends StatelessWidget {
       this.labelTextColor,
       this.onSelected});
 
+  @override
+  State<CustomServiceCounter> createState() => _CustomServiceCounterState();
+}
+
+class _CustomServiceCounterState extends State<CustomServiceCounter> {
   final TextEditingController _totalController = TextEditingController();
 
   final TextEditingController wageController = TextEditingController();
@@ -65,7 +70,7 @@ class CustomServiceCounter extends StatelessWidget {
                       SizedBox(
                         width: kSize.width * 0.55,
                         child: CustomDropdownSearch(
-                          items: items,
+                          items: widget.items,
                         ),
                       ),
                       const SizedBox(
@@ -151,7 +156,7 @@ class CustomServiceCounter extends StatelessWidget {
                           );
                         }),
                   ),
-                  if (isEmployeeAssign != null && isEmployeeAssign!) ...{
+                  if (widget.isEmployeeAssign != null && widget.isEmployeeAssign!) ...{
                     SizedBox(
                         width: kSize.width * 0.8,
                         child: const CustomDropdownSearch(

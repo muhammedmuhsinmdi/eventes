@@ -12,6 +12,7 @@ import '../../../../core/themes/typography.dart';
 
 class EventImageUpload extends StatefulWidget {
   final Function(File) onPicked;
+  
   const EventImageUpload({super.key, required this.onPicked});
 
   @override

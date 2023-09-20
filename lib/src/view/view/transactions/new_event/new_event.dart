@@ -11,19 +11,19 @@ import 'package:evantez/src/view/core//widgets/footer_button.dart';
 import 'package:evantez/src/view/view/transactions/new_event/widgets/custom_service_counter.dart';
 import 'package:evantez/src/view/view/transactions/new_event/widgets/event_image_upload.dart';
 import 'package:evantez/src/view/view/transactions/new_event/widgets/filter_boys_rating.dart';
+import 'package:evantez/src/view/view/transactions/new_event/widgets/service_boys.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/themes/typography.dart';
 
 class NewEventView extends StatefulWidget {
   const NewEventView({super.key});
-
   @override
   State<NewEventView> createState() => _NewEventViewState();
 }
 
 class _NewEventViewState extends State<NewEventView> {
-  final List<String> serviceReq = [
+  List<String> serviceReq = [
     "Head",
     "Captain",
     "Hosting",
@@ -31,8 +31,6 @@ class _NewEventViewState extends State<NewEventView> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> selectedReq = [];
-    selectedReq.add(serviceReq.first);
     final kSize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -138,7 +136,12 @@ class _NewEventViewState extends State<NewEventView> {
                 SizedBox(
                   height: kSize.height * 0.018,
                 ),
-                serviceBoys(kSize, selectedReq),
+                ServiceBoys(
+                    items: serviceReq,
+                    onSelected: (serviceBoysList) {
+                      //
+                      
+                    }),
                 SizedBox(
                   height: kSize.height * 0.032,
                 ),
@@ -318,8 +321,9 @@ class _NewEventViewState extends State<NewEventView> {
                   fillColor: AppColors.transparent,
                   label: "Add +",
                   onTap: () {
-                    serviceReq.length++;
-                  })
+                    // serviceReq.length++;
+                  },
+                )
               : CustomServiceCounter(
                   label: "",
                   items: serviceReq,
