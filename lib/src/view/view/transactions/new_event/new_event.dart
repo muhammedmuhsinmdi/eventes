@@ -1,5 +1,8 @@
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:dio/dio.dart';
+import 'package:evantez/src/model/components/snackbar_widget.dart';
 import 'package:evantez/src/view/core//constants/app_strings.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
@@ -13,7 +16,11 @@ import 'package:evantez/src/view/view/transactions/new_event/widgets/event_image
 import 'package:evantez/src/view/view/transactions/new_event/widgets/filter_boys_rating.dart';
 import 'package:evantez/src/view/view/transactions/new_event/widgets/service_boys.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../model/repository/auth/auth_controller.dart';
+import '../../../../model/repository/events/events_controller.dart';
+import '../../../../serializer/models/event_site_model.dart';
 import '../../../core/themes/typography.dart';
 
 class NewEventView extends StatefulWidget {
@@ -31,7 +38,21 @@ class _NewEventViewState extends State<NewEventView> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<EventController>();
+    final authcontroller = context.watch<AuthController>();
     final kSize = MediaQuery.of(context).size;
+    late String eventtype;
+    late String eventvenu;
+    late File imagefile;
+    late String customername;
+    late String customerphone;
+    late String customeraddress;
+    late String additionalnote;
+    late String normalhours;
+    late String addtionalhours;
+    late String scheduleddate;
+    late String scheduledtime;
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: appBar(context, kSize),
@@ -52,7 +73,7 @@ class _NewEventViewState extends State<NewEventView> {
                   onPicked: (eventImage) {
                     // You will the image file here
                     // eventImage
-                    log(eventImage.path);
+                    imagefile = eventImage;
                   },
                 ),
                 SizedBox(
@@ -65,26 +86,36 @@ class _NewEventViewState extends State<NewEventView> {
                   height: kSize.height * 0.024,
                 ),
                 eventType(
-                  eventTypes: const ["Marriage Function", "Nikkhah", "Meetings", "House Warming"],
+                  eventTypes: const [
+                    "Marriage Function",
+                    "Nikkhah",
+                    "Meetings",
+                    "House Warming"
+                  ],
                   onSelected: (eventType) {
-                    log(eventType);
+                    eventtype = eventType;
                   },
                 ),
                 SizedBox(
                   height: kSize.height * 0.024,
                 ),
                 eventVenue(
-                    eventVenues: const ["Malappuram", "Valenchery", "Palakkad", "Manjeri"],
+                    eventVenues: const [
+                      "Malappuram",
+                      "Valenchery",
+                      "Palakkad",
+                      "Manjeri"
+                    ],
                     onSelected: (venue) {
-                      log(venue);
+                      eventvenu = venue;
                     }),
                 SizedBox(
                   height: kSize.height * 0.024,
                 ),
                 dateTime(onSelectDate: (date) {
-                  log(date);
+                  scheduleddate = date;
                 }, onSelectTime: (time) {
-                  log(time);
+                  scheduledtime = time;
                 }),
                 SizedBox(
                   height: kSize.height * 0.024,
@@ -94,8 +125,7 @@ class _NewEventViewState extends State<NewEventView> {
                   required: true,
                   hintText: "Name",
                   onChanged: (customerName) {
-                    log(customerName);
-                    // you will get customer name here
+                    customername = customerName;
                   },
                 ),
                 SizedBox(
@@ -106,7 +136,7 @@ class _NewEventViewState extends State<NewEventView> {
                   required: true,
                   hintText: "Phone Number",
                   onChanged: (phone) {
-                    log(phone);
+                    customerphone = phone;
                   },
                 ),
                 SizedBox(
@@ -118,7 +148,7 @@ class _NewEventViewState extends State<NewEventView> {
                   maxLines: 2,
                   hintText: "Address",
                   onChanged: (address) {
-                    log(address);
+                    customeraddress = address;
                   },
                 ),
                 SizedBox(
@@ -128,7 +158,7 @@ class _NewEventViewState extends State<NewEventView> {
                   text: 'Additional Information',
                   hintText: "Notes/Instructions",
                   onChanged: (notes) {
-                    log(notes);
+                    additionalnote = notes;
                   },
                 ),
                 SizedBox(
@@ -152,10 +182,10 @@ class _NewEventViewState extends State<NewEventView> {
                 overTimeDetail(
                     kSize: kSize,
                     getNormalHours: (workingHours) {
-                      log(workingHours);
+                      normalhours = workingHours;
                     },
                     getOverTimeRate: (overTimeRate) {
-                      log(overTimeRate);
+                      addtionalhours = overTimeRate;
                     }),
                 SizedBox(
                   height: kSize.height * 0.032,
@@ -201,9 +231,82 @@ class _NewEventViewState extends State<NewEventView> {
                   height: kSize.height * 0.032,
                 ),
                 FooterButton(
-                  label: "Save",
-                  onTap: () {},
-                ),
+                    label: "Save",
+                    onTap: () async {
+                      int? eventTypeid;
+                      int? eventVenueId;
+                      int? empTypeId;
+
+                      // // -=-= -=--=-=-=-=-= EventType -=-=-=-=-==-=--=-
+                      await controller
+                          .addEventType(
+                              token: authcontroller.accesToken ?? '',
+                              eventadd: eventtype)
+                          .then((value) {
+                        eventTypeid = value.id;
+                      });
+
+                      // -=-=-=-=-=-=-=-=- Event Venue -=-=-=-=-=-=-=-=-=-=-=-
+
+                      FormData formData = FormData.fromMap({
+                        'name': eventvenu,
+                        'image': await MultipartFile.fromFile(
+                          imagefile.path,
+                          filename: imagefile.path.split('/').last,
+                        ),
+                        'lat': '23.075689',
+                        'log': '72.772426',
+                      });
+
+                      await controller
+                          .addEventvenue(
+                              token: authcontroller.accesToken ?? '',
+                              data: formData)
+                          .then((value) {
+                        eventVenueId = value.id;
+                      });
+
+                      // // -=-=-=-=-=-=-=-= EventSite Add -=-=-=-=-=-=-=-=-=-=
+
+                      // await controller.eventSiteAdd(
+                      //   token: authcontroller.accesToken ?? '',
+                      //   eventSite: EventSite(
+                      //       eventTypeId: 1,
+                      //       venueId: 1,
+                      //       scheduledDatetime: '2023-07-14T06:59:34.349688Z',
+                      //       customerName: customername,
+                      //       customerPhone: customerphone,
+                      //       customerAddress: customeraddress,
+                      //       notes: additionalnote,
+                      //       normalHours: normalhours,
+                      //       overtimeHourlyCharge: addtionalhours,
+                      //       eventSiteSettings: [
+                      //         EventSiteSettings(
+                      //           service: 1,
+                      //         )
+                      //       ],
+                      //       eventSiteEmployeeRequirement: [
+                      //         EventSiteEmployeeRequirement(
+                      //           charge: '300',
+                      //           employeeType: 3,
+                      //           requirementCount: 3,
+                      //         )
+                      //       ],
+                      //       code: "EVC001",
+                      //       status: 'open'),
+
+                      //-=-=-=-=-=-=-=-=--= Employee Type -=-=-=-=-=-=-=-=-=-=
+                      // await controller
+                      //     .employeeType(
+                      //   token: authcontroller.accesToken ?? '',
+                      //   name: 'Name',
+                      //   amount: 500,
+                      //   code: 'Code',
+                      // )
+                      //     .then((value) {
+                      //   print(value.id);
+                      // });
+                    }),
                 SizedBox(
                   height: kSize.height * 0.12,
                 ),
@@ -234,7 +337,8 @@ class _NewEventViewState extends State<NewEventView> {
     return RichText(
         text: TextSpan(
             text: AppStrings.eventCodeText,
-            style: AppTypography.poppinsMedium.copyWith(fontSize: 16, color: AppColors.secondaryColor),
+            style: AppTypography.poppinsMedium
+                .copyWith(fontSize: 16, color: AppColors.secondaryColor),
             children: [
           TextSpan(
               text: "     $eventCode",
@@ -250,7 +354,9 @@ class _NewEventViewState extends State<NewEventView> {
     File? image;
     return ;
   } */
-  Widget eventType({required List<String> eventTypes, required Function(String) onSelected}) {
+  Widget eventType(
+      {required List<String> eventTypes,
+      required Function(String) onSelected}) {
     return CustomDropDown(
       label: "Type of Event",
       required: true,
@@ -262,19 +368,25 @@ class _NewEventViewState extends State<NewEventView> {
     );
   }
 
-  Widget eventVenue({required List<String> eventVenues, required Function(String) onSelected}) {
+  Widget eventVenue(
+      {required List<String> eventVenues,
+      required Function(String) onSelected}) {
     return CustomDropDown(
       label: "Event Venue",
       required: true,
       onSelected: (eventVenue) {
         log(eventVenue);
+        onSelected(eventVenue);
       },
       hintText: "Select Event Venue",
-      items: eventVenues, // const ["Malappuram", "Valenchery", "Palakkad", "Manjeri"],
+      items:
+          eventVenues, // const ["Malappuram", "Valenchery", "Palakkad", "Manjeri"],
     );
   }
 
-  Widget dateTime({required Function(String) onSelectDate, required Function(String) onSelectTime}) {
+  Widget dateTime(
+      {required Function(String) onSelectDate,
+      required Function(String) onSelectTime}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
@@ -311,7 +423,8 @@ class _NewEventViewState extends State<NewEventView> {
             "Normal Hours",
             textAlign: TextAlign.end,
             maxLines: 2,
-            style: AppTypography.poppinsMedium.copyWith(color: AppColors.secondaryColor.withOpacity(0.6)),
+            style: AppTypography.poppinsMedium
+                .copyWith(color: AppColors.secondaryColor.withOpacity(0.6)),
           ),
         ),
         SizedBox(
@@ -330,7 +443,8 @@ class _NewEventViewState extends State<NewEventView> {
               child: Text(
                 'Hrs',
                 textAlign: TextAlign.end,
-                style: AppTypography.poppinsSemiBold.copyWith(color: AppColors.secondaryColor, fontSize: 16),
+                style: AppTypography.poppinsSemiBold
+                    .copyWith(color: AppColors.secondaryColor, fontSize: 16),
               ),
             ),
           ),
@@ -352,7 +466,8 @@ class _NewEventViewState extends State<NewEventView> {
             "Overtime Rate/Hr",
             textAlign: TextAlign.end,
             maxLines: 2,
-            style: AppTypography.poppinsMedium.copyWith(color: AppColors.secondaryColor.withOpacity(0.6)),
+            style: AppTypography.poppinsMedium
+                .copyWith(color: AppColors.secondaryColor.withOpacity(0.6)),
           ),
         ),
         SizedBox(
