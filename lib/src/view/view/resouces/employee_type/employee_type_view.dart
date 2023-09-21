@@ -1,5 +1,4 @@
 import 'package:evantez/src/model/repository/resource/employee_repository.dart';
-import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
 import 'package:evantez/src/model/core/models/employeetype/employeetype_model.dart';
 import 'package:evantez/src/model/core/models/menu/menu_model.dart';
 import 'package:evantez/src/view/core//widgets/custom_back_btn.dart';
@@ -29,7 +28,7 @@ class _EmployeeTypeViewState extends State<EmployeeTypeView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      Provider.of<EmployeesController>(context, listen: false).getAll();
+      // Provider.of<EmployeesController>(context, listen: false).getAll();
     });
   }
 
@@ -39,7 +38,6 @@ class _EmployeeTypeViewState extends State<EmployeeTypeView> {
     return Scaffold(
       appBar: appBar(context, kSize),
       body: Consumer<EmployeesController>(builder: (context, value, child) {
-        final empTypes = value.employeeTypes;
         return SizedBox(
           height: kSize.height,
           width: kSize.width,
@@ -52,7 +50,9 @@ class _EmployeeTypeViewState extends State<EmployeeTypeView> {
               SizedBox(
                 height: kSize.height * 0.024,
               ),
-              employeeTypeListing(kSize, empTypes),
+              employeeTypeListing(
+                kSize,
+              ),
             ],
           ),
         );
@@ -61,6 +61,7 @@ class _EmployeeTypeViewState extends State<EmployeeTypeView> {
   }
 
   AppBar appBar(BuildContext context, Size kSize) {
+    final controller = context.watch<EmployeesController>();
     return AppBar(
       elevation: 0,
       leading: const CustomBackButton(),
@@ -73,10 +74,8 @@ class _EmployeeTypeViewState extends State<EmployeeTypeView> {
       actions: [
         IconButton(
             onPressed: () async {
-              EmployeesController empTypeAddViewstate = EmployeesController();
-              empTypeAddViewstate.employeeType =
-                  EmployeeType(id: 0, name: '', code: '');
-              // AddEmployeeType(context, empTypeAddViewstate).show();
+              controller.initStateLoading();
+              AddEmployeeType(context, 0).show();
             },
             icon: SvgPicture.asset(
               AppImages.addCircle,
@@ -135,16 +134,19 @@ class _EmployeeTypeViewState extends State<EmployeeTypeView> {
     );
   }
 
-  Widget employeeTypeListing(Size kSize, List<EmployeeType> employeeTypes) {
+  Widget employeeTypeListing(Size kSize) {
+    final controller = context.watch<EmployeesController>();
     return Expanded(
         child: ListView.builder(
-            itemCount: employeeTypes.length,
+            itemCount: controller.employeeTypesList.length,
             padding: EdgeInsets.only(
                 bottom: kSize.height * 0.16,
                 left: AppConstants.baseBorderRadius,
                 right: AppConstants.baseBorderRadius),
             itemBuilder: (context, index) {
-              return EmployeeTypeTile(employeeType: employeeTypes[index]);
+              return EmployeeTypeTile(
+                index: index,
+              );
             }));
   }
 }
