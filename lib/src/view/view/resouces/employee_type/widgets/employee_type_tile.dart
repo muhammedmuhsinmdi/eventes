@@ -1,5 +1,6 @@
-import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
-import 'package:evantez/src/model/core/models/employeetype/employeetype_model.dart';
+// ignore_for_file: must_be_immutable
+
+import 'package:evantez/src/model/repository/resource/employee_repository.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
@@ -8,13 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class EmployeeTypeTile extends StatelessWidget {
-  final EmployeeType employeeType;
-  const EmployeeTypeTile({super.key, required this.employeeType});
+  int index;
+  EmployeeTypeTile({super.key, required this.index});
 
   @override
   Widget build(BuildContext context) {
-    var empTypeState = Provider.of<EmployeeProvider>(context);
     final kSize = MediaQuery.of(context).size;
+    final controller = context.watch<EmployeesController>();
     return Container(
       width: kSize.width,
       margin: EdgeInsets.only(bottom: kSize.height * 0.012),
@@ -32,7 +33,7 @@ class EmployeeTypeTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '${employeeType.name}',
+                controller.employeeTypesList[index].name ?? '',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: AppTypography.poppinsSemiBold.copyWith(
@@ -42,19 +43,20 @@ class EmployeeTypeTile extends StatelessWidget {
               ),
               RichText(
                 text: TextSpan(
-                    text: '${employeeType.code}',
+                    text: '${controller.employeeTypesList[index].code}',
                     style: AppTypography.poppinsMedium.copyWith(
                         fontSize: 14,
                         color: AppColors.secondaryColor.withOpacity(0.5)),
                     children: [
                       TextSpan(
-                          text: ' 121',
+                          text:
+                              '  ${controller.employeeTypesList[index].amount}',
                           style: AppTypography.poppinsMedium.copyWith(
                             fontSize: 14,
                             color: AppColors.secondaryColor,
                           ))
                     ]),
-              )
+              ),
             ],
           ),
           const Spacer(),
@@ -65,13 +67,15 @@ class EmployeeTypeTile extends StatelessWidget {
               // Callback that sets the selected popup menu item.
               onSelected: (item) {
                 // setState(() {
-                if (item == 'edit') {
-                  // empTypeState.employeeType = employeeType;
-                  // empTypeState.nameEditingController.text = employeeType.name!;
-                  // empTypeState.codeEditingController.text = employeeType.code!;
-                  // empTypeState.employeeType = employeeType;
-                  // AddEmployeeType(context, empTypeState).show();
-                }
+                // if (item == 'Edit') {
+                // empTypeState.employeeType = employeeType;
+                // empTypeState.nameEditingController.text = employeeType.name!;
+                // empTypeState.codeEditingController.text = employeeType.code!;
+                // empTypeState.employeeType = employeeType;
+                controller.initStateLoading(
+                    data: controller.employeeTypesList[index]);
+                AddEmployeeType(context, index).show();
+                // }
                 // });
               },
               clipBehavior: Clip.antiAlias,

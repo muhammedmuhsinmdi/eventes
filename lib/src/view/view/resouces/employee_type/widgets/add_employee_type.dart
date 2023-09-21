@@ -1,7 +1,11 @@
+import 'dart:developer';
+
+import 'package:evantez/src/model/repository/auth/auth_controller.dart';
 import 'package:evantez/src/model/repository/resource/employee_repository.dart';
 import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
 import 'package:evantez/src/view/core//widgets/footer_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/constants.dart';
@@ -11,8 +15,9 @@ import '../../../../core/widgets/custom_textfield.dart';
 
 class AddEmployeeType {
   BuildContext context;
-  EmployeesController state;
-  AddEmployeeType(this.context, this.state);
+  int index;
+
+  AddEmployeeType(this.context, this.index);
 
   Future show() async {
     final kSize = MediaQuery.of(context).size;
@@ -41,6 +46,8 @@ class AddEmployeeType {
   }
 
   Widget employeeType(BuildContext context, Size kSize) {
+    final controller = context.watch<EmployeesController>();
+    final auth = context.watch<AuthController>();
     return Form(
       // key: state.formKey,
       child: SingleChildScrollView(
@@ -51,7 +58,9 @@ class AddEmployeeType {
               children: [
                 const Spacer(),
                 Text(
-                  "Add Employee Type",
+                  controller.isEdit
+                      ? "Update Employee Type"
+                      : "Add Employee Type",
                   style: AppTypography.poppinsSemiBold.copyWith(
                     fontSize: 18,
                     color: AppColors.secondaryColor,
@@ -78,11 +87,8 @@ class AddEmployeeType {
             CustomTextField(
               text: "Category Name",
               hintText: "Name",
-              controller: TextEditingController(text: state.employeeType.name),
-              validator: state.nameValidator,
-              onSave: (val) {
-                state.employeeType.name = val;
-              },
+              controller: controller.nameTypeController,
+              onSave: (val) {},
             ),
             SizedBox(
               height: kSize.height * 0.024,
@@ -90,16 +96,14 @@ class AddEmployeeType {
             CustomTextField(
               text: "Category Code",
               hintText: "Code",
-              controller: TextEditingController(text: state.employeeType.code),
-              validator: state.codeValidator,
-              onSave: (val) {
-                state.employeeType.code = val;
-              },
+              controller: controller.codeController,
+              onSave: (val) {},
             ),
             SizedBox(
               height: kSize.height * 0.024,
             ),
-            const CustomTextField(
+            CustomTextField(
+              controller: controller.amount,
               text: "Amount",
               hintText: AppStrings.amountText,
             ),
@@ -118,9 +122,19 @@ class AddEmployeeType {
                     }),
                 FooterButton(
                   width: kSize.width * 0.4,
-                  label: "Save",
+                  label: controller.isEdit ? "Update" : "Save",
                   onTap: () {
-                    state.save();
+                    if (controller.isEdit) {
+                      controller.editEmployeeType(
+                          token: auth.accesToken ?? '',
+                          context: context,
+                          id: controller.employeeTypesList[index].id ?? 0);
+                      log('test1');
+                    } else {
+                      log('test2');
+                      controller.employeeTypeAdd(
+                          token: auth.accesToken ?? '', context: context);
+                    }
                   },
                 ),
               ],

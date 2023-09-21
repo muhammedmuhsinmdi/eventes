@@ -96,4 +96,43 @@ class EmployeeProvider extends EventApi {
         throw Exception('Response Error');
     }
   }
+
+  //=-=-=-=-=-=-= Add Employee Type =-=-=-=-=-=-=
+
+  Future<dynamic> addEmployeeType(
+      {required String token,
+      required String name,
+      required String code,
+      required int amount}) async {
+    Response response = await post('users/employee-type/',
+        data: {"name": name, "code": code, "amount": amount},
+        headers: apiHeaders(token));
+    switch (response.statusCode) {
+      case 200:
+      case 201:
+        return response.data;
+      default:
+        throw Exception('Response Error');
+    }
+  }
+
+  //=-=-=-=-=-=-= Patch Employee Type =-=-=-=-=-=-=
+
+  Future<dynamic> editEmployeeType(
+      {required String token,
+      required String name,
+      required String code,
+      required int id,
+      required String amount}) async {
+    Response response = await patch('users/employee-type/$id/',
+        data: {"name": name, "code": code, "amount": amount},
+        headers: apiHeaders(token));
+    switch (response.statusCode) {
+      case 200:
+      case 201:
+        return response.data;
+      default:
+        throw Exception('Response Error');
+    }
+  }
 }
