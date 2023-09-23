@@ -49,23 +49,24 @@ class EventProvider extends EventApi {
   }
 
 //-=-=-=-=-=-=--== Event Venue -=-=-=-=-==-===-=
-  Future<dynamic> AddEventVenue(
-      {required String token,
-      
-      required FormData data,
-      }) async {
-    Response response = await post('events/event-venue/', headers: {
-      'Authorization': 'Bearer $token',
-      'Accept': 'application/json',
-      'Content-Type': 'multipart/form-data'
-    }, data: data
-    // {
-    //   // "name": name,
-    //   // "image": image,
-    //   // "lat": lat,
-    //   // "log": log
-    // }
-    );
+  Future<dynamic> AddEventVenue({
+    required String token,
+    required FormData data,
+  }) async {
+    Response response = await post('events/event-venue/',
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data'
+        },
+        data: data
+        // {
+        //   // "name": name,
+        //   // "image": image,
+        //   // "lat": lat,
+        //   // "log": log
+        // }
+        );
     switch (response.statusCode) {
       case 201:
         return response.data;

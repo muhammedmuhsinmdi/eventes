@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:evantez/src/model/components/snackbar_widget.dart';
+
 import 'package:evantez/src/view/core//constants/app_strings.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
@@ -20,6 +21,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../model/repository/auth/auth_controller.dart';
 import '../../../../model/repository/events/events_controller.dart';
+
 import '../../../../serializer/models/event_site_model.dart';
 import '../../../core/themes/typography.dart';
 
@@ -41,17 +43,17 @@ class _NewEventViewState extends State<NewEventView> {
     final controller = context.watch<EventController>();
     final authcontroller = context.watch<AuthController>();
     final kSize = MediaQuery.of(context).size;
-    late String eventtype;
-    late String eventvenu;
-    late File imagefile;
-    late String customername;
-    late String customerphone;
-    late String customeraddress;
-    late String additionalnote;
-    late String normalhours;
-    late String addtionalhours;
-    late String scheduleddate;
-    late String scheduledtime;
+    String? eventtype;
+    String? eventvenu;
+    File? imagefile;
+    String? customername;
+    String? customerphone;
+    String? customeraddress;
+    String? additionalnote;
+    String? normalhours;
+    String? addtionalhours;
+    String? scheduleddate;
+    String? scheduledtime;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -73,6 +75,7 @@ class _NewEventViewState extends State<NewEventView> {
                   onPicked: (eventImage) {
                     // You will the image file here
                     // eventImage
+
                     imagefile = eventImage;
                   },
                 ),
@@ -237,75 +240,100 @@ class _NewEventViewState extends State<NewEventView> {
                       int? eventVenueId;
                       int? empTypeId;
 
-                      // // -=-= -=--=-=-=-=-= EventType -=-=-=-=-==-=--=-
-                      await controller
-                          .addEventType(
-                              token: authcontroller.accesToken ?? '',
-                              eventadd: eventtype)
-                          .then((value) {
-                        eventTypeid = value.id;
-                      });
+                      if (imagefile == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            snackBarWidget('Please select an Image',
+                                color: Colors.black26,
+                                duration: const Duration(seconds: 2)));
+                      } else {
+                        if (eventtype == null ||
+                            eventvenu == null ||
+                            customername == null ||
+                            customeraddress == null ||
+                            // customerphone == null ||
+                            // scheduledtime == null ||
+                            // scheduleddate == null ||
+                            addtionalhours == null ||
+                            normalhours == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              snackBarWidget('Please Fill all the Parameter',
+                                  color: Colors.black26,
+                                  duration: const Duration(seconds: 2)));
+                        } else {
+                          // -=-= -=--=-=-=-=-= EventType -=-=-=-=-==-=--=-
 
-                      // -=-=-=-=-=-=-=-=- Event Venue -=-=-=-=-=-=-=-=-=-=-=-
+                          await controller
+                              .addEventType(
+                                  token: authcontroller.accesToken ?? '',
+                                  eventadd: eventtype!)
+                              .then((value) {
+                            eventTypeid = value.id;
+                          });
 
-                      FormData formData = FormData.fromMap({
-                        'name': eventvenu,
-                        'image': await MultipartFile.fromFile(
-                          imagefile.path,
-                          filename: imagefile.path.split('/').last,
-                        ),
-                        'lat': '23.075689',
-                        'log': '72.772426',
-                      });
+                          // -=-=-=-=-=-=-=-=- Event Venue -=-=-=-=-=-=-=-=-=-=-=-
 
-                      await controller
-                          .addEventvenue(
-                              token: authcontroller.accesToken ?? '',
-                              data: formData)
-                          .then((value) {
-                        eventVenueId = value.id;
-                      });
+                          FormData formData = FormData.fromMap({
+                            'name': eventvenu,
+                            'image': await MultipartFile.fromFile(
+                              imagefile!.path,
+                              filename: imagefile!.path.split('/').last,
+                            ),
+                            'lat': '23.075689',
+                            'log': '72.772426',
+                          });
 
-                      // // -=-=-=-=-=-=-=-= EventSite Add -=-=-=-=-=-=-=-=-=-=
+                          await controller
+                              .addEventvenue(
+                                  token: authcontroller.accesToken ?? '',
+                                  data: formData)
+                              .then((value) {
+                            eventVenueId = value.id;
+                          }
 
-                      // await controller.eventSiteAdd(
-                      //   token: authcontroller.accesToken ?? '',
-                      //   eventSite: EventSite(
-                      //       eventTypeId: 1,
-                      //       venueId: 1,
-                      //       scheduledDatetime: '2023-07-14T06:59:34.349688Z',
-                      //       customerName: customername,
-                      //       customerPhone: customerphone,
-                      //       customerAddress: customeraddress,
-                      //       notes: additionalnote,
-                      //       normalHours: normalhours,
-                      //       overtimeHourlyCharge: addtionalhours,
-                      //       eventSiteSettings: [
-                      //         EventSiteSettings(
-                      //           service: 1,
-                      //         )
-                      //       ],
-                      //       eventSiteEmployeeRequirement: [
-                      //         EventSiteEmployeeRequirement(
-                      //           charge: '300',
-                      //           employeeType: 3,
-                      //           requirementCount: 3,
-                      //         )
-                      //       ],
-                      //       code: "EVC001",
-                      //       status: 'open'),
+                                  // -=-=-=-=-=-=-=-= EventSite Add -=-=-=-=-=-=-=-=-=-=
 
-                      //-=-=-=-=-=-=-=-=--= Employee Type -=-=-=-=-=-=-=-=-=-=
-                      // await controller
-                      //     .employeeType(
-                      //   token: authcontroller.accesToken ?? '',
-                      //   name: 'Name',
-                      //   amount: 500,
-                      //   code: 'Code',
-                      // )
-                      //     .then((value) {
-                      //   print(value.id);
-                      // });
+                                  // await controller.eventSiteAdd(
+                                  //   token: authcontroller.accesToken ?? '',
+                                  //   eventSite: EventSite(
+                                  //       eventTypeId: eventTypeid,
+                                  //       venueId: eventVenueId,
+                                  //       scheduledDatetime:
+                                  //           '2023-07-14T06:59:34.349688Z',
+                                  //       customerName: customername,
+                                  //       customerPhone: customerphone,
+                                  //       customerAddress: customeraddress,
+                                  //       notes: additionalnote,
+                                  //       normalHours: normalhours,
+                                  //       overtimeHourlyCharge: addtionalhours,
+                                  //       eventSiteSettings: [
+                                  //         EventSiteSettings(
+                                  //           service: 1,
+                                  //         )
+                                  //       ],
+                                  //       eventSiteEmployeeRequirement: [
+                                  //         EventSiteEmployeeRequirement(
+                                  //           charge: '300',
+                                  //           employeeType: 3,
+                                  //           requirementCount: 3,
+                                  //         )
+                                  //       ],
+                                  //       code: "EVC001",
+                                  //       status: 'open'),
+
+                                  //-=-=-=-=-=-=-=-=--= Employee Type -=-=-=-=-=-=-=-=-=-=
+                                  // await controller
+                                  //     .employeeType(
+                                  //   token: authcontroller.accesToken ?? '',
+                                  //   name: 'Name',
+                                  //   amount: 500,
+                                  //   code: 'Code',
+                                  // )
+                                  //     .then((value) {
+                                  //   print(value.id);
+                                  // })
+                                  );
+                        }
+                      }
                     }),
                 SizedBox(
                   height: kSize.height * 0.12,

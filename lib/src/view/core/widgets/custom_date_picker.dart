@@ -40,7 +40,9 @@ class CustomDatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    valueCheck.value = controller != null && controller!.text.isNotEmpty ? controller!.text : "";
+    valueCheck.value = controller != null && controller!.text.isNotEmpty
+        ? controller!.text
+        : "";
     final kSize = MediaQuery.of(context).size;
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -91,7 +93,8 @@ class CustomDatePicker extends StatelessWidget {
                                 lastDate: DateTime(2050));
                             if (date != null) {
                               if (controller != null) {
-                                controller!.text = DateFormat("dd MMM, yyyy").format(date);
+                                controller!.text =
+                                    DateFormat("dd MMM, yyyy").format(date);
                                 valueCheck.value = controller!.text;
                                 onChanged(controller!.text);
                               }
@@ -103,16 +106,24 @@ class CustomDatePicker extends StatelessWidget {
                             TimeOfDay? endTime;
                             if (context.mounted) {
                               startTime = await showTimePicker(
-                                  helpText: "Start Time", context: context, initialTime: TimeOfDay.now());
+                                  helpText: "Start Time",
+                                  context: context,
+                                  initialTime: TimeOfDay.now());
 
                               if (context.mounted) {
                                 endTime = await showTimePicker(
-                                    helpText: "End Time", context: context, initialTime: TimeOfDay.now());
+                                    helpText: "End Time",
+                                    context: context,
+                                    initialTime: TimeOfDay.now());
                               }
 
                               if (context.mounted) {
-                                st = startTime != null ? startTime.format(context) : '--:--';
-                                et = endTime != null ? endTime.format(context) : '--:--';
+                                st = startTime != null
+                                    ? startTime.format(context)
+                                    : '--:--';
+                                et = endTime != null
+                                    ? endTime.format(context)
+                                    : '--:--';
                               }
                               if (controller != null) {
                                 controller!.text = "$st - $et";
@@ -145,7 +156,9 @@ class CustomDatePicker extends StatelessWidget {
                         ? Padding(
                             padding: const EdgeInsets.all(8),
                             child: SvgPicture.asset(
-                              type == "Date" ? AppImages.calender : AppImages.clock,
+                              type == "Date"
+                                  ? AppImages.calender
+                                  : AppImages.clock,
                               colorFilter: ColorFilter.mode(
                                 valueCheck.value.isNotEmpty
                                     ? AppColors.primaryColor
@@ -160,7 +173,8 @@ class CustomDatePicker extends StatelessWidget {
                       fontSize: 16,
                     ),
                     disabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppConstants.baseBorderRadius),
+                        borderRadius: BorderRadius.circular(
+                            AppConstants.baseBorderRadius),
                         borderSide: BorderSide(
                             width: 1,
                             style: BorderStyle.solid,
@@ -168,7 +182,8 @@ class CustomDatePicker extends StatelessWidget {
                                 ? AppColors.accentColor
                                 : AppColors.transparent)),
                     focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppConstants.baseBorderRadius),
+                        borderRadius: BorderRadius.circular(
+                            AppConstants.baseBorderRadius),
                         borderSide: BorderSide(
                             width: 1,
                             style: BorderStyle.solid,
@@ -176,7 +191,8 @@ class CustomDatePicker extends StatelessWidget {
                                 ? AppColors.statusCritical
                                 : AppColors.transparent)),
                     focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppConstants.baseBorderRadius),
+                        borderRadius: BorderRadius.circular(
+                            AppConstants.baseBorderRadius),
                         borderSide: BorderSide(
                             width: 1,
                             style: BorderStyle.solid,
@@ -184,13 +200,17 @@ class CustomDatePicker extends StatelessWidget {
                                 ? AppColors.accentColor
                                 : AppColors.transparent)),
                     errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppConstants.baseBorderRadius),
+                        borderRadius: BorderRadius.circular(
+                            AppConstants.baseBorderRadius),
                         borderSide: const BorderSide(
-                            width: 1, style: BorderStyle.solid, color: AppColors.statusCritical)),
+                            width: 1,
+                            style: BorderStyle.solid,
+                            color: AppColors.statusCritical)),
                     errorStyle: const TextStyle(),
                     border: InputBorder.none,
                     enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppConstants.baseBorderRadius),
+                        borderRadius: BorderRadius.circular(
+                            AppConstants.baseBorderRadius),
                         borderSide: BorderSide(
                             width: 1,
                             style: BorderStyle.solid,
