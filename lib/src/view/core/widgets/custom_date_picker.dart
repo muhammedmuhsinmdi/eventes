@@ -44,11 +44,16 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
   final ValueNotifier<String> valueCheck = ValueNotifier<String>('');
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     valueCheck.value =
         widget.controller != null && widget.controller!.text.isNotEmpty
             ? widget.controller!.text
             : "";
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
