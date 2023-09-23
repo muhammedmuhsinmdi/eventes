@@ -45,7 +45,10 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
 
   @override
   Widget build(BuildContext context) {
-    valueCheck.value = controller != null && controller!.text.isNotEmpty ? controller!.text : "";
+    valueCheck.value =
+        widget.controller != null && widget.controller!.text.isNotEmpty
+            ? widget.controller!.text
+            : "";
     final kSize = MediaQuery.of(context).size;
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -95,10 +98,11 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                                 firstDate: DateTime(1990),
                                 lastDate: DateTime(2050));
                             if (date != null) {
-                              if (controller != null) {
-                                controller!.text = DateFormat("dd MMM, yyyy").format(date);
-                                valueCheck.value = controller!.text;
-                                onChanged(controller!.text);
+                              if (widget.controller != null) {
+                                widget.controller!.text =
+                                    DateFormat("dd MMM, yyyy").format(date);
+                                valueCheck.value = widget.controller!.text;
+                                widget.onChanged(widget.controller!.text);
                               }
                             }
                           } else if (widget.type == "Time") {
@@ -158,7 +162,9 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                         ? Padding(
                             padding: const EdgeInsets.all(8),
                             child: SvgPicture.asset(
-                              type == "Date" ? AppImages.calender : AppImages.clock,
+                              widget.type == "Date"
+                                  ? AppImages.calender
+                                  : AppImages.clock,
                               colorFilter: ColorFilter.mode(
                                 valueCheck.value.isNotEmpty
                                     ? AppColors.primaryColor
