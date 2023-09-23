@@ -7,7 +7,7 @@ import '../constants/constants.dart';
 import '../themes/colors.dart';
 import '../themes/typography.dart';
 
-class CustomDatePicker extends StatelessWidget {
+class CustomDatePicker extends StatefulWidget {
   final String? label;
   final bool? required;
   final String? type;
@@ -20,7 +20,7 @@ class CustomDatePicker extends StatelessWidget {
   final Function(String?)? onSaved;
   final Function(String)? onFieldSubmitted;
   final Widget? sufficIcon;
-  CustomDatePicker({
+  const CustomDatePicker({
     super.key,
     this.label,
     this.required,
@@ -36,31 +36,34 @@ class CustomDatePicker extends StatelessWidget {
     this.readOnly,
   });
 
+  @override
+  State<CustomDatePicker> createState() => _CustomDatePickerState();
+}
+
+class _CustomDatePickerState extends State<CustomDatePicker> {
   final ValueNotifier<String> valueCheck = ValueNotifier<String>('');
 
   @override
   Widget build(BuildContext context) {
-    valueCheck.value = controller != null && controller!.text.isNotEmpty
-        ? controller!.text
-        : "";
+    valueCheck.value = controller != null && controller!.text.isNotEmpty ? controller!.text : "";
     final kSize = MediaQuery.of(context).size;
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (label != null && label!.isNotEmpty) ...{
+        if (widget.label != null && widget.label!.isNotEmpty) ...{
           Padding(
             padding: EdgeInsets.only(bottom: kSize.height * 0.010),
             child: RichText(
                 text: TextSpan(
-              text: required != null && required! ? '*  ' : '',
+              text: widget.required != null && widget.required! ? '*  ' : '',
               style: AppTypography.poppinsBold.copyWith(
                 color: AppColors.statusCritical,
                 fontSize: 16,
               ),
               children: [
                 TextSpan(
-                  text: label,
+                  text: widget.label,
                   style: AppTypography.poppinsMedium.copyWith(
                     fontSize: 16,
                     color: AppColors.secondaryColor,
@@ -78,13 +81,13 @@ class CustomDatePicker extends StatelessWidget {
                 child: TextFormField(
                   readOnly: true,
                   maxLines: 1,
-                  onChanged: onChanged,
+                  onChanged: widget.onChanged,
                   cursorColor: AppColors.secondaryColor,
-                  controller: controller,
-                  onTap: readOnly != null && readOnly!
+                  controller: widget.controller,
+                  onTap: widget.readOnly != null && widget.readOnly!
                       ? null
                       : () async {
-                          if (type == "Date") {
+                          if (widget.type == "Date") {
                             DateTime? date = await showDatePicker(
                                 helpText: 'Select Event Date',
                                 context: context,
@@ -93,13 +96,12 @@ class CustomDatePicker extends StatelessWidget {
                                 lastDate: DateTime(2050));
                             if (date != null) {
                               if (controller != null) {
-                                controller!.text =
-                                    DateFormat("dd MMM, yyyy").format(date);
+                                controller!.text = DateFormat("dd MMM, yyyy").format(date);
                                 valueCheck.value = controller!.text;
                                 onChanged(controller!.text);
                               }
                             }
-                          } else if (type == "Time") {
+                          } else if (widget.type == "Time") {
                             String st = '';
                             String et = '';
                             TimeOfDay? startTime;
@@ -125,15 +127,15 @@ class CustomDatePicker extends StatelessWidget {
                                     ? endTime.format(context)
                                     : '--:--';
                               }
-                              if (controller != null) {
-                                controller!.text = "$st - $et";
-                                valueCheck.value = controller!.text;
-                                onChanged(controller!.text);
+                              if (widget.controller != null) {
+                                widget.controller!.text = "$st - $et";
+                                valueCheck.value = widget.controller!.text;
+                                widget.onChanged(widget.controller!.text);
                               }
                             }
                           }
                         },
-                  onSaved: onSaved,
+                  onSaved: widget.onSaved,
                   autocorrect: false,
                   textAlign: TextAlign.center,
                   textCapitalization: TextCapitalization.words,
@@ -143,22 +145,20 @@ class CustomDatePicker extends StatelessWidget {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Select $label";
+                      return "Select ${widget.label}";
                     }
                     return null;
                   },
-                  onFieldSubmitted: onFieldSubmitted,
+                  onFieldSubmitted: widget.onFieldSubmitted,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
                     // label: widget.label,
-                    hintText: hintText,
-                    suffixIcon: type != null
+                    hintText: widget.hintText,
+                    suffixIcon: widget.type != null
                         ? Padding(
                             padding: const EdgeInsets.all(8),
                             child: SvgPicture.asset(
-                              type == "Date"
-                                  ? AppImages.calender
-                                  : AppImages.clock,
+                              type == "Date" ? AppImages.calender : AppImages.clock,
                               colorFilter: ColorFilter.mode(
                                 valueCheck.value.isNotEmpty
                                     ? AppColors.primaryColor
@@ -178,7 +178,7 @@ class CustomDatePicker extends StatelessWidget {
                         borderSide: BorderSide(
                             width: 1,
                             style: BorderStyle.solid,
-                            color: fillColor == AppColors.transparent
+                            color: widget.fillColor == AppColors.transparent
                                 ? AppColors.accentColor
                                 : AppColors.transparent)),
                     focusedErrorBorder: OutlineInputBorder(
@@ -187,7 +187,7 @@ class CustomDatePicker extends StatelessWidget {
                         borderSide: BorderSide(
                             width: 1,
                             style: BorderStyle.solid,
-                            color: fillColor == AppColors.transparent
+                            color: widget.fillColor == AppColors.transparent
                                 ? AppColors.statusCritical
                                 : AppColors.transparent)),
                     focusedBorder: OutlineInputBorder(
@@ -196,7 +196,7 @@ class CustomDatePicker extends StatelessWidget {
                         borderSide: BorderSide(
                             width: 1,
                             style: BorderStyle.solid,
-                            color: fillColor == AppColors.transparent
+                            color: widget.fillColor == AppColors.transparent
                                 ? AppColors.accentColor
                                 : AppColors.transparent)),
                     errorBorder: OutlineInputBorder(
@@ -214,12 +214,12 @@ class CustomDatePicker extends StatelessWidget {
                         borderSide: BorderSide(
                             width: 1,
                             style: BorderStyle.solid,
-                            color: fillColor == AppColors.transparent
+                            color: widget.fillColor == AppColors.transparent
                                 ? AppColors.accentColor
                                 : AppColors.transparent)),
                     filled: true,
                     isDense: true,
-                    fillColor: fillColor ?? AppColors.accentDark,
+                    fillColor: widget.fillColor ?? AppColors.accentDark,
                     counter: const SizedBox(),
                     focusColor: AppColors.secondaryColor,
                     contentPadding: const EdgeInsets.symmetric(
