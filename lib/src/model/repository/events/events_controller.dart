@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:evantez/src/providers/dashboard/events_provider.dart';
 import 'package:evantez/src/serializer/models/event_details.response.dart';
@@ -22,6 +24,17 @@ class EventController extends ChangeNotifier {
       final response = await EventProvider().loadEvents(token);
       if (response.results?.isNotEmpty ?? false) {
         eventList = response.results ?? [];
+        eventList.sort((a, b) {
+          if (a.updatedAt != null && b.updatedAt != null) {
+            return b.updatedAt!.compareTo(a.updatedAt!); // Sort by updatedAt if both are not null
+          } else if (a.updatedAt != null) {
+            return -1; // a comes before b if only a has updatedAt
+          } else if (b.updatedAt != null) {
+            return 1; // b comes before a if only b has updatedAt
+          } else {
+            return a.createdAt!.compareTo(b.createdAt!); // Sort by createdAt if both are null
+          }
+        });
         notifyListeners();
       }
       isLoading = false;
