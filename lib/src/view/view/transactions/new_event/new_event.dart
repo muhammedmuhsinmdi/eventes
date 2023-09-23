@@ -5,11 +5,11 @@ import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//widgets/custom_back_btn.dart';
 import 'package:evantez/src/view/core//widgets/custom_date_picker.dart';
-import 'package:evantez/src/view/core//widgets/custom_drop_down.dart';
 import 'package:evantez/src/view/core//widgets/custom_textfield.dart';
 import 'package:evantez/src/view/core//widgets/footer_button.dart';
 import 'package:evantez/src/view/view/transactions/new_event/widgets/custom_service_counter.dart';
 import 'package:evantez/src/view/view/transactions/new_event/widgets/event_image_upload.dart';
+import 'package:evantez/src/view/view/transactions/new_event/widgets/event_type_dropdown.dart';
 import 'package:evantez/src/view/view/transactions/new_event/widgets/filter_boys_rating.dart';
 import 'package:evantez/src/view/view/transactions/new_event/widgets/service_boys.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +28,14 @@ class _NewEventViewState extends State<NewEventView> {
     "Captain",
     "Hosting",
   ];
+
+  List<String> eventTypeList = const ["Marriage Function", "Nikkhah", "Meetings", "House Warming"];
+
+  TextEditingController dateController = TextEditingController();
+  TextEditingController timeController = TextEditingController();
+  TextEditingController eventVenueController = TextEditingController();
+
+  String eventTypeValue = "";
 
   @override
   Widget build(BuildContext context) {
@@ -64,20 +72,25 @@ class _NewEventViewState extends State<NewEventView> {
                 SizedBox(
                   height: kSize.height * 0.024,
                 ),
-                eventType(
-                  eventTypes: const ["Marriage Function", "Nikkhah", "Meetings", "House Warming"],
+                EventTypeDropDown(
+                  intialValue: eventTypeValue,
+                  eventTypes: eventTypeList,
                   onSelected: (eventType) {
                     log(eventType);
+                    eventTypeValue = eventType;
                   },
                 ),
                 SizedBox(
                   height: kSize.height * 0.024,
                 ),
-                eventVenue(
-                    eventVenues: const ["Malappuram", "Valenchery", "Palakkad", "Manjeri"],
-                    onSelected: (venue) {
-                      log(venue);
-                    }),
+                CustomTextField(
+                  text: "Event Venue",
+                  controller: eventVenueController,
+                  required: true,
+                  onChanged: (eventVenue) {
+                    log(eventVenue);
+                  },
+                ),
                 SizedBox(
                   height: kSize.height * 0.024,
                 ),
@@ -245,35 +258,6 @@ class _NewEventViewState extends State<NewEventView> {
         ]));
   }
 
-  /*  Widget uploadImage(
-      {required BuildContext context, required Size kSize, required Function(File) onPickedImage}) {
-    File? image;
-    return ;
-  } */
-  Widget eventType({required List<String> eventTypes, required Function(String) onSelected}) {
-    return CustomDropDown(
-      label: "Type of Event",
-      required: true,
-      hintText: "Select Event Type",
-      onSelected: (eventType) {
-        onSelected(eventType);
-      },
-      items: eventTypes,
-    );
-  }
-
-  Widget eventVenue({required List<String> eventVenues, required Function(String) onSelected}) {
-    return CustomDropDown(
-      label: "Event Venue",
-      required: true,
-      onSelected: (eventVenue) {
-        log(eventVenue);
-      },
-      hintText: "Select Event Venue",
-      items: eventVenues, // const ["Malappuram", "Valenchery", "Palakkad", "Manjeri"],
-    );
-  }
-
   Widget dateTime({required Function(String) onSelectDate, required Function(String) onSelectTime}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -281,14 +265,14 @@ class _NewEventViewState extends State<NewEventView> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         CustomDatePicker(
-            controller: TextEditingController(),
+            controller: dateController,
             type: "Date",
             label: "Date",
             onChanged: (value) {
               onSelectDate(value);
             }),
         CustomDatePicker(
-            controller: TextEditingController(),
+            controller: timeController,
             type: 'Time',
             label: 'Time',
             onChanged: (value) {
