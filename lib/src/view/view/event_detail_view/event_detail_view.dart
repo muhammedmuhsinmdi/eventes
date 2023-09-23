@@ -17,7 +17,6 @@ import 'package:evantez/src/view/view/event_detail_view/widgets/event_open_slot.
 import 'package:evantez/src/view/view/event_detail_view/widgets/event_settlement_slot.dart';
 import 'package:evantez/src/view/view/event_detail_view/widgets/urgent_emp_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/constants/app_images.dart';
@@ -46,8 +45,7 @@ class _EventDetailViewState extends State<EventDetailView> {
           height: kSize.height,
           width: kSize.width,
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: AppConstants.baseBorderRadius),
+            padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
             child: SingleChildScrollView(
               child: ValueListenableBuilder(
                   valueListenable: selectedeventStatus,
@@ -56,8 +54,8 @@ class _EventDetailViewState extends State<EventDetailView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: kSize.height * 0.016),
-                        eventImage(kSize, context, selectedeventStatus.value,
-                            controller.eventsDetail?.image ?? ""),
+                        eventImage(
+                            kSize, context, selectedeventStatus.value, controller.eventsDetail?.image ?? ""),
                         SizedBox(height: kSize.height * 0.024),
                         Text(
                           controller.eventsDetail?.name ?? '',
@@ -97,12 +95,12 @@ class _EventDetailViewState extends State<EventDetailView> {
                             selectedeventStatus.value = value ?? '';
                           },
                         ),
+                        SizedBox(height: kSize.height * 0.024),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             CustomDatePicker(
-                              controller:
-                                  TextEditingController(text: "03 Nov, 2023"),
+                              controller: TextEditingController(text: "03 Nov, 2023"),
                               label: "Date",
                               type: 'Date',
                               onChanged: (value) {
@@ -110,8 +108,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                               },
                             ),
                             CustomDatePicker(
-                              controller: TextEditingController(
-                                  text: '02:30PM-11:30 PM'),
+                              controller: TextEditingController(text: '02:30PM-11:30 PM'),
                               label: "Time",
                               type: 'Time',
                               onChanged: (value) {
@@ -125,8 +122,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                             height: kSize.height * 0.024,
                           ),
                           CustomDatePicker(
-                            controller:
-                                TextEditingController(text: '02:30PM-11:30 PM'),
+                            controller: TextEditingController(text: '02:30PM-11:30 PM'),
                             label: "Actual Time",
                             type: 'Time',
                             onChanged: (value) {
@@ -147,8 +143,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                         },
                         if (selectedeventStatus.value == "Upcoming - Hold" ||
                             selectedeventStatus.value == "Upcoming - Open" ||
-                            selectedeventStatus.value ==
-                                "Upcoming - Filled") ...{
+                            selectedeventStatus.value == "Upcoming - Filled") ...{
                           FooterButton(
                             fillColor: AppColors.transparent,
                             label: AppStrings.addEmployeeText,
@@ -241,8 +236,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                         if (selectedeventStatus.value == "Upcoming - Open")
                           InkWell(
                             onTap: () {
-                              Navigator.pushNamed(
-                                  context, RouterConstants.applystatus);
+                              Navigator.pushNamed(context, RouterConstants.applystatus);
                             },
                             child: Container(
                               height: kSize.height * 0.05,
@@ -273,8 +267,7 @@ class _EventDetailViewState extends State<EventDetailView> {
             "Normal Hours",
             textAlign: TextAlign.end,
             maxLines: 2,
-            style: AppTypography.poppinsMedium
-                .copyWith(color: AppColors.secondaryColor.withOpacity(0.6)),
+            style: AppTypography.poppinsMedium.copyWith(color: AppColors.secondaryColor.withOpacity(0.6)),
           ),
         ),
         SizedBox(
@@ -284,8 +277,7 @@ class _EventDetailViewState extends State<EventDetailView> {
           // width: kSize.width * 0.2,
           child: CustomTextField(
             text: '',
-            readOnly: selectedeventStatus.value == "Settlement" ||
-                    selectedeventStatus.value == "Completed"
+            readOnly: selectedeventStatus.value == "Settlement" || selectedeventStatus.value == "Completed"
                 ? true
                 : false,
             keyboardType: TextInputType.number,
@@ -294,8 +286,7 @@ class _EventDetailViewState extends State<EventDetailView> {
               child: Text(
                 'Hrs',
                 textAlign: TextAlign.end,
-                style: AppTypography.poppinsSemiBold
-                    .copyWith(color: AppColors.secondaryColor, fontSize: 16),
+                style: AppTypography.poppinsSemiBold.copyWith(color: AppColors.secondaryColor, fontSize: 16),
               ),
             ),
           ),
@@ -317,8 +308,7 @@ class _EventDetailViewState extends State<EventDetailView> {
             "Overtime Rate/Hr",
             textAlign: TextAlign.end,
             maxLines: 2,
-            style: AppTypography.poppinsMedium
-                .copyWith(color: AppColors.secondaryColor.withOpacity(0.6)),
+            style: AppTypography.poppinsMedium.copyWith(color: AppColors.secondaryColor.withOpacity(0.6)),
           ),
         ),
         SizedBox(
@@ -326,8 +316,7 @@ class _EventDetailViewState extends State<EventDetailView> {
         ),
         Flexible(
           child: CustomTextField(
-            readOnly: selectedeventStatus.value == "Settlement" ||
-                    selectedeventStatus.value == "Completed"
+            readOnly: selectedeventStatus.value == "Settlement" || selectedeventStatus.value == "Completed"
                 ? true
                 : false,
             keyboardType: TextInputType.number,
@@ -396,8 +385,7 @@ class _EventDetailViewState extends State<EventDetailView> {
     );
   }
 
-  Widget eventImage(
-      Size kSize, BuildContext context, String eventStatus, String image) {
+  Widget eventImage(Size kSize, BuildContext context, String eventStatus, String image) {
     return Stack(
       clipBehavior: Clip.antiAlias,
       children: [
@@ -417,12 +405,10 @@ class _EventDetailViewState extends State<EventDetailView> {
         ),
         if (eventStatus.isNotEmpty)
           Container(
-            margin: EdgeInsets.only(
-                top: kSize.height * 0.013, left: kSize.height * 0.016),
+            margin: EdgeInsets.only(top: kSize.height * 0.013, left: kSize.height * 0.016),
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
-              border:
-                  Border.all(color: AppColors.secondaryColor.withOpacity(0.4)),
+              border: Border.all(color: AppColors.secondaryColor.withOpacity(0.4)),
               color: getEventStatusColor(eventStatus),
               borderRadius: BorderRadius.circular(AppConstants.basePadding),
             ),
