@@ -1,5 +1,3 @@
-
-
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//widgets/custom_dropdown_search.dart';
@@ -111,7 +109,7 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
                         width: kSize.width * 0.55,
                         child: CustomDropdownSearch(
                           items: widget.items,
-                          label: "Service Boys",
+                          label: widget.label.isNotEmpty ? widget.label : "Items",
                         ),
                       ),
                       const SizedBox(

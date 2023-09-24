@@ -33,6 +33,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
 
   @override
   void initState() {
+    dropDownValue.value = widget.items!.first;
     if (widget.intialValue != null && widget.intialValue!.isNotEmpty) {
       dropDownValue.value = widget.intialValue!;
     }

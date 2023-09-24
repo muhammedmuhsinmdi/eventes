@@ -49,7 +49,7 @@ class _ServiceBoysState extends State<ServiceBoys> {
                               }
                             })
                     : CustomServiceCounter(
-                        label: "",
+                        label: "Service Boys",
                         items: serviceItems,
                       ),
               ),

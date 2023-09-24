@@ -91,9 +91,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             padding: EdgeInsets.only(bottom: kSize.height * 0.010),
             child: RichText(
                 text: TextSpan(
-                    text: widget.required != null && widget.required!
-                        ? '*  '
-                        : '',
+                    text: widget.required != null && widget.required! ? '*  ' : '',
                     style: AppTypography.poppinsBold.copyWith(
                       color: AppColors.statusCritical,
                       fontSize: 16,
@@ -148,30 +146,23 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   label: widget.label,
                   hintText: widget.hintText,
                   prefixIcon: widget.prefixIcon,
-                  suffixIcon:
-                      widget.passwordField ? passwordIcon() : widget.suffixIcon,
+                  suffixIcon: widget.passwordField ? passwordIcon() : widget.suffixIcon,
                   hintStyle: widget.hintStyle ??
                       AppTypography.poppinsRegular.copyWith(
                         color: AppColors.secondaryColor.withOpacity(0.4),
                         fontSize: 16,
                       ),
                   focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          width: 2,
-                          style: BorderStyle.solid,
-                          color: AppColors.primaryColor)),
+                      borderSide:
+                          BorderSide(width: 2, style: BorderStyle.solid, color: AppColors.primaryColor)),
                   errorBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          width: 2,
-                          style: BorderStyle.solid,
-                          color: AppColors.statusCritical)),
+                      borderSide:
+                          BorderSide(width: 2, style: BorderStyle.solid, color: AppColors.statusCritical)),
                   errorStyle: const TextStyle(),
                   border: InputBorder.none,
                   enabledBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          width: 2,
-                          style: BorderStyle.solid,
-                          color: AppColors.primaryColor)),
+                      borderSide:
+                          BorderSide(width: 2, style: BorderStyle.solid, color: AppColors.primaryColor)),
                   filled: true,
                   isDense: true,
                   fillColor: AppColors.transparent.withOpacity(0.1),

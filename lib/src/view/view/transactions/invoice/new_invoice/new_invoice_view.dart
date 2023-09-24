@@ -258,7 +258,7 @@ class NewInvoiceView extends StatelessWidget {
               2,
               (index) => CustomServiceCounter(
                     items: const ['Head', "Captain", 'A Boy'],
-                    label: 'Select Service boys ',
+                    label: 'Service boys ',
                   )),
         ),
         SizedBox(height: kSize.height * 0.024),

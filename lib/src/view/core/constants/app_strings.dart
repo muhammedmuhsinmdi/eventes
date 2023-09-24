@@ -87,4 +87,5 @@ class AppStrings {
   static const String personalInfoText = 'Personal Information';
   static const String accountNoText = "Account Number";
   static const String ifscCodeText = "IFSC";
+  static const String settingsWorkText = 'Setting Work';
 }
