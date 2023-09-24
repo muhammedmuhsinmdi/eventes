@@ -12,7 +12,7 @@ import '../../../../core/themes/typography.dart';
 
 class EventImageUpload extends StatefulWidget {
   final Function(File) onPicked;
-  
+
   const EventImageUpload({super.key, required this.onPicked});
 
   @override
@@ -79,16 +79,19 @@ class _EventImageUploadState extends State<EventImageUpload> {
                     AppImages.uploadImg,
                     height: kSize.height * 0.085,
                     width: kSize.height * 0.085,
-                    colorFilter: const ColorFilter.mode(AppColors.darkGreyColor, BlendMode.srcIn),
+                    colorFilter: const ColorFilter.mode(
+                        AppColors.darkGreyColor, BlendMode.srcIn),
                   ),
                   Container(
                     margin: EdgeInsets.only(top: kSize.height * 0.012),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(AppConstants.baseBorderRadius),
+                      borderRadius:
+                          BorderRadius.circular(AppConstants.baseBorderRadius),
                       color: AppColors.blackColor.withOpacity(0.6),
                     ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: kSize.width * 0.032, vertical: kSize.height * 0.003),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: kSize.width * 0.032,
+                        vertical: kSize.height * 0.003),
                     child: Text(
                       "Upload Image",
                       style: AppTypography.poppinsMedium.copyWith(fontSize: 14),
@@ -113,12 +116,14 @@ class _EventImageUploadState extends State<EventImageUpload> {
         builder: (context) {
           return Padding(
             padding: const EdgeInsets.symmetric(
-                vertical: AppConstants.largePadding, horizontal: AppConstants.largePadding),
+                vertical: AppConstants.largePadding,
+                horizontal: AppConstants.largePadding),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(bottom: AppConstants.baseBorderRadius),
+                  padding: const EdgeInsets.only(
+                      bottom: AppConstants.baseBorderRadius),
                   child: Text(
                     "Select Image",
                     style: AppTypography.poppinsRegular.copyWith(fontSize: 18),
@@ -131,7 +136,8 @@ class _EventImageUploadState extends State<EventImageUpload> {
                       highlightColor: AppColors.transparent,
                       splashColor: AppColors.transparent,
                       onTap: () {
-                        pickImage(source: ImageSource.gallery, context: context);
+                        pickImage(
+                            source: ImageSource.gallery, context: context);
                       },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -141,10 +147,12 @@ class _EventImageUploadState extends State<EventImageUpload> {
                             size: kSize.height * 0.032,
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(top: AppConstants.marginSpace),
+                            padding: const EdgeInsets.only(
+                                top: AppConstants.marginSpace),
                             child: Text(
                               "Gallery",
-                              style: AppTypography.poppinsRegular.copyWith(fontSize: 14),
+                              style: AppTypography.poppinsRegular
+                                  .copyWith(fontSize: 14),
                             ),
                           )
                         ],
@@ -167,10 +175,12 @@ class _EventImageUploadState extends State<EventImageUpload> {
                             size: kSize.height * 0.032,
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(top: AppConstants.marginSpace),
+                            padding: const EdgeInsets.only(
+                                top: AppConstants.marginSpace),
                             child: Text(
                               "Camera",
-                              style: AppTypography.poppinsRegular.copyWith(fontSize: 14),
+                              style: AppTypography.poppinsRegular
+                                  .copyWith(fontSize: 14),
                             ),
                           )
                         ],
@@ -190,7 +200,8 @@ class _EventImageUploadState extends State<EventImageUpload> {
   }) async {
     final imagePicker = ImagePicker();
     try {
-      XFile? imagePicked = await imagePicker.pickImage(source: source);
+      XFile? imagePicked =
+          await imagePicker.pickImage(source: source, imageQuality: 70);
       if (imagePicked != null) {
         pickedImage = File(imagePicked.path);
         setState(() {});

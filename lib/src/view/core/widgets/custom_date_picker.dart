@@ -44,8 +44,16 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
   final ValueNotifier<String> valueCheck = ValueNotifier<String>('');
 
   @override
+  void initState() {
+    valueCheck.value =
+        widget.controller != null && widget.controller!.text.isNotEmpty
+            ? widget.controller!.text
+            : "";
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    valueCheck.value = widget.controller != null && widget.controller!.text.isNotEmpty ? widget.controller!.text : "";
     final kSize = MediaQuery.of(context).size;
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -96,7 +104,8 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                                 lastDate: DateTime(2050));
                             if (date != null) {
                               if (widget.controller != null) {
-                                widget.controller!.text = DateFormat("dd MMM, yyyy").format(date);
+                                widget.controller!.text =
+                                    DateFormat("dd MMM, yyyy").format(date);
                                 valueCheck.value = widget.controller!.text;
                                 widget.onChanged(widget.controller!.text);
                               }
@@ -108,16 +117,24 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                             TimeOfDay? endTime;
                             if (context.mounted) {
                               startTime = await showTimePicker(
-                                  helpText: "Start Time", context: context, initialTime: TimeOfDay.now());
+                                  helpText: "Start Time",
+                                  context: context,
+                                  initialTime: TimeOfDay.now());
 
                               if (context.mounted) {
                                 endTime = await showTimePicker(
-                                    helpText: "End Time", context: context, initialTime: TimeOfDay.now());
+                                    helpText: "End Time",
+                                    context: context,
+                                    initialTime: TimeOfDay.now());
                               }
 
                               if (context.mounted) {
-                                st = startTime != null ? startTime.format(context) : '--:--';
-                                et = endTime != null ? endTime.format(context) : '--:--';
+                                st = startTime != null
+                                    ? startTime.format(context)
+                                    : '--:--';
+                                et = endTime != null
+                                    ? endTime.format(context)
+                                    : '--:--';
                               }
                               if (widget.controller != null) {
                                 widget.controller!.text = "$st - $et";
@@ -150,7 +167,9 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                         ? Padding(
                             padding: const EdgeInsets.all(8),
                             child: SvgPicture.asset(
-                              widget.type == "Date" ? AppImages.calender : AppImages.clock,
+                              widget.type == "Date"
+                                  ? AppImages.calender
+                                  : AppImages.clock,
                               colorFilter: ColorFilter.mode(
                                 valueCheck.value.isNotEmpty
                                     ? AppColors.primaryColor
@@ -165,7 +184,8 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                       fontSize: 16,
                     ),
                     disabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppConstants.baseBorderRadius),
+                        borderRadius: BorderRadius.circular(
+                            AppConstants.baseBorderRadius),
                         borderSide: BorderSide(
                             width: 1,
                             style: BorderStyle.solid,
@@ -173,7 +193,8 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                                 ? AppColors.accentColor
                                 : AppColors.transparent)),
                     focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppConstants.baseBorderRadius),
+                        borderRadius: BorderRadius.circular(
+                            AppConstants.baseBorderRadius),
                         borderSide: BorderSide(
                             width: 1,
                             style: BorderStyle.solid,
@@ -181,7 +202,8 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                                 ? AppColors.statusCritical
                                 : AppColors.transparent)),
                     focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppConstants.baseBorderRadius),
+                        borderRadius: BorderRadius.circular(
+                            AppConstants.baseBorderRadius),
                         borderSide: BorderSide(
                             width: 1,
                             style: BorderStyle.solid,
@@ -189,13 +211,17 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                                 ? AppColors.accentColor
                                 : AppColors.transparent)),
                     errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppConstants.baseBorderRadius),
+                        borderRadius: BorderRadius.circular(
+                            AppConstants.baseBorderRadius),
                         borderSide: const BorderSide(
-                            width: 1, style: BorderStyle.solid, color: AppColors.statusCritical)),
+                            width: 1,
+                            style: BorderStyle.solid,
+                            color: AppColors.statusCritical)),
                     errorStyle: const TextStyle(),
                     border: InputBorder.none,
                     enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppConstants.baseBorderRadius),
+                        borderRadius: BorderRadius.circular(
+                            AppConstants.baseBorderRadius),
                         borderSide: BorderSide(
                             width: 1,
                             style: BorderStyle.solid,
