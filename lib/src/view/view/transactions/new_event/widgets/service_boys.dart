@@ -21,7 +21,7 @@ class _ServiceBoysState extends State<ServiceBoys> {
   @override
   void initState() {
     serviceItems.addAll(widget.items);
-    serviceBoysCount.value = 2;
+    serviceBoysCount.value = 1;
     super.initState();
   }
 
@@ -34,25 +34,30 @@ class _ServiceBoysState extends State<ServiceBoys> {
           valueListenable: serviceBoysCount,
           builder: (context, value, child) {
             return Column(
-              children: List.generate(
-                serviceBoysCount.value,
-                (index) => serviceBoysCount.value == index + 1
-                    ? serviceBoysCount.value >= serviceItems.length
-                        ? const SizedBox()
-                        : FooterButton(
-                            fillColor: AppColors.transparent,
-                            label: "Add +",
-                            onTap: () {
-                              widget.onSelected(serviceItems);
-                              if (serviceBoysCount.value <= serviceItems.length) {
-                                serviceBoysCount.value++;
-                              }
-                            })
-                    : CustomServiceCounter(
-                        label: "Service Boys",
-                        items: serviceItems,
-                      ),
-              ),
+              children: [
+                Column(
+                  children: List.generate(
+                    serviceItems.length,
+                    (index) => CustomServiceCounter(
+                      label: "Service Boys",
+                      items: serviceItems,
+                    ),
+                  ),
+                ),
+                FooterButton(
+                    fillColor: AppColors.transparent,
+                    label: "Add +",
+                    onTap: () {
+                      if (serviceBoysCount.value <= serviceItems.length) {
+                        widget.onSelected(serviceItems);
+                        serviceBoysCount.value++;
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Max Limit Reached')),
+                        );
+                      }
+                    })
+              ],
             );
           }),
     );
