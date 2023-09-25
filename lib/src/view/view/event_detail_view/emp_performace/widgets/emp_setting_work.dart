@@ -26,7 +26,7 @@ class _EmployeeSettingWorkState extends State<EmployeeSettingWork> {
   void initState() {
     settingWorkItems.addAll(widget.items);
     log(" >>> ${settingWorkItems.length}");
-    settingWorkCount.value = 2;
+    settingWorkCount.value = 1;
     super.initState();
   }
 
@@ -53,25 +53,30 @@ class _EmployeeSettingWorkState extends State<EmployeeSettingWork> {
               builder: (context, value, child) {
                 return Column(
                   children: List.generate(settingWorkCount.value, (index) {
-                    log("$index");
-                    return settingWorkCount.value == index + 1
-                        ? FooterButton(
-                            fillColor: AppColors.transparent,
-                            label: "Add +",
-                            onTap: () {
-                              widget.onSelected(settingWorkItems);
-                              if (settingWorkItems.length <= settingWorkItems.length) {
-                                settingWorkCount.value++;
-                              }
-                            })
-                        : CustomServiceCounter(
-                            label: "Setting Work",
-                            items: settingWorkItems,
-                          );
+                    return CustomServiceCounter(
+                      label: "Setting Work",
+                      items: settingWorkItems,
+                    );
                   }),
                 );
               }),
-        )
+        ),
+        if (settingWorkCount.value <= settingWorkItems.length)
+          FooterButton(
+              fillColor: AppColors.transparent,
+              label: "Add +",
+              onTap: () {
+                if (settingWorkItems.length > settingWorkCount.value) {
+                  settingWorkCount.value++;
+                  widget.onSelected(settingWorkItems);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Max Limit Reached')),
+                  );
+                }
+              })
+        else
+          const SizedBox()
       ],
     );
   }

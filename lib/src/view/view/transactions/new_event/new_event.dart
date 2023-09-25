@@ -53,6 +53,8 @@ class _NewEventViewState extends State<NewEventView> {
   TextEditingController addtionalhours = TextEditingController();
   TextEditingController scheduleddate = TextEditingController();
   TextEditingController scheduledtime = TextEditingController();
+  TextEditingController dateController = TextEditingController();
+  TextEditingController timeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -393,7 +395,7 @@ class _NewEventViewState extends State<NewEventView> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         CustomDatePicker(
-          controller: TextEditingController(),
+          controller: dateController,
           type: "Date",
           label: "Date",
           onChanged: (value) {
@@ -401,7 +403,7 @@ class _NewEventViewState extends State<NewEventView> {
           },
         ),
         CustomDatePicker(
-            controller: TextEditingController(),
+            controller: timeController,
             type: 'Time',
             label: 'Time',
             onChanged: (value) {
