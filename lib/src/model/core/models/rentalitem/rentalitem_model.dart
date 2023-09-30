@@ -6,20 +6,34 @@ RentalItem rentalItemFromJson(String str) => RentalItem.fromJson(json.decode(str
 
 String rentalItemToJson(RentalItem data) => json.encode(data.toJson());
 
-class RentalItem extends BaseMaster{
-    final double? amount;
+class RentalItem extends BaseMaster {
+  double amount;
 
-    RentalItem({
-        this.amount,
-    }) : super(name: '', code: '');
+  RentalItem({
+    required int id,
+    required String name,
+    required String code,
+    required this.amount,
+  }) : super(id: id, name: name, code: code);
 
-    factory RentalItem.fromJson(Map<String, dynamic> json) => RentalItem(
-        amount: json["amount"]?.toDouble(),
+  static List<RentalItem> listFromMap(List<dynamic> list) {
+      List<RentalItem> rows = list.map((i) => RentalItem.fromJson(i)).toList();
+      return rows;
+    }
+    
+
+  factory RentalItem.fromJson(Map<String, dynamic> json) {
+    return RentalItem(
+      id: json['Id'] as int,
+      name: json['Name'] as String,
+      code: json['Code'] as String,
+      amount: json['Amount'] as double,
     );
+  }
 
-    @override
-      Map<String, dynamic> toJson() => {
-        "amount": amount,
-        ...super.toJson()
-    };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = super.toJson();
+    data['Amount'] = amount;
+    return data;
+  }
 }
