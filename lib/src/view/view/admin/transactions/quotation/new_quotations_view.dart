@@ -9,9 +9,17 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/themes/colors.dart';
 import '../../../../core/themes/typography.dart';
+import '../../../../core/widgets/custom_bottom_sheet.dart';
 
-class NewQuotationView extends StatelessWidget {
+class NewQuotationView extends StatefulWidget {
   const NewQuotationView({super.key});
+
+  @override
+  State<NewQuotationView> createState() => _NewQuotationViewState();
+}
+
+class _NewQuotationViewState extends State<NewQuotationView> {
+  TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +31,10 @@ class NewQuotationView extends StatelessWidget {
         height: kSize.height,
         width: kSize.width,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(AppConstants.baseBorderRadius,
-              AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, 0),
+          padding: const EdgeInsets.fromLTRB(
+              AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, 0),
           child: SingleChildScrollView(
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               quoteNo(kSize),
               Padding(
                 padding: EdgeInsets.only(bottom: kSize.height * 0.024),
@@ -64,10 +71,8 @@ class NewQuotationView extends StatelessWidget {
                   ],
                 ),
               ),
-              CustomServiceCounter(
-                  label: "", items: const ['Ceramic Plates', 'House ']),
-              CustomServiceCounter(
-                  label: "", items: const ['Ceramic Plates', 'House ']),
+              CustomServiceCounter(label: "", items: const ['Ceramic Plates', 'House ']),
+              CustomServiceCounter(label: "", items: const ['Ceramic Plates', 'House ']),
               SizedBox(
                 height: kSize.height * 0.032,
               ),
@@ -93,8 +98,7 @@ class NewQuotationView extends StatelessWidget {
                 ),
               ),
               CustomServiceCounter(label: "", items: const ['Head', 'A Boy ']),
-              CustomServiceCounter(
-                  label: "", items: const ['B Boy', 'Captain']),
+              CustomServiceCounter(label: "", items: const ['B Boy', 'Captain']),
               SizedBox(
                 height: kSize.height * 0.032,
               ),
@@ -208,7 +212,24 @@ class NewQuotationView extends StatelessWidget {
           child: FooterButton(
             fillColor: AppColors.transparent,
             label: 'Add Rental +',
-            onTap: () {},
+            onTap: () {
+              CustomBottomSheet(
+                context: context,
+                headLabel: "Rental Items",
+                listItems: [
+                  "Table",
+                  "Chair",
+                  "Services",
+                  "Entry",
+                  "Hosting",
+                  "Welcome",
+                  "Services",
+                  "Entry",
+                  "Hosting",
+                  "Welcome"
+                ],
+              ).showCustomSheet();
+            },
           ),
         ),
         const SizedBox(
