@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:evantez/src/model/core/app_prefs/app_prefs.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 PagedInput pagedInputFromJson(String str) => PagedInput.fromJson(json.decode(str));
 
 String pagedInputToJson(PagedInput data) => json.encode(data.toJson());
@@ -9,7 +12,7 @@ class PagedInput {
     final int? offset;
 
     PagedInput({
-        this.limit = 100,
+        this.limit = AppPrefs.limit ,
         this.offset = 0,
     });
 
