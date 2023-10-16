@@ -2,6 +2,7 @@ import 'package:evantez/app/router/router.dart';
 import 'package:evantez/app/router/router_constant.dart';
 import 'package:evantez/src/model/repository/events/events_controller.dart';
 import 'package:evantez/src/model/repository/resource/employee_repository.dart';
+import 'package:evantez/src/model/repository/resource/settingswages_repository.dart';
 import 'package:evantez/src/providers/auth/login/login_viewstate.dart';
 import 'package:evantez/src/providers/auth/opt/opt_viewstate.dart';
 import 'package:evantez/src/providers/auth/signup/signup_viewstate.dart';
@@ -27,7 +28,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthController()),
         // ChangeNotifierProvider(create: (_) => OtpViewstate()),
         ChangeNotifierProvider(create: (_) => EmployeesController()),
-        ChangeNotifierProvider(create: (_) => EventController())
+        ChangeNotifierProvider(create: (_) => EventController()),
+        ChangeNotifierProvider(
+          create: (_) => SettingsWageController(),
+        )
       ],
       child: MaterialApp(
         scaffoldMessengerKey: rootScaffoldMessengerKey,
