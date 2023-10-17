@@ -116,10 +116,14 @@ class AddSettingWageBottomSheet {
                   controller.editEmployeeType(
                       token: auth.accesToken ?? '',
                       context: context,
-                      id: controller.settingsWageList[index].id);
+                      id: controller.settingsWageLists[index].id);
                 } else {
-                  controller.settingsWageAdd(
-                      token: auth.accesToken ?? '', context: context);
+                  controller
+                      .settingsWageAdd(
+                          token: auth.accesToken ?? '', context: context)
+                      .then((value) {
+                    controller.settingsWageList(token: auth.accesToken ?? '');
+                  });
                 }
               },
             ),

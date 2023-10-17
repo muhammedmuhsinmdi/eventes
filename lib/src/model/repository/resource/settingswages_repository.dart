@@ -9,15 +9,15 @@ import 'package:flutter/material.dart';
 
 class SettingsWageController extends ChangeNotifier {
   bool isloading = false;
-  List<SettingsWageListResponse> settingsWageList = [];
+  List<SettingsWageListResponse> settingsWageLists = [];
 
-  Future<void> settingsWageListList({required String token}) async {
+  Future<void> settingsWageList({required String token}) async {
     try {
       isloading = true;
       final response =
           await SettingsWageProvider().loadEventSettings(token: token);
       if (response != null) {
-        settingsWageList = response;
+        settingsWageLists = response;
         notifyListeners();
       }
       isloading = false;
@@ -59,11 +59,10 @@ class SettingsWageController extends ChangeNotifier {
 
   //=-=-=-=-=-=-= Edit SettingsWages=-=-=-=-==-=-=-=
 
-  Future<void> editEmployeeType({
-    required String token,
-    required BuildContext context,
-    required int id,
-  }) async {
+  Future<void> editEmployeeType(
+      {required String token,
+      required BuildContext context,
+      required int id}) async {
     try {
       isloading = true;
       final response = await SettingsWageProvider().editSettingWork(
@@ -74,6 +73,12 @@ class SettingsWageController extends ChangeNotifier {
               rate: pieceRateController.text),
           id: id);
       if (response != null) {
+        int indexToUpdate =
+            settingsWageLists.indexWhere((item) => item.id == id);
+        if (indexToUpdate >= 0) {
+          settingsWageLists[indexToUpdate] = response;
+        }
+
         rootScaffoldMessengerKey.currentState!.showSnackBar(
             snackBarWidget('Successfully upadted!', color: Colors.green));
         await Future.delayed(const Duration(seconds: 2));

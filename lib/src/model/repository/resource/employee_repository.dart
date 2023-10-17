@@ -3,12 +3,12 @@
 import 'dart:developer';
 
 import 'package:evantez/app/app.dart';
-import 'package:evantez/src/model/core/models/employeetype/employeetype_model.dart';
 import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
 import 'package:evantez/src/serializer/models/employee_details_response.dart';
 import 'package:evantez/src/serializer/models/employee_list_response.dart';
 import 'package:evantez/src/serializer/models/employee_payment_details.dart';
 import 'package:evantez/src/serializer/models/employee_request.dart';
+import 'package:evantez/src/serializer/models/employee_type_request.dart';
 import 'package:evantez/src/serializer/models/employee_types_response.dart';
 import 'package:evantez/src/view/core/widgets/drop_down_value.dart';
 import 'package:flutter/material.dart';
@@ -294,11 +294,17 @@ class EmployeesController extends ChangeNotifier {
       isloading = true;
       final response = await EmployeeProvider().editEmployeeType(
           token: token,
-          name: nameTypeController.text,
-          code: codeController.text,
-          amount: amount.text,
+          data: EmployeeTypeRequest(
+              name: nameTypeController.text,
+              code: codeController.text,
+              amount: amount.text),
           id: id);
       if (response != null) {
+        int indexToUpdate =
+            employeeTypesList.indexWhere((item) => item.id == id);
+        if (indexToUpdate >= 0) {
+          employeeTypesList[indexToUpdate] = response;
+        }
         rootScaffoldMessengerKey.currentState!.showSnackBar(
             snackBarWidget('Successfully upadted!', color: Colors.green));
         Navigator.pop(context);
@@ -306,6 +312,7 @@ class EmployeesController extends ChangeNotifier {
       }
       isloading = false;
     } catch (e, s) {
+      log(e.toString());
       log('message', stackTrace: s);
       isloading = false;
     }

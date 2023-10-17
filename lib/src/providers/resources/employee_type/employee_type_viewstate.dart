@@ -4,6 +4,7 @@ import 'package:evantez/src/serializer/models/employee_details_response.dart';
 import 'package:evantez/src/serializer/models/employee_list_response.dart';
 import 'package:evantez/src/serializer/models/employee_payment_details.dart';
 import 'package:evantez/src/serializer/models/employee_request.dart';
+import 'package:evantez/src/serializer/models/employee_type_request.dart';
 import 'package:evantez/src/serializer/models/employee_types_response.dart';
 import 'package:evantez/src/view/core/event_api.dart';
 
@@ -120,17 +121,14 @@ class EmployeeProvider extends EventApi {
 
   Future<dynamic> editEmployeeType(
       {required String token,
-      required String name,
-      required String code,
       required int id,
-      required String amount}) async {
+      required EmployeeTypeRequest data}) async {
     Response response = await patch('users/employee-type/$id/',
-        data: {"name": name, "code": code, "amount": amount},
-        headers: apiHeaders(token));
+        data: data.toJson(), headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
       case 201:
-        return response.data;
+        return EmployeesTypesList.fromJson(response.data);
       default:
         throw Exception('Response Error');
     }

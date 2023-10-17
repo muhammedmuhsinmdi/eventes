@@ -1,16 +1,21 @@
 import 'dart:developer';
 
+import 'package:evantez/src/model/repository/resource/rentalitem_repository.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
+import 'package:evantez/src/view/view/admin/resouces/rental_items/widgets/add_rental_items.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RentalItemsTile extends StatelessWidget {
-  const RentalItemsTile({super.key});
+  final int index;
+  const RentalItemsTile({super.key, required this.index});
 
   @override
   Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
+    final controller = context.watch<RentalItemsController>();
     return Container(
       width: kSize.width,
       margin: EdgeInsets.only(bottom: kSize.height * 0.012),
@@ -28,7 +33,7 @@ class RentalItemsTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Table',
+                /*  'Table' */ controller.rentalItemsList[index].name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: AppTypography.poppinsSemiBold.copyWith(
@@ -39,11 +44,12 @@ class RentalItemsTile extends StatelessWidget {
               RichText(
                 text: TextSpan(
                     text: 'Rate ',
-                    style: AppTypography.poppinsMedium
-                        .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.5)),
+                    style: AppTypography.poppinsMedium.copyWith(
+                        fontSize: 14,
+                        color: AppColors.secondaryColor.withOpacity(0.5)),
                     children: [
                       TextSpan(
-                          text: ' 5775',
+                          text: controller.rentalItemsList[index].rate,
                           style: AppTypography.poppinsMedium.copyWith(
                             fontSize: 14,
                             color: AppColors.secondaryColor,
@@ -60,6 +66,9 @@ class RentalItemsTile extends StatelessWidget {
               // Callback that sets the selected popup menu item.
               onSelected: (item) {
                 // setState(() {
+                controller.initStateLoading(
+                    data: controller.rentalItemsList[index]);
+                AddRentalItems(context, index).show();
                 log(item);
                 // });
               },

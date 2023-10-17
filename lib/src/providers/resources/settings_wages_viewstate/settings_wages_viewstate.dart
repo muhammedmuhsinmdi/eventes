@@ -38,7 +38,7 @@ class SettingsWageProvider extends EventApi {
 
   //-------------Edit SettingsWage------------
 
-  Future<SettingsWageDetails> editSettingWork(
+  Future<SettingsWageListResponse> editSettingWork(
       {required String token,
       required SettingsWageRequest data,
       required int id}) async {
@@ -47,7 +47,7 @@ class SettingsWageProvider extends EventApi {
     switch (response.statusCode) {
       case 200:
       case 201:
-        return SettingsWageDetails.fromJson(response.data);
+        return SettingsWageListResponse.fromJson(response.data);
       default:
         throw Exception('Response Error');
     }
