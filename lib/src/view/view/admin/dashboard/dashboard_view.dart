@@ -1,5 +1,6 @@
 import 'package:evantez/src/model/repository/auth/auth_controller.dart';
 import 'package:evantez/src/model/repository/resource/employee_repository.dart';
+import 'package:evantez/src/model/repository/resource/settingswages_repository.dart';
 import 'package:evantez/src/view/view/admin/dashboard/widgets/bottom_nav_bar.dart';
 import 'package:evantez/src/view/view/admin/dashboard/events_view/events_view.dart';
 import 'package:evantez/src/view/view/admin/transactions/payment/payment_view/payment_view.dart';
@@ -42,6 +43,7 @@ class _DashBoardViewState extends State<DashBoardView> {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<EmployeesController>();
+    final settingsController = context.watch<SettingsWageController>();
     final auth = context.watch<AuthController>();
     final kSize = MediaQuery.of(context).size;
     return ValueListenableBuilder(
@@ -147,6 +149,11 @@ class _DashBoardViewState extends State<DashBoardView> {
                                                 controller.employeeTypesData(
                                                     token:
                                                         auth.accesToken ?? '');
+                                                settingsController
+                                                    .settingsWageListList(
+                                                        token:
+                                                            auth.accesToken ??
+                                                                '');
                                               }
                                             },
                                             child: Padding(

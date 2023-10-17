@@ -1,5 +1,8 @@
+import 'package:evantez/src/model/repository/auth/auth_controller.dart';
+import 'package:evantez/src/model/repository/resource/settingswages_repository.dart';
 import 'package:evantez/src/view/core//widgets/footer_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/constants/constants.dart';
@@ -9,7 +12,8 @@ import '../../../../../core/widgets/custom_textfield.dart';
 
 class AddSettingWageBottomSheet {
   BuildContext context;
-  AddSettingWageBottomSheet(this.context);
+  int index;
+  AddSettingWageBottomSheet(this.context, this.index);
 
   Future show() async {
     final kSize = MediaQuery.of(context).size;
@@ -23,10 +27,14 @@ class AddSettingWageBottomSheet {
         backgroundColor: AppColors.accentDark,
         builder: (context) {
           return Padding(
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Padding(
-              padding: EdgeInsets.fromLTRB(AppConstants.baseBorderRadius, AppConstants.baseBorderRadius,
-                  AppConstants.baseBorderRadius, kSize.height * 0.044),
+              padding: EdgeInsets.fromLTRB(
+                  AppConstants.baseBorderRadius,
+                  AppConstants.baseBorderRadius,
+                  AppConstants.baseBorderRadius,
+                  kSize.height * 0.044),
               child: addSettingWork(context, kSize),
             ),
           );
@@ -34,6 +42,8 @@ class AddSettingWageBottomSheet {
   }
 
   Widget addSettingWork(BuildContext context, Size kSize) {
+    final controller = context.watch<SettingsWageController>();
+    final auth = context.watch<AuthController>();
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -41,7 +51,7 @@ class AddSettingWageBottomSheet {
           children: [
             const Spacer(),
             Text(
-              "Add Setting Work",
+              controller.isEdit ? "Update Setting Work" : "Add Setting Work",
               style: AppTypography.poppinsSemiBold.copyWith(
                 fontSize: 18,
                 color: AppColors.secondaryColor,
@@ -56,30 +66,34 @@ class AddSettingWageBottomSheet {
                 },
                 child: Text(
                   AppStrings.closeText,
-                  style: AppTypography.poppinsMedium
-                      .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.6)),
+                  style: AppTypography.poppinsMedium.copyWith(
+                      fontSize: 14,
+                      color: AppColors.secondaryColor.withOpacity(0.6)),
                 ))
           ],
         ),
         SizedBox(
           height: kSize.height * 0.032,
         ),
-        const CustomTextField(
+        CustomTextField(
           text: "Task Name",
           hintText: "Name",
+          controller: controller.taskNameController,
         ),
         SizedBox(
           height: kSize.height * 0.024,
         ),
-        const CustomTextField(
+        CustomTextField(
           text: "Task Code",
           hintText: "Code",
+          controller: controller.taskCodeController,
         ),
         SizedBox(
           height: kSize.height * 0.024,
         ),
-        const CustomTextField(
+        CustomTextField(
           text: "Piece Rate",
+          controller: controller.pieceRateController,
           hintText: AppStrings.amountText,
         ),
         SizedBox(height: kSize.height * 0.032),
@@ -96,8 +110,18 @@ class AddSettingWageBottomSheet {
                 }),
             FooterButton(
               width: kSize.width * 0.4,
-              label: "Save",
-              onTap: () {},
+              label: controller.isEdit ? "Update" : "Save",
+              onTap: () {
+                if (controller.isEdit) {
+                  controller.editEmployeeType(
+                      token: auth.accesToken ?? '',
+                      context: context,
+                      id: controller.settingsWageList[index].id);
+                } else {
+                  controller.settingsWageAdd(
+                      token: auth.accesToken ?? '', context: context);
+                }
+              },
             ),
           ],
         )

@@ -1,16 +1,20 @@
 import 'dart:developer';
 
+import 'package:evantez/src/model/repository/resource/settingswages_repository.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
+import 'package:evantez/src/view/view/admin/resouces/settings_wage/widgets/add_setting_wage_bottom_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AddSettingsTile extends StatelessWidget {
-  const AddSettingsTile({super.key});
-
+  const AddSettingsTile({super.key, required this.index});
+  final int index;
   @override
   Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
+    final controller = context.watch<SettingsWageController>();
     return Container(
       width: kSize.width,
       margin: EdgeInsets.only(bottom: kSize.height * 0.012),
@@ -28,7 +32,8 @@ class AddSettingsTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Chair Cover Dressing',
+                /*   'Chair Cover Dressing' */ controller
+                    .settingsWageList[index].name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: AppTypography.poppinsSemiBold.copyWith(
@@ -39,11 +44,12 @@ class AddSettingsTile extends StatelessWidget {
               RichText(
                 text: TextSpan(
                     text: 'Price Range ',
-                    style: AppTypography.poppinsMedium
-                        .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.5)),
+                    style: AppTypography.poppinsMedium.copyWith(
+                        fontSize: 14,
+                        color: AppColors.secondaryColor.withOpacity(0.5)),
                     children: [
                       TextSpan(
-                          text: ' 5775',
+                          text: controller.settingsWageList[index].rate,
                           style: AppTypography.poppinsMedium.copyWith(
                             fontSize: 14,
                             color: AppColors.secondaryColor,
@@ -60,6 +66,9 @@ class AddSettingsTile extends StatelessWidget {
               // Callback that sets the selected popup menu item.
               onSelected: (item) {
                 // setState(() {
+                controller.initStateLoading(
+                    data: controller.settingsWageList[index]);
+                AddSettingWageBottomSheet(context, index).show();
                 log(item);
                 // });
               },
