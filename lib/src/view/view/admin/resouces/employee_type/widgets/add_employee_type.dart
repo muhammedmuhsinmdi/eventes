@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:evantez/src/model/repository/auth/auth_controller.dart';
 import 'package:evantez/src/model/repository/resource/employee_repository.dart';
-import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
 import 'package:evantez/src/view/core//widgets/footer_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -132,8 +131,13 @@ class AddEmployeeType {
                       log('test1');
                     } else {
                       log('test2');
-                      controller.employeeTypeAdd(
-                          token: auth.accesToken ?? '', context: context);
+                      controller
+                          .employeeTypeAdd(
+                              token: auth.accesToken ?? '', context: context)
+                          .then((value) {
+                        controller.employeeTypesData(
+                            token: auth.accesToken ?? '');
+                      });
                     }
                   },
                 ),

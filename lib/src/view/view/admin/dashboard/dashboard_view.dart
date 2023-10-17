@@ -1,5 +1,6 @@
 import 'package:evantez/src/model/repository/auth/auth_controller.dart';
 import 'package:evantez/src/model/repository/resource/employee_repository.dart';
+import 'package:evantez/src/model/repository/resource/rentalitem_repository.dart';
 import 'package:evantez/src/model/repository/resource/settingswages_repository.dart';
 import 'package:evantez/src/view/view/admin/dashboard/widgets/bottom_nav_bar.dart';
 import 'package:evantez/src/view/view/admin/dashboard/events_view/events_view.dart';
@@ -44,6 +45,7 @@ class _DashBoardViewState extends State<DashBoardView> {
   Widget build(BuildContext context) {
     final controller = context.watch<EmployeesController>();
     final settingsController = context.watch<SettingsWageController>();
+    final rentalItemsController = context.watch<RentalItemsController>();
     final auth = context.watch<AuthController>();
     final kSize = MediaQuery.of(context).size;
     return ValueListenableBuilder(
@@ -150,7 +152,12 @@ class _DashBoardViewState extends State<DashBoardView> {
                                                     token:
                                                         auth.accesToken ?? '');
                                                 settingsController
-                                                    .settingsWageListList(
+                                                    .settingsWageList(
+                                                        token:
+                                                            auth.accesToken ??
+                                                                '');
+                                                rentalItemsController
+                                                    .rentalItemList(
                                                         token:
                                                             auth.accesToken ??
                                                                 '');

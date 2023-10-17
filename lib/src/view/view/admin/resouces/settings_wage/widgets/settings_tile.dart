@@ -33,7 +33,7 @@ class AddSettingsTile extends StatelessWidget {
             children: [
               Text(
                 /*   'Chair Cover Dressing' */ controller
-                    .settingsWageList[index].name,
+                    .settingsWageLists[index].name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: AppTypography.poppinsSemiBold.copyWith(
@@ -49,7 +49,7 @@ class AddSettingsTile extends StatelessWidget {
                         color: AppColors.secondaryColor.withOpacity(0.5)),
                     children: [
                       TextSpan(
-                          text: controller.settingsWageList[index].rate,
+                          text: controller.settingsWageLists[index].rate,
                           style: AppTypography.poppinsMedium.copyWith(
                             fontSize: 14,
                             color: AppColors.secondaryColor,
@@ -67,7 +67,7 @@ class AddSettingsTile extends StatelessWidget {
               onSelected: (item) {
                 // setState(() {
                 controller.initStateLoading(
-                    data: controller.settingsWageList[index]);
+                    data: controller.settingsWageLists[index]);
                 AddSettingWageBottomSheet(context, index).show();
                 log(item);
                 // });

@@ -130,7 +130,7 @@ class _SettingsWageViewState extends State<SettingsWageView> {
     final controller = context.watch<SettingsWageController>();
     return Expanded(
         child: ListView.builder(
-            itemCount: controller.settingsWageList.length,
+            itemCount: controller.settingsWageLists.length,
             padding: EdgeInsets.only(
                 bottom: kSize.height * 0.16,
                 left: AppConstants.baseBorderRadius,
