@@ -122,7 +122,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             autocorrect: false,
             textAlign: TextAlign.left,
             textInputAction: widget.textInputAction,
-            textCapitalization: TextCapitalization.words,
+            // textCapitalization: TextCapitalization.words,
             textAlignVertical: widget.textAlignVertical,
             //enableInteractiveSelection: widget.enableInteractiveSelection ?? false,
             style: widget.style ??

@@ -1,46 +1,47 @@
 import 'package:evantez/app/router/router_constant.dart';
 import 'package:evantez/src/model/core/models/menu/menu_model.dart';
 import 'package:evantez/src/model/core/models/signin/pm_signin.dart';
-import 'package:evantez/src/view/view/add_employee_view/add_employee_view.dart';
+import 'package:evantez/src/view/view/admin/resouces/employee/add_employee_view/add_employee_view.dart';
 import 'package:evantez/src/view/view/auth/login/login_view.dart';
 import 'package:evantez/src/view/view/auth/otp_view/otp_view.dart';
 import 'package:evantez/src/view/view/auth/sign_up/sign_up_view.dart';
-import 'package:evantez/src/view/view/boy_event_detail_view/boy_event_detail_view.dart';
-import 'package:evantez/src/view/view/boydashboard/boy_dashboard_view.dart';
-import 'package:evantez/src/view/view/boydashboard/boy_profile/widgets/boy_edit_profile.dart';
-import 'package:evantez/src/view/view/boydashboard/notification_view/boy_notification_view.dart';
-import 'package:evantez/src/view/view/catering/food_items/food_items.dart';
-import 'package:evantez/src/view/view/catering/food_quotes/food_quotes_view.dart';
+import 'package:evantez/src/view/view/boys/boydashboard/boy_event_detail_view/boy_event_detail_view.dart';
+import 'package:evantez/src/view/view/boys/boydashboard/boy_dashboard_view.dart';
+import 'package:evantez/src/view/view/boys/boydashboard/boy_profile/widgets/boy_edit_profile.dart';
+import 'package:evantez/src/view/view/boys/boydashboard/notification_view/boy_notification_view.dart';
+import 'package:evantez/src/view/view/admin/catering/food_items/food_items.dart';
+import 'package:evantez/src/view/view/admin/catering/food_quotes/food_quotes_view.dart';
 import 'package:evantez/src/view/view/common/messages/admin_amount_received.dart';
 import 'package:evantez/src/view/view/common/messages/boy_early_exit.dart';
 import 'package:evantez/src/view/view/common/messages/boy_event_remove.dart';
 import 'package:evantez/src/view/view/common/messages/boy_exit_record.dart';
 import 'package:evantez/src/view/view/common/messages/boy_settled_success.dart';
-import 'package:evantez/src/view/view/dashboard/dashboard_view.dart';
-import 'package:evantez/src/view/view/reports/day_book/day_book_report.dart';
-import 'package:evantez/src/view/view/reports/employee_dues/employee_dues_report.dart';
-import 'package:evantez/src/view/view/reports/event_dues/event_dues_report.dart';
-import 'package:evantez/src/view/view/reports/event_profit/employee_profit_report.dart';
-import 'package:evantez/src/view/view/resouces/employee/employee_application_view/employee_application_view.dart';
-import 'package:evantez/src/view/view/resouces/employee/employee_list_view/employee_list_view.dart';
-import 'package:evantez/src/view/view/resouces/employee/employee_view/employee_view.dart';
-import 'package:evantez/src/view/view/event_detail_view/emp_performace/emp_performance.dart';
-import 'package:evantez/src/view/view/event_detail_view/event_detail_view.dart';
-import 'package:evantez/src/view/view/dashboard/notification_view/notificaton_view.dart';
-import 'package:evantez/src/view/view/resouces/employee_type/employee_type_view.dart';
-import 'package:evantez/src/view/view/resouces/rental_items/rental_items_view.dart';
-import 'package:evantez/src/view/view/resouces/settings_wage/settings_wage_view.dart';
+import 'package:evantez/src/view/view/admin/dashboard/dashboard_view.dart';
+import 'package:evantez/src/view/view/admin/dashboard/event_detail_view/widgets/applied_completed.dart';
+import 'package:evantez/src/view/view/admin/reports/day_book/day_book_report.dart';
+import 'package:evantez/src/view/view/admin/reports/employee_dues/employee_dues_report.dart';
+import 'package:evantez/src/view/view/admin/reports/event_dues/event_dues_report.dart';
+import 'package:evantez/src/view/view/admin/reports/event_profit/employee_profit_report.dart';
+import 'package:evantez/src/view/view/admin/resouces/employee/employee_application_view/employee_application_view.dart';
+import 'package:evantez/src/view/view/admin/resouces/employee/employee_list_view/employee_list_view.dart';
+import 'package:evantez/src/view/view/admin/resouces/employee/employee_view/employee_view.dart';
+import 'package:evantez/src/view/view/admin/dashboard/event_detail_view/emp_performace/emp_performance.dart';
+import 'package:evantez/src/view/view/admin/dashboard/event_detail_view/event_detail_view.dart';
+import 'package:evantez/src/view/view/admin/dashboard/notification_view/notificaton_view.dart';
+import 'package:evantez/src/view/view/admin/resouces/employee_type/employee_type_view.dart';
+import 'package:evantez/src/view/view/admin/resouces/rental_items/rental_items_view.dart';
+import 'package:evantez/src/view/view/admin/resouces/settings_wage/settings_wage_view.dart';
 import 'package:evantez/src/view/view/splash/splash_view.dart';
-import 'package:evantez/src/view/view/transactions/invoice/invoice_detail_view/invoice_detail_view.dart';
-import 'package:evantez/src/view/view/transactions/invoice/invoices/invoices_view.dart';
-import 'package:evantez/src/view/view/transactions/invoice/new_invoice/new_invoice_view.dart';
-import 'package:evantez/src/view/view/transactions/new_event/new_event.dart';
-import 'package:evantez/src/view/view/transactions/payment/payment_view/new_payment_view.dart';
-import 'package:evantez/src/view/view/transactions/quotation/new_quotations_view.dart';
-import 'package:evantez/src/view/view/transactions/quotation/quotation_detail_view.dart';
-import 'package:evantez/src/view/view/transactions/quotation/quotations.dart';
+import 'package:evantez/src/view/view/admin/transactions/invoice/invoice_detail_view/invoice_detail_view.dart';
+import 'package:evantez/src/view/view/admin/transactions/invoice/invoices/invoices_view.dart';
+import 'package:evantez/src/view/view/admin/transactions/invoice/new_invoice/new_invoice_view.dart';
+import 'package:evantez/src/view/view/admin/transactions/new_event/new_event.dart';
+import 'package:evantez/src/view/view/admin/transactions/payment/payment_view/new_payment_view.dart';
+import 'package:evantez/src/view/view/admin/transactions/quotation/new_quotations_view.dart';
+import 'package:evantez/src/view/view/admin/transactions/quotation/quotation_detail_view.dart';
+import 'package:evantez/src/view/view/admin/transactions/quotation/quotations.dart';
 import 'package:flutter/material.dart';
-import '../../src/view/view/catering/food_quotes/new_food_quotes.dart';
+import '../../src/view/view/admin/catering/food_quotes/new_food_quotes.dart';
 import '../../src/view/view/common/messages/admin_supervisor_marked.dart';
 
 class AppRouter {
@@ -141,7 +142,7 @@ class AppRouter {
         );
       case RouterConstants.notificationRoute:
         return MaterialPageRoute<NotificationView>(
-          builder: (_) => NotificationView(),
+          builder: (_) => const NotificationView(),
         );
       case RouterConstants.newQuotationRoute:
         return MaterialPageRoute<NewQuotationView>(
@@ -221,6 +222,10 @@ class AppRouter {
       case RouterConstants.boyEditProfileRoute:
         return MaterialPageRoute<BoyEditProfile>(
           builder: (_) => BoyEditProfile(),
+        );
+      case RouterConstants.applystatus:
+        return MaterialPageRoute<ApplyCompleted>(
+          builder: (_) => const ApplyCompleted(),
         );
 
       default:

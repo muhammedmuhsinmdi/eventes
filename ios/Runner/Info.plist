@@ -34,6 +34,12 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Post videos to profile</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>c</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Evantez needs access to your camera to take profile photo and upload your photo</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

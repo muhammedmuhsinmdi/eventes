@@ -37,7 +37,8 @@ class MultiSelectionDropDown extends StatelessWidget {
 
   final ValueNotifier<int> count = ValueNotifier<int>(1);
 
-  final ValueNotifier<List<String>> selectedEmpList = ValueNotifier<List<String>>([]);
+  final ValueNotifier<List<String>> selectedEmpList =
+      ValueNotifier<List<String>>([]);
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +81,8 @@ class MultiSelectionDropDown extends StatelessWidget {
                       borderRadius: BorderRadius.circular(
                         AppConstants.basePadding,
                       )),
-                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  itemBuilder: (BuildContext context) =>
+                      <PopupMenuEntry<String>>[
                     PopupMenuItem<String>(
                       padding: EdgeInsets.symmetric(
                         horizontal: kSize.width * 0.05,
@@ -138,15 +140,18 @@ class MultiSelectionDropDown extends StatelessWidget {
                                     if (count.value > 1) {
                                       if (wageController.text.isNotEmpty) {
                                         count.value--;
-                                        double wg = double.parse(wageController.text);
-                                        _totalController.text = "${(wg * count.value).toInt()}";
+                                        double wg =
+                                            double.parse(wageController.text);
+                                        _totalController.text =
+                                            "${(wg * count.value).toInt()}";
                                       }
                                     }
                                   },
                                   icon: SvgPicture.asset(
                                     AppImages.minuscircle,
-                                    colorFilter:
-                                        const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                                    colorFilter: const ColorFilter.mode(
+                                        AppColors.primaryColor,
+                                        BlendMode.srcIn),
                                   )),
                               Text(
                                 '${count.value}',
@@ -159,14 +164,17 @@ class MultiSelectionDropDown extends StatelessWidget {
                                   onPressed: () {
                                     if (wageController.text.isNotEmpty) {
                                       count.value++;
-                                      double wg = double.parse(wageController.text);
-                                      _totalController.text = "${(wg * count.value).toInt()}";
+                                      double wg =
+                                          double.parse(wageController.text);
+                                      _totalController.text =
+                                          "${(wg * count.value).toInt()}";
                                     }
                                   },
                                   icon: SvgPicture.asset(
                                     AppImages.addCircle,
-                                    colorFilter:
-                                        const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                                    colorFilter: const ColorFilter.mode(
+                                        AppColors.primaryColor,
+                                        BlendMode.srcIn),
                                   )),
                               const SizedBox(
                                 width: 14,
@@ -241,7 +249,8 @@ class MultiSelectionDropDown extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         width: kSize.width * 0.8,
         padding: const EdgeInsets.symmetric(vertical: 4),
-        decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.primaryColor))),
+        decoration: const BoxDecoration(
+            border: Border(bottom: BorderSide(color: AppColors.primaryColor))),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -254,9 +263,11 @@ class MultiSelectionDropDown extends StatelessWidget {
                     3,
                     (index) => Container(
                       clipBehavior: Clip.antiAlias,
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
-                          color: AppColors.primaryColor, borderRadius: BorderRadius.circular(12)),
+                          color: AppColors.primaryColor,
+                          borderRadius: BorderRadius.circular(12)),
                       child: Text(
                         "HFDuuihiu",
                         style: AppTypography.poppinsRegular.copyWith(
@@ -269,7 +280,8 @@ class MultiSelectionDropDown extends StatelessWidget {
             ),
             SvgPicture.asset(
               AppImages.arrowDropDown,
-              colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+              colorFilter: const ColorFilter.mode(
+                  AppColors.primaryColor, BlendMode.srcIn),
             )
           ],
         ),
@@ -279,8 +291,8 @@ class MultiSelectionDropDown extends StatelessWidget {
 
   Widget bottomSheetItemList(BuildContext context, Size kSize) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-          AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, 0),
+      padding: const EdgeInsets.fromLTRB(AppConstants.baseBorderRadius,
+          AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, 0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -315,16 +327,19 @@ class MultiSelectionDropDown extends StatelessWidget {
               text: '',
               hintText: AppStrings.searchText,
               suffixIcon: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
                 child: SvgPicture.asset(
                   AppImages.search,
-                  colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                      AppColors.primaryColor, BlendMode.srcIn),
                 ),
               ),
             ),
           ),
           Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppConstants.baseBorderRadius),
+              padding: const EdgeInsets.symmetric(
+                  vertical: AppConstants.baseBorderRadius),
               child: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.start,
                 spacing: 12,
@@ -333,9 +348,11 @@ class MultiSelectionDropDown extends StatelessWidget {
                     3,
                     (index) => Container(
                           clipBehavior: Clip.antiAlias,
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
-                              color: AppColors.primaryColor, borderRadius: BorderRadius.circular(12)),
+                              color: AppColors.primaryColor,
+                              borderRadius: BorderRadius.circular(12)),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -369,13 +386,15 @@ class MultiSelectionDropDown extends StatelessWidget {
           Expanded(
               child: ListView.separated(
                   itemCount: 12,
-                  padding: const EdgeInsets.only(bottom: AppConstants.baseBorderRadius),
+                  padding: const EdgeInsets.only(
+                      bottom: AppConstants.baseBorderRadius),
                   separatorBuilder: (context, index) {
                     return const Padding(padding: EdgeInsets.only(bottom: 8));
                   },
                   itemBuilder: (context, index) {
                     return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         color: AppColors.secondaryColor.withOpacity(0.2),
@@ -393,7 +412,8 @@ class MultiSelectionDropDown extends StatelessWidget {
                                 text: " Supervisor",
                                 style: AppTypography.poppinsRegular.copyWith(
                                   fontSize: 16,
-                                  color: AppColors.secondaryColor.withOpacity(0.4),
+                                  color:
+                                      AppColors.secondaryColor.withOpacity(0.4),
                                 ),
                               )
                             ]),

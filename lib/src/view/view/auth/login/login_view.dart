@@ -1,7 +1,6 @@
 import 'dart:developer';
 
-import 'package:evantez/app/router/router_constant.dart';
-import 'package:evantez/src/providers/auth/login/login_viewstate.dart';
+import 'package:evantez/src/model/repository/auth/auth_controller.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//constants/app_strings.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
@@ -11,8 +10,6 @@ import 'package:evantez/src/view/core//widgets/custom_textfield.dart';
 import 'package:evantez/src/view/core//widgets/footer_button.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class LoginView extends StatelessWidget {
@@ -20,11 +17,12 @@ class LoginView extends StatelessWidget {
 
   final formKey = GlobalKey<FormState>();
   final phoneController = TextEditingController();
-  late LoginViewState loginState;
+
   final ValueNotifier<bool> isloading = ValueNotifier<bool>(false);
   @override
   Widget build(BuildContext context) {
-    loginState = Provider.of<LoginViewState>(context);
+    final controller = context.watch<AuthController>();
+
     final kSize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -45,7 +43,8 @@ class LoginView extends StatelessWidget {
           height: kSize.height,
           width: kSize.width,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppConstants.baseBorderRadius),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -53,25 +52,31 @@ class LoginView extends StatelessWidget {
                 Image.asset(AppImages.appLogo),
                 const Spacer(),
                 CustomTextField(
-                  keyboardType: TextInputType.phone,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  text: AppStrings.phoneText,
-                  hintText: AppStrings.phoneHint,
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: SvgPicture.asset(
-                      AppImages.call,
-                      colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
-                    ),
-                  ),
-                  validator: loginState.phoneValidator,
-                  onSave: (value) {
-                    loginState.pmSignin.phone = value;
-                  },
-                  controller: phoneController,
-                ),
+                    controller: controller.signInEmailController,
+                    text: 'Email'),
+                CustomTextField(
+                    controller: controller.signInPasswordController,
+                    text: 'Password'),
+                // CustomTextField(
+                //   keyboardType: TextInputType.phone,
+                //   inputFormatters: [
+                //     FilteringTextInputFormatter.digitsOnly,
+                //   ],
+                //   text: AppStrings.phoneText,
+                //   hintText: AppStrings.phoneHint,
+                //   prefixIcon: Padding(
+                //     padding: const EdgeInsets.all(10.0),
+                //     child: SvgPicture.asset(
+                //       AppImages.call,
+                //       colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                //     ),
+                //   ),
+                //   validator: loginState.phoneValidator,
+                //   onSave: (value) {
+                //     loginState.pmSignin.phone = value;
+                //   },
+                //   controller: phoneController,
+                // ),
                 SizedBox(
                   height: kSize.height * 0.032,
                 ),
@@ -91,13 +96,15 @@ class LoginView extends StatelessWidget {
                             if (formKey.currentState!.validate()) {
                               formKey.currentState!.save();
                               isloading.value = true;
-                              var result = await loginState.login(context);
+                              // var result = await loginState.login(context);
                               // log(result);
                               // if (result == "Ok") {
                               //   if (context.mounted) {
                               //     navigate(context, RouterConstants.bottomNavRoute);
                               //   }
                               // } else {}
+                              await controller.login(context);
+                              isloading.value = false;
                             }
                           },
                         );
@@ -109,14 +116,18 @@ class LoginView extends StatelessWidget {
                 RichText(
                     text: TextSpan(
                         text: AppStrings.registerUser,
-                        style: AppTypography.poppinsMedium
-                            .copyWith(color: AppColors.secondaryColor.withOpacity(0.4)),
+                        style: AppTypography.poppinsMedium.copyWith(
+                            color: AppColors.secondaryColor.withOpacity(0.4)),
                         children: [
                       TextSpan(
                           recognizer: TapGestureRecognizer()
-                            ..onTap = () => loginState.navigate(context, RouterConstants.registerRoute),
+                            ..onTap = () {
+                              log('message');
+                              controller.login(context);
+                            },
                           text: "  ${AppStrings.signUpText}",
-                          style: AppTypography.poppinsMedium.copyWith(color: AppColors.primaryColor))
+                          style: AppTypography.poppinsMedium
+                              .copyWith(color: AppColors.primaryColor))
                     ])),
                 const Spacer(),
               ],

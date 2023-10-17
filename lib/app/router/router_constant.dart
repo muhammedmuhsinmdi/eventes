@@ -44,4 +44,7 @@ class RouterConstants {
   static const String boyNotificationRoute = '/boyNotificationRoute';
   static const String boyEventDetailRoute = '/boyEventDetailRoute';
   static const String boyEditProfileRoute = '/boyProfileEditRoute';
+
+  //=-=-=-=-=-= status =-=-=-=-=-=
+  static const String applystatus = '/apply_status';
 }

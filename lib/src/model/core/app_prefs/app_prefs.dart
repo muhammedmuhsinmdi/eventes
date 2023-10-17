@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AppPrefs {
   static String? token = "";
+  static const int limit = 100;
 
   static Future<void> writeLocalCaches() async {
     if (Platform.isAndroid || Platform.isIOS) {

@@ -14,6 +14,7 @@ class CustomDropdownSearch extends StatelessWidget {
   final String? hintText;
   final bool? textAlignCenter;
   final List<String>? items;
+  final bool? bottomSheet;
   final String? Function(String?)? validator;
   final Function(String?)? onSave;
   final Function(String?)? onChanged;
@@ -27,15 +28,16 @@ class CustomDropdownSearch extends StatelessWidget {
       this.onSave,
       this.labelTextColor,
       this.onChanged,
-      this.textAlignCenter});
+      this.textAlignCenter,
+      this.bottomSheet});
 
   @override
   Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        if (label != null && label!.isNotEmpty) ...{
+        if (label != null && label!.isNotEmpty && (bottomSheet != null && !bottomSheet!)) ...{
           Padding(
             padding: EdgeInsets.only(bottom: kSize.height * 0.010),
             child: RichText(

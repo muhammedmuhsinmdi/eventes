@@ -49,7 +49,7 @@ class AppStrings {
   static const String bloodGroup = 'Blood Group';
   static const String paymentDetailsText = "Payment Details";
   static const String bankDetails = "Bank Details";
-  static const String panCardText = 'PAN Card Number';
+  static const String panCardText = 'Id Number';
   static const String totalEarningsText = "Total Earnings";
   static const String employeeTypeText = 'Employee Type';
   static const String changePositionEmp = 'Change Position';
@@ -87,4 +87,5 @@ class AppStrings {
   static const String personalInfoText = 'Personal Information';
   static const String accountNoText = "Account Number";
   static const String ifscCodeText = "IFSC";
+  static const String settingsWorkText = 'Setting Work';
 }
