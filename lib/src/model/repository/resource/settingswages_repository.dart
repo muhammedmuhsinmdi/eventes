@@ -9,18 +9,19 @@ import 'package:flutter/material.dart';
 
 class SettingsWageController extends ChangeNotifier {
   bool isloading = false;
+  final formKey = GlobalKey<FormState>();
   List<SettingsWageListResponse> settingsWageLists = [];
 
   Future<void> settingsWageList({required String token}) async {
     try {
       isloading = true;
-      final response =
-          await SettingsWageProvider().loadEventSettings(token: token);
+      notifyListeners();
+      final response = await SettingsWageProvider().loadEventSettings(token: token);
       if (response != null) {
         settingsWageLists = response;
-        notifyListeners();
       }
       isloading = false;
+      notifyListeners();
     } catch (e) {
       log('message');
       isloading = false;
@@ -32,25 +33,23 @@ class SettingsWageController extends ChangeNotifier {
   TextEditingController taskCodeController = TextEditingController();
   TextEditingController pieceRateController = TextEditingController();
 
-  Future<void> settingsWageAdd(
-      {required String token, required BuildContext context}) async {
+  Future<void> settingsWageAdd({required String token, required BuildContext context}) async {
     try {
       isloading = true;
+      notifyListeners();
       final response = await SettingsWageProvider().addSettingWork(
         token: token,
         data: SettingsWageRequest(
-            name: taskNameController.text,
-            code: taskCodeController.text,
-            rate: pieceRateController.text),
+            name: taskNameController.text, code: taskCodeController.text, rate: pieceRateController.text),
       );
       if (response != null) {
-        rootScaffoldMessengerKey.currentState!.showSnackBar(
-            snackBarWidget('Successfully added!', color: Colors.green));
+        rootScaffoldMessengerKey.currentState!
+            .showSnackBar(snackBarWidget('Successfully added!', color: Colors.green));
         await Future.delayed(const Duration(seconds: 2));
         if (context.mounted) Navigator.of(context).pop();
-        notifyListeners();
       }
       isloading = false;
+      notifyListeners();
     } catch (e) {
       log('message');
       isloading = false;
@@ -60,32 +59,28 @@ class SettingsWageController extends ChangeNotifier {
   //=-=-=-=-=-=-= Edit SettingsWages=-=-=-=-==-=-=-=
 
   Future<void> editEmployeeType(
-      {required String token,
-      required BuildContext context,
-      required int id}) async {
+      {required String token, required BuildContext context, required int id}) async {
     try {
       isloading = true;
+      notifyListeners();
       final response = await SettingsWageProvider().editSettingWork(
           token: token,
           data: SettingsWageRequest(
-              name: taskNameController.text,
-              code: taskCodeController.text,
-              rate: pieceRateController.text),
+              name: taskNameController.text, code: taskCodeController.text, rate: pieceRateController.text),
           id: id);
       if (response != null) {
-        int indexToUpdate =
-            settingsWageLists.indexWhere((item) => item.id == id);
+        int indexToUpdate = settingsWageLists.indexWhere((item) => item.id == id);
         if (indexToUpdate >= 0) {
           settingsWageLists[indexToUpdate] = response;
         }
 
-        rootScaffoldMessengerKey.currentState!.showSnackBar(
-            snackBarWidget('Successfully upadted!', color: Colors.green));
+        rootScaffoldMessengerKey.currentState!
+            .showSnackBar(snackBarWidget('Successfully upadted!', color: Colors.green));
         await Future.delayed(const Duration(seconds: 2));
         if (context.mounted) Navigator.of(context).pop();
-        notifyListeners();
       }
       isloading = false;
+      notifyListeners();
     } catch (e, s) {
       log('message', stackTrace: s);
       isloading = false;

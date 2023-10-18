@@ -1,4 +1,5 @@
 import 'package:evantez/src/view/core/themes/colors.dart';
+import 'package:evantez/src/view/core/themes/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -43,6 +44,7 @@ class _DatePickerContainerState extends State<DatePickerContainer> {
 
   @override
   Widget build(BuildContext context) {
+    final kSize = MediaQuery.of(context).size;
     return Container(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       decoration: BoxDecoration(
@@ -60,7 +62,7 @@ class _DatePickerContainerState extends State<DatePickerContainer> {
                 final DateTime? picked = await showDatePicker(
                   context: context,
                   initialDate: widget.initialDate ?? DateTime.now(),
-                  firstDate: DateTime(2015),
+                  firstDate: DateTime(1960),
                   lastDate: DateTime(2101),
                   builder: (BuildContext context, Widget? child) {
                     return Theme(
@@ -92,8 +94,7 @@ class _DatePickerContainerState extends State<DatePickerContainer> {
                 }
               },
               child: Padding(
-                padding: const EdgeInsets.only(
-                    left: 15, right: 10, top: 13, bottom: 13),
+                padding: const EdgeInsets.only(left: 15, right: 10, top: 13, bottom: 13),
                 child: Row(
                   children: [
                     Expanded(
@@ -102,24 +103,22 @@ class _DatePickerContainerState extends State<DatePickerContainer> {
                                 pickedDate ?? '',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500),
+                                style: AppTypography.poppinsMedium.copyWith(
+                                  color: AppColors.primaryColor,
+                                  fontSize: kSize.height * 0.021,
+                                ),
                               )
                             : Text(
                                 widget.hintText ?? '',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w500),
+                                    color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500),
                               )),
                     const Icon(
                       Icons.calendar_month_outlined,
                       color: Colors.orange,
-                      size: 15,
+                      size: 24,
                     )
                   ],
                 ),

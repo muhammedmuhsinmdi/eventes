@@ -62,8 +62,8 @@ class _DashBoardViewState extends State<DashBoardView> {
                 height: kSize.height,
                 width: kSize.width,
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(kSize.width * 0.032,
-                      kSize.height * 0.045, kSize.width * 0.032, 0),
+                  padding:
+                      EdgeInsets.fromLTRB(kSize.width * 0.032, kSize.height * 0.045, kSize.width * 0.032, 0),
                   child: Column(
                     children: [
                       Text(
@@ -79,36 +79,28 @@ class _DashBoardViewState extends State<DashBoardView> {
                       Expanded(
                         child: ListView(
                             children: MenuType.values.map((MenuType menuType) {
-                          var menusBytype = menus
-                              .where((e) => e.menuType == menuType)
-                              .toList();
+                          var menusBytype = menus.where((e) => e.menuType == menuType).toList();
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               if (menuType == MenuType.transaction) ...{
                                 Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: AppConstants.basePadding),
+                                    padding: const EdgeInsets.only(left: AppConstants.basePadding),
                                     child: Text(
                                       'Eve Dining',
-                                      style:
-                                          AppTypography.poppinsMedium.copyWith(
-                                        color: AppColors.secondaryColor
-                                            .withOpacity(0.4),
+                                      style: AppTypography.poppinsMedium.copyWith(
+                                        color: AppColors.secondaryColor.withOpacity(0.4),
                                         fontSize: 14,
                                       ),
                                     )),
                               },
                               if (menuType == MenuType.catering) ...{
                                 Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: AppConstants.basePadding),
+                                    padding: const EdgeInsets.only(left: AppConstants.basePadding),
                                     child: Text(
                                       'Evantez Catering',
-                                      style:
-                                          AppTypography.poppinsMedium.copyWith(
-                                        color: AppColors.secondaryColor
-                                            .withOpacity(0.4),
+                                      style: AppTypography.poppinsMedium.copyWith(
+                                        color: AppColors.secondaryColor.withOpacity(0.4),
                                         fontSize: 14,
                                       ),
                                     )),
@@ -125,62 +117,48 @@ class _DashBoardViewState extends State<DashBoardView> {
                                       color: AppColors.primaryColor,
                                     ),
                                   ),
-                                  childrenPadding: const EdgeInsets.symmetric(
-                                      horizontal: AppConstants.basePadding),
-                                  expandedCrossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  childrenPadding:
+                                      const EdgeInsets.symmetric(horizontal: AppConstants.basePadding),
+                                  expandedCrossAxisAlignment: CrossAxisAlignment.start,
                                   expandedAlignment: Alignment.centerLeft,
                                   children: menusBytype
                                       .map((e) => InkWell(
-                                            highlightColor:
-                                                AppColors.transparent,
+                                            highlightColor: AppColors.transparent,
                                             splashColor: AppColors.transparent,
                                             onTap: () async {
-                                              if (e.routeUrl != null &&
-                                                  e.routeUrl!.isNotEmpty) {
-                                                _key.currentState!
-                                                    .closeDrawer();
-                                                Navigator.pushNamed(
-                                                        context, e.routeUrl!,
-                                                        arguments: e)
+                                              if (e.routeUrl != null && e.routeUrl!.isNotEmpty) {
+                                                _key.currentState!.closeDrawer();
+                                                Navigator.pushNamed(context, e.routeUrl!, arguments: e)
                                                     .then((value) {});
-                                                controller.employeeList(
-                                                    token:
-                                                        auth.accesToken ?? '');
-
-                                                controller.employeeTypesData(
-                                                    token:
-                                                        auth.accesToken ?? '');
-                                                settingsController
-                                                    .settingsWageList(
-                                                        token:
-                                                            auth.accesToken ??
-                                                                '');
-                                                rentalItemsController
-                                                    .rentalItemList(
-                                                        token:
-                                                            auth.accesToken ??
-                                                                '');
+                                                if (e.menuName == "Employees") {
+                                                  controller.employeeList(token: auth.accesToken ?? '');
+                                                }
+                                                if (e.menuName == "Employee Types") {
+                                                  controller.employeeTypesData(token: auth.accesToken ?? '');
+                                                }
+                                                if (e.menuName == "Settings Wage") {
+                                                  settingsController.settingsWageList(
+                                                      token: auth.accesToken ?? '');
+                                                }
+                                                if (e.menuName == "Rental Items") {
+                                                  rentalItemsController.rentalItemList(
+                                                      token: auth.accesToken ?? '');
+                                                }
                                               }
                                             },
                                             child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom:
-                                                      AppConstants.marginSpace),
+                                              padding:
+                                                  const EdgeInsets.only(bottom: AppConstants.marginSpace),
                                               child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
                                                     e.menuName!,
                                                     textAlign: TextAlign.start,
                                                   ),
-                                                  if (menusBytype.length !=
-                                                      e.menuOrder)
+                                                  if (menusBytype.length != e.menuOrder)
                                                     Divider(
-                                                      color: AppColors
-                                                          .secondaryColor
-                                                          .withOpacity(0.3),
+                                                      color: AppColors.secondaryColor.withOpacity(0.3),
                                                     )
                                                 ],
                                               ),
@@ -219,8 +197,7 @@ class _DashBoardViewState extends State<DashBoardView> {
     return AppBar(
       elevation: 0,
       leading: Padding(
-        padding: const EdgeInsets.fromLTRB(
-            AppConstants.basePadding, AppConstants.basePadding, 0, 0),
+        padding: const EdgeInsets.fromLTRB(AppConstants.basePadding, AppConstants.basePadding, 0, 0),
         child: IconButton(
             style: IconButton.styleFrom(),
             onPressed: () {

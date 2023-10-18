@@ -7,6 +7,7 @@ import 'package:evantez/src/view/core//widgets/custom_dropdown_search.dart';
 import 'package:evantez/src/view/core//widgets/custom_textfield.dart';
 import 'package:evantez/src/view/core//widgets/footer_button.dart';
 import 'package:evantez/src/view/core/widgets/common_drop_down.dart';
+import 'package:evantez/src/view/core/widgets/custom_date_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -32,11 +33,8 @@ class AddEmployeeView extends StatelessWidget {
         width: kSize.width,
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-                AppConstants.baseBorderRadius,
-                AppConstants.baseBorderRadius,
-                AppConstants.baseBorderRadius,
-                0),
+            padding: const EdgeInsets.fromLTRB(AppConstants.baseBorderRadius, AppConstants.baseBorderRadius,
+                AppConstants.baseBorderRadius, 0),
             child: Column(
               children: [
                 uploadProImage(kSize),
@@ -88,15 +86,29 @@ class AddEmployeeView extends StatelessWidget {
                 SizedBox(
                   height: kSize.height * 0.040,
                 ),
-                Align(
-                    alignment: Alignment.centerLeft,
-                    child: smallLabelText('Date Of Birth')),
-                DatePickerContainer(
+                // Align(alignment: Alignment.centerLeft, child: smallLabelText('Date Of Birth')),
+                CustomTextField(
+                  required: true,
+                  suffixIcon: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SvgPicture.asset(
+                      AppImages.calender,
+                      colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                    ),
+                  ),
+                  //  controller: dob,
+                  hintText: AppStrings.dobText,
+                  text: AppStrings.dobText,
+                  onChanged: (value) {
+                    controller.changeDate(value);
+                  },
+                ),
+                /* DatePickerContainer(
                   changeDate: (v) {
                     controller.changeDate(v);
                   },
                   hintText: 'DOB',
-                ),
+                ), */
                 SizedBox(
                   height: kSize.height * 0.040,
                 ),
@@ -150,8 +162,7 @@ class AddEmployeeView extends StatelessWidget {
                 FooterButton(
                   label: 'Add Employee',
                   onTap: () {
-                    controller.employeeAdd(
-                        token: auth.accesToken ?? '', context: context);
+                    controller.employeeAdd(token: auth.accesToken ?? '', context: context);
                   },
                 ),
                 SizedBox(
@@ -172,8 +183,10 @@ class AddEmployeeView extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       centerTitle: true,
       title: Text(
-        AppStrings.employeeListText,
-        style: AppTypography.poppinsSemiBold.copyWith(),
+        "Add Employee",
+        style: AppTypography.poppinsSemiBold.copyWith(
+          color: AppColors.secondaryColor,
+        ),
       ),
     );
   }
@@ -193,8 +206,7 @@ class AddEmployeeView extends StatelessWidget {
           ),
           child: SvgPicture.asset(
             AppImages.camera,
-            colorFilter: const ColorFilter.mode(
-                AppColors.secondaryColor, BlendMode.srcIn),
+            colorFilter: const ColorFilter.mode(AppColors.secondaryColor, BlendMode.srcIn),
             // color: AppColors.secondaryColor,
           ),
         ),
@@ -223,19 +235,14 @@ class AddEmployeeView extends StatelessWidget {
   }
 }
 
-Widget smallLabelText(String label,
-    {double? topPadding, double bottomPadding = 5, bool isRequired = false}) {
+Widget smallLabelText(String label, {double? topPadding, double bottomPadding = 5, bool isRequired = false}) {
   return Padding(
       padding: EdgeInsets.only(bottom: bottomPadding, top: topPadding ?? 15),
       child: RichText(
         text: TextSpan(text: label, style: const TextStyle(), children: [
           if (isRequired)
             const TextSpan(
-                text: ' *',
-                style: TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15))
+                text: ' *', style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600, fontSize: 15))
         ]),
       )
       // Text(label,

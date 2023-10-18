@@ -89,12 +89,13 @@ class EmployeesController extends ChangeNotifier {
   Future<void> employeeList({required String token}) async {
     try {
       isloading = true;
+      notifyListeners();
       final response = await EmployeeProvider().loadEmployee(token: token);
       if (response != null) {
         employeeLists = response;
-        notifyListeners();
       }
       isloading = false;
+      notifyListeners();
     } catch (e) {
       log('message');
       isloading = false;
@@ -107,15 +108,13 @@ class EmployeesController extends ChangeNotifier {
     try {
       isloading = true;
       selectedPosition = null;
-      final response =
-          await EmployeeProvider().loadEmployeeDetails(token: token, id: id);
+      final response = await EmployeeProvider().loadEmployeeDetails(token: token, id: id);
       if (response != null) {
         employeeData = response;
-        selectedPosition = types
-            .firstWhere((element) => element.id == employeeData?.employeeType);
-        notifyListeners();
+        selectedPosition = types.firstWhere((element) => element.id == employeeData?.employeeType);
       }
       isloading = false;
+      notifyListeners();
     } catch (e) {
       log('message');
       isloading = false;
@@ -139,34 +138,31 @@ class EmployeesController extends ChangeNotifier {
   Future<void> employeeTypesData({required String token}) async {
     try {
       isloading = true;
-      final response =
-          await EmployeeProvider().loadEmployeesTypes(token: token);
+      notifyListeners();
+
+      final response = await EmployeeProvider().loadEmployeesTypes(token: token);
       if (response != null) {
         employeeTypesList = response;
-        types = response
-            .map((e) => DropDownValue(id: e.id, value: e.name))
-            .toList();
+        types = response.map((e) => DropDownValue(id: e.id, value: e.name)).toList();
 
         notifyListeners();
       }
       isloading = false;
+      notifyListeners();
     } catch (e) {
       log('message');
       isloading = false;
     }
   }
 
-  final ValueNotifier<List<String>> selectedEmpList =
-      ValueNotifier<List<String>>([]);
+  final ValueNotifier<List<String>> selectedEmpList = ValueNotifier<List<String>>([]);
 
   //=-=-=-=-=-=-=-= Employee Payemnt =-=-=-=-=-=-=-=
   EmployeeBank? employeePayment;
-  Future<void> employeePayments(
-      {required String token, required int id}) async {
+  Future<void> employeePayments({required String token, required int id}) async {
     try {
       isloading = true;
-      final response =
-          await EmployeeProvider().employeePayment(token: token, id: id);
+      final response = await EmployeeProvider().employeePayment(token: token, id: id);
       if (response != null) {
         employeePayment = response;
         notifyListeners();
@@ -180,8 +176,7 @@ class EmployeesController extends ChangeNotifier {
 
   //=-=-=-=-=-=-=-= Add Employee  =-=-=-=-=-=-=-=
 
-  Future<void> employeeAdd(
-      {required String token, required BuildContext context}) async {
+  Future<void> employeeAdd({required String token, required BuildContext context}) async {
     try {
       isloading = true;
       final response = await EmployeeProvider().addEmployee(
@@ -202,8 +197,8 @@ class EmployeesController extends ChangeNotifier {
               dob: date,
               bloodGroup: bloodGroupController.text));
       if (response != null) {
-        rootScaffoldMessengerKey.currentState!.showSnackBar(
-            snackBarWidget('Successfully added!', color: Colors.green));
+        rootScaffoldMessengerKey.currentState!
+            .showSnackBar(snackBarWidget('Successfully added!', color: Colors.green));
         Navigator.pop(context);
         notifyListeners();
       }
@@ -244,9 +239,7 @@ class EmployeesController extends ChangeNotifier {
       final response = await EmployeeProvider().employeeId(token: token);
       if (response != null) {
         employeeId = response;
-        employeeIdLists = response
-            .map((e) => DropDownValue(id: e.id, value: e.name))
-            .toList();
+        employeeIdLists = response.map((e) => DropDownValue(id: e.id, value: e.name)).toList();
         notifyListeners();
       }
       isloading = false;
@@ -261,10 +254,10 @@ class EmployeesController extends ChangeNotifier {
   TextEditingController codeController = TextEditingController();
   TextEditingController amount = TextEditingController();
 
-  Future<void> employeeTypeAdd(
-      {required String token, required BuildContext context}) async {
+  Future<void> employeeTypeAdd({required String token, required BuildContext context}) async {
     try {
       isloading = true;
+      notifyListeners();
       final response = await EmployeeProvider().addEmployeeType(
         token: token,
         name: nameTypeController.text,
@@ -272,15 +265,16 @@ class EmployeesController extends ChangeNotifier {
         amount: int.parse(amount.text),
       );
       if (response != null) {
-        rootScaffoldMessengerKey.currentState!.showSnackBar(
-            snackBarWidget('Successfully added!', color: Colors.green));
+        rootScaffoldMessengerKey.currentState!
+            .showSnackBar(snackBarWidget('Successfully added!', color: Colors.green));
         Navigator.pop(context);
-        notifyListeners();
       }
       isloading = false;
+      notifyListeners();
     } catch (e) {
       log('message');
       isloading = false;
+      notifyListeners();
     }
   }
 
@@ -292,29 +286,28 @@ class EmployeesController extends ChangeNotifier {
   }) async {
     try {
       isloading = true;
+      notifyListeners();
       final response = await EmployeeProvider().editEmployeeType(
           token: token,
           data: EmployeeTypeRequest(
-              name: nameTypeController.text,
-              code: codeController.text,
-              amount: amount.text),
+              name: nameTypeController.text, code: codeController.text, amount: amount.text),
           id: id);
       if (response != null) {
-        int indexToUpdate =
-            employeeTypesList.indexWhere((item) => item.id == id);
+        int indexToUpdate = employeeTypesList.indexWhere((item) => item.id == id);
         if (indexToUpdate >= 0) {
           employeeTypesList[indexToUpdate] = response;
         }
-        rootScaffoldMessengerKey.currentState!.showSnackBar(
-            snackBarWidget('Successfully upadted!', color: Colors.green));
+        rootScaffoldMessengerKey.currentState!
+            .showSnackBar(snackBarWidget('Successfully upadted!', color: Colors.green));
         Navigator.pop(context);
-        notifyListeners();
       }
       isloading = false;
+      notifyListeners();
     } catch (e, s) {
       log(e.toString());
       log('message', stackTrace: s);
       isloading = false;
+      notifyListeners();
     }
   }
 
