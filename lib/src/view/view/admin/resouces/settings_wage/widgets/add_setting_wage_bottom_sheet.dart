@@ -113,7 +113,7 @@ class AddSettingWageBottomSheet {
               label: controller.isEdit ? "Update" : "Save",
               onTap: () {
                 if (controller.isEdit) {
-                  controller.editEmployeeType(
+                  controller.editSettingsWages(
                       token: auth.accesToken ?? '',
                       context: context,
                       id: controller.settingsWageLists[index].id);

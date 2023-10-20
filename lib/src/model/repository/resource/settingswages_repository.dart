@@ -59,7 +59,7 @@ class SettingsWageController extends ChangeNotifier {
 
   //=-=-=-=-=-=-= Edit SettingsWages=-=-=-=-==-=-=-=
 
-  Future<void> editEmployeeType(
+  Future<void> editSettingsWages(
       {required String token,
       required BuildContext context,
       required int id}) async {

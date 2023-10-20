@@ -51,7 +51,9 @@ class _CustomDropDownState extends State<CustomDropDown> {
             padding: EdgeInsets.only(bottom: kSize.height * 0.010),
             child: RichText(
                 text: TextSpan(
-                    text: widget.required != null && widget.required! ? '*  ' : '',
+                    text: widget.required != null && widget.required!
+                        ? '*  '
+                        : '',
                     style: AppTypography.poppinsBold.copyWith(
                       color: AppColors.statusCritical,
                       fontSize: 16,
@@ -73,17 +75,21 @@ class _CustomDropDownState extends State<CustomDropDown> {
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                       color: AppColors.accentDark.withOpacity(0.1),
-                      border: const Border(bottom: BorderSide(width: 2, color: AppColors.primaryColor))),
+                      border: const Border(
+                          bottom: BorderSide(
+                              width: 2, color: AppColors.primaryColor))),
                   child: DropdownButton(
                     icon: SvgPicture.asset(
                       AppImages.arrowDropDown,
-                      colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                      colorFilter: const ColorFilter.mode(
+                          AppColors.primaryColor, BlendMode.srcIn),
                     ),
-                    style: AppTypography.poppinsMedium.copyWith(color: AppColors.secondaryColor),
+                    style: AppTypography.poppinsMedium
+                        .copyWith(color: AppColors.secondaryColor),
                     hint: Text(
                       widget.hintText ?? '',
-                      style: AppTypography.poppinsRegular
-                          .copyWith(color: AppColors.secondaryColor.withOpacity(0.4)),
+                      style: AppTypography.poppinsRegular.copyWith(
+                          color: AppColors.secondaryColor.withOpacity(0.4)),
                     ),
                     isExpanded: true,
                     iconSize: 0,
@@ -115,7 +121,8 @@ class _CustomDropDownState extends State<CustomDropDown> {
                     },
 
                     value: dropDownValue.value,
-                    borderRadius: BorderRadius.circular(AppConstants.basePadding),
+                    borderRadius:
+                        BorderRadius.circular(AppConstants.basePadding),
                     padding: const EdgeInsets.symmetric(
                       vertical: 10.0,
                       horizontal: AppConstants.basePadding,
