@@ -21,6 +21,8 @@ class EmployeesController extends ChangeNotifier {
   TextEditingController nameEditingController = TextEditingController();
   TextEditingController codeEditingController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> employeeForm = GlobalKey<FormState>();
+  
   // EmployeeTypeViewstate() {
   //   employeeTypeRepo = Services.employeeTypeRepo;
   // }
@@ -179,30 +181,35 @@ class EmployeesController extends ChangeNotifier {
   Future<void> employeeAdd({required String token, required BuildContext context}) async {
     try {
       isloading = true;
-      final response = await EmployeeProvider().addEmployee(
-          token: token,
-          data: EmployeeRequest(
-              name: nameController.text,
-              address: addressController.text,
-              phone: int.parse(phoneController.text),
-              homeContact: homeContact.text,
-              email: emailController.text,
-              employeeType: selectedItem?.id,
-              idProofType: selectedId?.id,
-              idProofNumber: idNumber.text,
-              currentRating: "0",
-              isActive: true,
-              code: 'String',
-              user: 1,
-              dob: date,
-              bloodGroup: bloodGroupController.text));
-      if (response != null) {
-        rootScaffoldMessengerKey.currentState!
-            .showSnackBar(snackBarWidget('Successfully added!', color: Colors.green));
-        Navigator.pop(context);
-        notifyListeners();
+      if(employeeForm.currentState!.validate()){
+        employeeForm.currentState!.save();
+        print(employeeData);
       }
-      isloading = false;
+      
+      // final response = await EmployeeProvider().addEmployee(
+      //     token: token,
+      //     data: EmployeeRequest(
+      //         name: nameController.text,
+      //         address: addressController.text,
+      //         phone: int.parse(phoneController.text),
+      //         homeContact: homeContact.text,
+      //         email: emailController.text,
+      //         employeeType: selectedItem?.id,
+      //         idProofType: selectedId?.id,
+      //         idProofNumber: idNumber.text,
+      //         currentRating: "0",
+      //         isActive: true,
+      //         code: 'String',
+      //         user: 1,
+      //         dob: date,
+      //         bloodGroup: bloodGroupController.text));
+      // if (response != null) {
+      //   rootScaffoldMessengerKey.currentState!
+      //       .showSnackBar(snackBarWidget('Successfully added!', color: Colors.green));
+      //   Navigator.pop(context);
+      //   notifyListeners();
+      // }
+      // isloading = false;
     } catch (e) {
       log('message');
       isloading = false;

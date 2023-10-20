@@ -16,7 +16,7 @@ class EmployeeDetails {
   final int? idProofType;
 
   EmployeeDetails({
-    this.id,
+    this.id = 0,
     this.createdAt,
     this.updatedAt,
     this.currentRating,

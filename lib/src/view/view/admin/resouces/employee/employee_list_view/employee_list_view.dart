@@ -1,5 +1,6 @@
 import 'package:evantez/app/router/router_constant.dart';
 import 'package:evantez/src/model/repository/auth/auth_controller.dart';
+import 'package:evantez/src/model/repository/resource/employee/add_employee_controller.dart';
 import 'package:evantez/src/model/repository/resource/employee_repository.dart';
 import 'package:evantez/src/view/core/widgets/custom_back_btn.dart';
 import 'package:evantez/src/view/view/admin/resouces/employee/employee_list_view/widgets/employee_filter.dart';
@@ -43,7 +44,7 @@ class EmployeeListView extends StatelessWidget {
   }
 
   AppBar appBar(BuildContext context, Size kSize) {
-    final controller = context.watch<EmployeesController>();
+    final empAddcontroller = context.watch<AddEmployeeController>();
     final auth = context.watch<AuthController>();
     return AppBar(
       elevation: 0,
@@ -56,13 +57,15 @@ class EmployeeListView extends StatelessWidget {
       ),
       actions: [
         IconButton(
-            onPressed: () {
-              //
-
-              controller.employeeTypesData(token: auth.accesToken ?? '');
-              controller.employeeIdList(token: auth.accesToken ?? '');
-              Navigator.pushNamed(
+            onPressed: () async{
+              await empAddcontroller.resetData();
+              empAddcontroller.employee.user = auth.userId;
+              await empAddcontroller.employeeTypesData(token: auth.accesToken ?? '');
+              await empAddcontroller.employeeIdList(token: auth.accesToken ?? '');
+              if(context.mounted){
+                Navigator.pushNamed(
                   context, RouterConstants.addEmployeeViewRoute);
+              }              
             },
             icon: SvgPicture.asset(
               AppImages.addCircle,

@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:evantez/src/model/core/base_api_utilities.dart';
 import 'package:evantez/src/serializer/models/employee_details_response.dart';
 import 'package:evantez/src/serializer/models/employee_list_response.dart';
 import 'package:evantez/src/serializer/models/employee_payment_details.dart';
 import 'package:evantez/src/serializer/models/employee_request.dart';
+import 'package:evantez/src/serializer/models/employee_type/employee_model.dart';
 import 'package:evantez/src/serializer/models/employee_type_request.dart';
 import 'package:evantez/src/serializer/models/employee_types_response.dart';
 import 'package:evantez/src/view/core/event_api.dart';
@@ -70,9 +73,11 @@ class EmployeeProvider extends EventApi {
 
   //=-=-=-=-=-=-= Employee ADdd =-=-=-=-=-=-=
   Future<EmployeeDetails> addEmployee(
-      {required String token, required EmployeeRequest data}) async {
+      {required String token, required EmployeeModel data}) async {
+        var jsonData = data.toAddJson();
+        var dd = json.encode(jsonData);
     Response response = await post('users/employee/',
-        data: data.toJson(), headers: apiHeaders(token));
+        data: json.encode(jsonData), headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
       case 201:
