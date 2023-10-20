@@ -27,7 +27,7 @@ class FoodItemsController extends ChangeNotifier {
     }
   }
 
-  //=-=-=-=-=-=-=-= Add Food Items =-=-=-=-=-=-=-=
+  //=-=-=-=-=-=-=-= Add Food Items =-=-=-=-=-=-=-==-=
 
   TextEditingController nameController = TextEditingController();
   TextEditingController rateController = TextEditingController();
