@@ -3,6 +3,7 @@ import 'package:evantez/src/model/repository/resource/settingswages_repository.d
 import 'package:evantez/src/view/core//widgets/footer_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:developer';
 
 import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/constants/constants.dart';
