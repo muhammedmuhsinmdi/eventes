@@ -128,7 +128,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             style: widget.style ??
                 AppTypography.poppinsMedium.copyWith(
                   color: AppColors.primaryColor,
-                  fontSize: kSize.height * 0.021,
+                  fontSize: 16,
                 ),
             keyboardType: widget.keyboardType,
             maxLength: widget.maxLength,

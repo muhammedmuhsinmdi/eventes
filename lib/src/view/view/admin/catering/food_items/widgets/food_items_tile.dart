@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:evantez/src/model/repository/catering/food_items_repository.dart';
+import 'package:evantez/src/serializer/models/food_items_list_response.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
@@ -8,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class FoodItemTile extends StatelessWidget {
-  const FoodItemTile({super.key, required this.index});
-  final int index;
+  final FoodItemListResponse item;
+  const FoodItemTile({super.key, required this.item});
   @override
   Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
@@ -31,7 +32,7 @@ class FoodItemTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                controller.foodItemTypeController.text,
+                getFoodItemType(controller: controller),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: AppTypography.poppinsSemiBold.copyWith(
@@ -40,10 +41,9 @@ class FoodItemTile extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: AppConstants.baseTextFieldBorderRdious),
+                padding: const EdgeInsets.symmetric(vertical: AppConstants.baseTextFieldBorderRdious),
                 child: Text(
-                  /*  'Biriyani-Chicken' */ controller.nameController.text,
+                  item.name!,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTypography.poppinsSemiBold.copyWith(
@@ -55,12 +55,11 @@ class FoodItemTile extends StatelessWidget {
               RichText(
                 text: TextSpan(
                     text: 'Rate ',
-                    style: AppTypography.poppinsMedium.copyWith(
-                        fontSize: 14,
-                        color: AppColors.secondaryColor.withOpacity(0.5)),
+                    style: AppTypography.poppinsMedium
+                        .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.5)),
                     children: [
                       TextSpan(
-                          text: /* ' 100' */ controller.rateController.text,
+                          text: item.rate,
                           style: AppTypography.poppinsMedium.copyWith(
                             fontSize: 14,
                             color: AppColors.secondaryColor,
@@ -108,5 +107,9 @@ class FoodItemTile extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String getFoodItemType({required FoodItemsController controller}) {
+    return controller.foodItemTypes.where((e) => e.id == item.foodItemType).first.name;
   }
 }
