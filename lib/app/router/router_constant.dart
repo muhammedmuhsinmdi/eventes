@@ -28,6 +28,7 @@ class RouterConstants {
   static const String employeeDuesRoute = '/employeeDuesRoute';
   static const String dayBookRoute = '/dayBookRoute';
   static const String foodItemRoute = '/foodItemRoute';
+  static const String addFoodItemRoute = '/addFoodItemRoute';
   static const String foodQuotesRoute = '/foodQuotesRoute';
   static const String newFoodQuotesRoute = '/newFoodQuotesRoutes';
 

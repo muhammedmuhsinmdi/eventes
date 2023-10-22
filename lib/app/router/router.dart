@@ -1,6 +1,7 @@
 import 'package:evantez/app/router/router_constant.dart';
 import 'package:evantez/src/model/core/models/menu/menu_model.dart';
 import 'package:evantez/src/model/core/models/signin/pm_signin.dart';
+import 'package:evantez/src/view/view/admin/catering/food_items/widgets/food_item_filter.dart';
 import 'package:evantez/src/view/view/admin/resouces/employee/add_employee_view/add_employee_view.dart';
 import 'package:evantez/src/view/view/auth/login/login_view.dart';
 import 'package:evantez/src/view/view/auth/otp_view/otp_view.dart';
@@ -176,6 +177,11 @@ class AppRouter {
         final args = settings.arguments as MenuData;
         return MaterialPageRoute<FoodItemsView>(
           builder: (_) => FoodItemsView(menu: args),
+        );
+      case RouterConstants.addFoodItemRoute:
+        final args = settings.arguments as int;
+        return MaterialPageRoute<FoodItemFilter>(
+          builder: (_) => FoodItemFilter(index: args),
         );
       case RouterConstants.foodQuotesRoute:
         return MaterialPageRoute<FoodQuotesView>(
