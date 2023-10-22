@@ -88,4 +88,5 @@ class AppStrings {
   static const String accountNoText = "Account Number";
   static const String ifscCodeText = "IFSC";
   static const String settingsWorkText = 'Setting Work';
+  static const String employeeCode = "Employee Code";
 }

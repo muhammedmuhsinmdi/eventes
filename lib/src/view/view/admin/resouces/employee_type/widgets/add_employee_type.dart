@@ -23,6 +23,7 @@ class AddEmployeeType {
     await showModalBottomSheet(
         context: context,
         isScrollControlled: true,
+        isDismissible: false,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(AppConstants.basePadding),
@@ -30,14 +31,10 @@ class AddEmployeeType {
         backgroundColor: AppColors.accentDark,
         builder: (context) {
           return Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                  AppConstants.baseBorderRadius,
-                  AppConstants.baseBorderRadius,
-                  AppConstants.baseBorderRadius,
-                  kSize.height * 0.044),
+              padding: EdgeInsets.fromLTRB(AppConstants.baseBorderRadius, AppConstants.baseBorderRadius,
+                  AppConstants.baseBorderRadius, kSize.height * 0.044),
               child: employeeType(context, kSize),
             ),
           );
@@ -48,7 +45,7 @@ class AddEmployeeType {
     final controller = context.watch<EmployeesController>();
     final auth = context.watch<AuthController>();
     return Form(
-      // key: state.formKey,
+      key: controller.formKey,
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -57,9 +54,7 @@ class AddEmployeeType {
               children: [
                 const Spacer(),
                 Text(
-                  controller.isEdit
-                      ? "Update Employee Type"
-                      : "Add Employee Type",
+                  controller.isEdit ? "Update Employee Type" : "Add Employee Type",
                   style: AppTypography.poppinsSemiBold.copyWith(
                     fontSize: 18,
                     color: AppColors.secondaryColor,
@@ -74,9 +69,8 @@ class AddEmployeeType {
                     },
                     child: Text(
                       AppStrings.closeText,
-                      style: AppTypography.poppinsMedium.copyWith(
-                          fontSize: 14,
-                          color: AppColors.secondaryColor.withOpacity(0.6)),
+                      style: AppTypography.poppinsMedium
+                          .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.6)),
                     ))
               ],
             ),
@@ -88,6 +82,9 @@ class AddEmployeeType {
               hintText: "Name",
               controller: controller.nameTypeController,
               onSave: (val) {},
+              validator: (value) {
+                return value!.isEmpty ? "Category Name is Empty" : null;
+              },
             ),
             SizedBox(
               height: kSize.height * 0.024,
@@ -97,6 +94,9 @@ class AddEmployeeType {
               hintText: "Code",
               controller: controller.codeController,
               onSave: (val) {},
+              validator: (value) {
+                return value!.isEmpty ? "Category Code is Empty" : null;
+              },
             ),
             SizedBox(
               height: kSize.height * 0.024,
@@ -105,44 +105,54 @@ class AddEmployeeType {
               controller: controller.amount,
               text: "Amount",
               hintText: AppStrings.amountText,
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                return value!.isEmpty ? "Amount is Empty" : null;
+              },
             ),
             SizedBox(
               height: kSize.height * 0.032,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                FooterButton(
-                    fillColor: AppColors.transparent,
-                    width: kSize.width * 0.4,
-                    label: "Cancel",
-                    onTap: () {
-                      Navigator.pop(context);
-                    }),
-                FooterButton(
-                  width: kSize.width * 0.4,
-                  label: controller.isEdit ? "Update" : "Save",
-                  onTap: () {
-                    if (controller.isEdit) {
-                      controller.editEmployeeType(
-                          token: auth.accesToken ?? '',
-                          context: context,
-                          id: controller.employeeTypesList[index].id ?? 0);
-                      log('test1');
-                    } else {
-                      log('test2');
-                      controller
-                          .employeeTypeAdd(
-                              token: auth.accesToken ?? '', context: context)
-                          .then((value) {
-                        controller.employeeTypesData(
-                            token: auth.accesToken ?? '');
-                      });
-                    }
-                  },
-                ),
-              ],
-            )
+            controller.isloading
+                ? const CircularProgressIndicator(
+                    color: AppColors.primaryColor,
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      FooterButton(
+                          fillColor: AppColors.transparent,
+                          width: kSize.width * 0.4,
+                          label: "Cancel",
+                          onTap: () {
+                            Navigator.pop(context);
+                          }),
+                      FooterButton(
+                        width: kSize.width * 0.4,
+                        label: controller.isEdit ? "Update" : "Save",
+                        onTap: () {
+                          if (controller.formKey.currentState!.validate()) {
+                            if (!controller.isloading) {
+                              if (controller.isEdit) {
+                                controller.editEmployeeType(
+                                    token: auth.accesToken ?? '',
+                                    context: context,
+                                    id: controller.employeeTypesList[index].id ?? 0);
+                                log('test1');
+                              } else {
+                                log('test2');
+                                controller
+                                    .employeeTypeAdd(token: auth.accesToken ?? '', context: context)
+                                    .then((value) {
+                                  controller.employeeTypesData(token: auth.accesToken ?? '');
+                                });
+                              }
+                            }
+                          }
+                        },
+                      ),
+                    ],
+                  )
           ],
         ),
       ),

@@ -20,6 +20,7 @@ class AddRentalItems {
     await showModalBottomSheet(
         context: context,
         isScrollControlled: true,
+        isDismissible: false,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(AppConstants.basePadding),
@@ -27,14 +28,10 @@ class AddRentalItems {
         backgroundColor: AppColors.accentDark,
         builder: (context) {
           return Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                  AppConstants.baseBorderRadius,
-                  AppConstants.baseBorderRadius,
-                  AppConstants.baseBorderRadius,
-                  kSize.height * 0.044),
+              padding: EdgeInsets.fromLTRB(AppConstants.baseBorderRadius, AppConstants.baseBorderRadius,
+                  AppConstants.baseBorderRadius, kSize.height * 0.044),
               child: rentalItems(context, kSize),
             ),
           );
@@ -44,95 +41,114 @@ class AddRentalItems {
   Widget rentalItems(BuildContext context, Size kSize) {
     final controller = context.watch<RentalItemsController>();
     final auth = context.watch<AuthController>();
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Row(
-          children: [
-            const Spacer(),
-            Text(
-              controller.isEdit ? "Update Items" : "Add Items",
-              style: AppTypography.poppinsSemiBold.copyWith(
-                fontSize: 18,
-                color: AppColors.secondaryColor,
+    return Form(
+      key: controller.formKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              const Spacer(),
+              Text(
+                controller.isEdit ? "Update Items" : "Add Items",
+                style: AppTypography.poppinsSemiBold.copyWith(
+                  fontSize: 18,
+                  color: AppColors.secondaryColor,
+                ),
               ),
-            ),
-            const Spacer(),
-            InkWell(
-                highlightColor: AppColors.transparent,
-                splashColor: AppColors.transparent,
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  AppStrings.closeText,
-                  style: AppTypography.poppinsMedium.copyWith(
-                      fontSize: 14,
-                      color: AppColors.secondaryColor.withOpacity(0.6)),
-                ))
-          ],
-        ),
-        SizedBox(
-          height: kSize.height * 0.032,
-        ),
-        CustomTextField(
-          text: "Item Name",
-          hintText: "Item Name",
-          controller: controller.itemNameController,
-        ),
-        SizedBox(
-          height: kSize.height * 0.024,
-        ),
-        CustomTextField(
-          text: "Item Code",
-          controller: controller.itemCodeController,
-          hintText: "Code",
-        ),
-        SizedBox(
-          height: kSize.height * 0.024,
-        ),
-        CustomTextField(
-          text: "Rent",
-          controller: controller.rentController,
-          hintText: AppStrings.amountText,
-        ),
-        SizedBox(
-          height: kSize.height * 0.032,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            FooterButton(
-                fillColor: AppColors.transparent,
-                width: kSize.width * 0.4,
-                label: "Cancel",
-                onTap: () {
-                  //
-                  Navigator.pop(context);
-                }),
-            FooterButton(
-              width: kSize.width * 0.4,
-              label: controller.isEdit ? "Update" : "Save",
-              onTap: () {
-                //
-                if (controller.isEdit) {
-                  controller.editRentalItem(
-                      token: auth.accesToken ?? '',
-                      context: context,
-                      id: controller.rentalItemsList[index].id);
-                } else {
-                  controller
-                      .addRentalItems(
-                          token: auth.accesToken ?? '', context: context)
-                      .then((value) {
-                    controller.rentalItemList(token: auth.accesToken ?? '');
-                  });
-                }
-              },
-            ),
-          ],
-        )
-      ],
+              const Spacer(),
+              InkWell(
+                  highlightColor: AppColors.transparent,
+                  splashColor: AppColors.transparent,
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    AppStrings.closeText,
+                    style: AppTypography.poppinsMedium
+                        .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.6)),
+                  ))
+            ],
+          ),
+          SizedBox(
+            height: kSize.height * 0.032,
+          ),
+          CustomTextField(
+            text: "Item Name",
+            hintText: "Item Name",
+            controller: controller.itemNameController,
+            validator: (value) {
+              return value!.isEmpty ? "Item Name is Empty" : null;
+            },
+          ),
+          SizedBox(
+            height: kSize.height * 0.024,
+          ),
+          CustomTextField(
+            text: "Item Code",
+            controller: controller.itemCodeController,
+            hintText: "Code",
+            validator: (value) {
+              return value!.isEmpty ? "Item Code is Empty" : null;
+            },
+          ),
+          SizedBox(
+            height: kSize.height * 0.024,
+          ),
+          CustomTextField(
+            text: "Rent",
+            controller: controller.rentController,
+            hintText: AppStrings.amountText,
+            keyboardType: TextInputType.number,
+            validator: (value) {
+              return value!.isEmpty ? "Rate is Empty" : null;
+            },
+          ),
+          SizedBox(
+            height: kSize.height * 0.032,
+          ),
+          controller.isloading
+              ? const CircularProgressIndicator(
+                  color: AppColors.primaryColor,
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    FooterButton(
+                        fillColor: AppColors.transparent,
+                        width: kSize.width * 0.4,
+                        label: "Cancel",
+                        onTap: () {
+                          //
+                          Navigator.pop(context);
+                        }),
+                    FooterButton(
+                      width: kSize.width * 0.4,
+                      label: controller.isEdit ? "Update" : "Save",
+                      onTap: () {
+                        //
+                        if (controller.formKey.currentState!.validate()) {
+                          if (!controller.isloading) {
+                            if (controller.isEdit) {
+                              controller.editRentalItem(
+                                  token: auth.accesToken ?? '',
+                                  context: context,
+                                  id: controller.rentalItemsList[index].id);
+                            } else {
+                              controller
+                                  .addRentalItems(token: auth.accesToken ?? '', context: context)
+                                  .then((value) {
+                                controller.rentalItemList(token: auth.accesToken ?? '');
+                              });
+                            }
+                          }
+                        }
+                      },
+                    ),
+                  ],
+                )
+        ],
+      ),
     );
   }
 }

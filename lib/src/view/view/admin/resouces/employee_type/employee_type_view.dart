@@ -90,8 +90,7 @@ class _EmployeeTypeViewState extends State<EmployeeTypeView> {
 
   Widget searchField(Size kSize, BuildContext context) {
     return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
+      padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -101,12 +100,10 @@ class _EmployeeTypeViewState extends State<EmployeeTypeView> {
               text: '',
               hintText: AppStrings.searchText,
               suffixIcon: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
                 child: SvgPicture.asset(
                   AppImages.search,
-                  colorFilter: const ColorFilter.mode(
-                      AppColors.primaryColor, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
                 ),
               ),
             ),
@@ -137,16 +134,22 @@ class _EmployeeTypeViewState extends State<EmployeeTypeView> {
   Widget employeeTypeListing(Size kSize) {
     final controller = context.watch<EmployeesController>();
     return Expanded(
-        child: ListView.builder(
-            itemCount: controller.employeeTypesList.length,
-            padding: EdgeInsets.only(
-                bottom: kSize.height * 0.16,
-                left: AppConstants.baseBorderRadius,
-                right: AppConstants.baseBorderRadius),
-            itemBuilder: (context, index) {
-              return EmployeeTypeTile(
-                index: index,
-              );
-            }));
+        child: controller.isloading
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.primaryColor,
+                ),
+              )
+            : ListView.builder(
+                itemCount: controller.employeeTypesList.length,
+                padding: EdgeInsets.only(
+                    bottom: kSize.height * 0.16,
+                    left: AppConstants.baseBorderRadius,
+                    right: AppConstants.baseBorderRadius),
+                itemBuilder: (context, index) {
+                  return EmployeeTypeTile(
+                    index: index,
+                  );
+                }));
   }
 }

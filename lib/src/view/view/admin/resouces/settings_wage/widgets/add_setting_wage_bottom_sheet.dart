@@ -21,6 +21,7 @@ class AddSettingWageBottomSheet {
     await showModalBottomSheet(
         context: context,
         isScrollControlled: true,
+        isDismissible: false,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(AppConstants.basePadding),
@@ -28,14 +29,10 @@ class AddSettingWageBottomSheet {
         backgroundColor: AppColors.accentDark,
         builder: (context) {
           return Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                  AppConstants.baseBorderRadius,
-                  AppConstants.baseBorderRadius,
-                  AppConstants.baseBorderRadius,
-                  kSize.height * 0.044),
+              padding: EdgeInsets.fromLTRB(AppConstants.baseBorderRadius, AppConstants.baseBorderRadius,
+                  AppConstants.baseBorderRadius, kSize.height * 0.044),
               child: addSettingWork(context, kSize),
             ),
           );
@@ -45,93 +42,111 @@ class AddSettingWageBottomSheet {
   Widget addSettingWork(BuildContext context, Size kSize) {
     final controller = context.watch<SettingsWageController>();
     final auth = context.watch<AuthController>();
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Row(
-          children: [
-            const Spacer(),
-            Text(
-              controller.isEdit ? "Update Setting Work" : "Add Setting Work",
-              style: AppTypography.poppinsSemiBold.copyWith(
-                fontSize: 18,
-                color: AppColors.secondaryColor,
+    return Form(
+      key: controller.formKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              const Spacer(),
+              Text(
+                controller.isEdit ? "Update Setting Work" : "Add Setting Work",
+                style: AppTypography.poppinsSemiBold.copyWith(
+                  fontSize: 18,
+                  color: AppColors.secondaryColor,
+                ),
               ),
-            ),
-            const Spacer(),
-            InkWell(
-                highlightColor: AppColors.transparent,
-                splashColor: AppColors.transparent,
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  AppStrings.closeText,
-                  style: AppTypography.poppinsMedium.copyWith(
-                      fontSize: 14,
-                      color: AppColors.secondaryColor.withOpacity(0.6)),
-                ))
-          ],
-        ),
-        SizedBox(
-          height: kSize.height * 0.032,
-        ),
-        CustomTextField(
-          text: "Task Name",
-          hintText: "Name",
-          controller: controller.taskNameController,
-        ),
-        SizedBox(
-          height: kSize.height * 0.024,
-        ),
-        CustomTextField(
-          text: "Task Code",
-          hintText: "Code",
-          controller: controller.taskCodeController,
-        ),
-        SizedBox(
-          height: kSize.height * 0.024,
-        ),
-        CustomTextField(
-          text: "Piece Rate",
-          controller: controller.pieceRateController,
-          hintText: AppStrings.amountText,
-        ),
-        SizedBox(height: kSize.height * 0.032),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            FooterButton(
-                fillColor: AppColors.transparent,
-                width: kSize.width * 0.4,
-                label: "Cancel",
-                onTap: () {
-                  //
-                  Navigator.pop(context);
-                }),
-            FooterButton(
-              width: kSize.width * 0.4,
-              label: controller.isEdit ? "Update" : "Save",
-              onTap: () {
-                log('>>>> ');
-                if (controller.isEdit) {
-                  controller.editSettingsWages(
-                      token: auth.accesToken ?? '',
-                      context: context,
-                      id: controller.settingsWageLists[index].id);
-                } else {
-                  controller
-                      .settingsWageAdd(
-                          token: auth.accesToken ?? '', context: context)
-                      .then((value) {
-                    controller.settingsWageList(token: auth.accesToken ?? '');
-                  });
-                }
-              },
-            ),
-          ],
-        )
-      ],
+              const Spacer(),
+              InkWell(
+                  highlightColor: AppColors.transparent,
+                  splashColor: AppColors.transparent,
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    AppStrings.closeText,
+                    style: AppTypography.poppinsMedium
+                        .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.6)),
+                  ))
+            ],
+          ),
+          SizedBox(
+            height: kSize.height * 0.032,
+          ),
+          CustomTextField(
+            text: "Task Name",
+            hintText: "Name",
+            controller: controller.taskNameController,
+            validator: (value) {
+              return value!.isEmpty ? "Item Name is Empty" : null;
+            },
+          ),
+          SizedBox(
+            height: kSize.height * 0.024,
+          ),
+          CustomTextField(
+            text: "Task Code",
+            hintText: "Code",
+            controller: controller.taskCodeController,
+            validator: (value) {
+              return value!.isEmpty ? "Task Code is Empty" : null;
+            },
+          ),
+          SizedBox(
+            height: kSize.height * 0.024,
+          ),
+          CustomTextField(
+            text: "Piece Rate",
+            controller: controller.pieceRateController,
+            hintText: AppStrings.amountText,
+            keyboardType: TextInputType.number,
+            validator: (value) {
+              return value!.isEmpty ? "Piece Rate is Empty" : null;
+            },
+          ),
+          SizedBox(height: kSize.height * 0.032),
+          controller.isloading
+              ? const CircularProgressIndicator(
+                  color: AppColors.primaryColor,
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    FooterButton(
+                        fillColor: AppColors.transparent,
+                        width: kSize.width * 0.4,
+                        label: "Cancel",
+                        onTap: () {
+                          //
+                          Navigator.pop(context);
+                        }),
+                    FooterButton(
+                      width: kSize.width * 0.4,
+                      label: controller.isEdit ? "Update" : "Save",
+                      onTap: () {
+                        if (controller.formKey.currentState!.validate()) {
+                          if (!controller.isloading) {
+                            if (controller.isEdit) {
+                              controller.editEmployeeType(
+                                  token: auth.accesToken ?? '',
+                                  context: context,
+                                  id: controller.settingsWageLists[index].id);
+                            } else {
+                              controller
+                                  .settingsWageAdd(token: auth.accesToken ?? '', context: context)
+                                  .then((value) {
+                                controller.settingsWageList(token: auth.accesToken ?? '');
+                              });
+                            }
+                          }
+                        }
+                      },
+                    ),
+                  ],
+                )
+        ],
+      ),
     );
   }
 }

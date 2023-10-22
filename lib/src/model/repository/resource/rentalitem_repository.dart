@@ -9,13 +9,14 @@ import 'package:flutter/material.dart';
 
 class RentalItemsController extends ChangeNotifier {
   bool isloading = false;
+  final formKey = GlobalKey<FormState>();
   List<RentalItemsListResponse> rentalItemsList = [];
 
   Future<void> rentalItemList({required String token}) async {
     try {
       isloading = true;
-      final response =
-          await RentalItemsProvider().loadRentalItems(token: token);
+      notifyListeners();
+      final response = await RentalItemsProvider().loadRentalItems(token: token);
       if (response != null) {
         rentalItemsList = response;
         notifyListeners();
@@ -33,20 +34,18 @@ class RentalItemsController extends ChangeNotifier {
   TextEditingController itemCodeController = TextEditingController();
   TextEditingController rentController = TextEditingController();
 
-  Future<void> addRentalItems(
-      {required String token, required BuildContext context}) async {
+  Future<void> addRentalItems({required String token, required BuildContext context}) async {
     try {
       isloading = true;
+      notifyListeners();
       final response = await RentalItemsProvider().addRentalItem(
         token: token,
         data: RentalItemsRequest(
-            name: itemNameController.text,
-            code: itemCodeController.text,
-            rate: rentController.text),
+            name: itemNameController.text, code: itemCodeController.text, rate: rentController.text),
       );
       if (response != null) {
-        rootScaffoldMessengerKey.currentState!.showSnackBar(
-            snackBarWidget('Successfully added!', color: Colors.green));
+        rootScaffoldMessengerKey.currentState!
+            .showSnackBar(snackBarWidget('Successfully added!', color: Colors.green));
         await Future.delayed(const Duration(seconds: 2));
         if (context.mounted) Navigator.of(context).pop();
         notifyListeners();
@@ -60,18 +59,14 @@ class RentalItemsController extends ChangeNotifier {
 
   //=-=-=-=-=-=-= Edit Rental Items =-=-=-=-==-=-=-=
 
-  Future<void> editRentalItem(
-      {required String token,
-      required BuildContext context,
-      required int id}) async {
+  Future<void> editRentalItem({required String token, required BuildContext context, required int id}) async {
     try {
       isloading = true;
+      notifyListeners();
       final response = await RentalItemsProvider().editRentalItem(
           token: token,
           data: RentalItemsRequest(
-              name: itemNameController.text,
-              code: itemCodeController.text,
-              rate: rentController.text),
+              name: itemNameController.text, code: itemCodeController.text, rate: rentController.text),
           id: id);
       if (response != null) {
         int indexToUpdate = rentalItemsList.indexWhere((item) => item.id == id);
@@ -79,8 +74,8 @@ class RentalItemsController extends ChangeNotifier {
           rentalItemsList[indexToUpdate] = response;
         }
 
-        rootScaffoldMessengerKey.currentState!.showSnackBar(
-            snackBarWidget('Successfully upadted!', color: Colors.green));
+        rootScaffoldMessengerKey.currentState!
+            .showSnackBar(snackBarWidget('Successfully upadted!', color: Colors.green));
         await Future.delayed(const Duration(seconds: 2));
         if (context.mounted) Navigator.of(context).pop();
         notifyListeners();

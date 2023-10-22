@@ -2,6 +2,8 @@ import 'package:evantez/app/router/router.dart';
 import 'package:evantez/app/router/router_constant.dart';
 import 'package:evantez/src/model/repository/events/events_controller.dart';
 import 'package:evantez/src/model/repository/catering/food_items_repository.dart';
+import 'package:evantez/src/model/repository/resource/employee/add_employee_controller.dart';
+import 'package:evantez/src/model/repository/catering/food_items_repository.dart';
 import 'package:evantez/src/model/repository/resource/employee_repository.dart';
 import 'package:evantez/src/model/repository/resource/rentalitem_repository.dart';
 import 'package:evantez/src/model/repository/resource/settingswages_repository.dart';
@@ -25,6 +27,7 @@ class MyApp extends StatelessWidget {
         // ChangeNotifierProvider(create: (_) => SignupViewState()),
         ChangeNotifierProvider(create: (_) => AuthController()),
         // ChangeNotifierProvider(create: (_) => OtpViewstate()),
+        ChangeNotifierProvider(create: (_) => AddEmployeeController()),
         ChangeNotifierProvider(create: (_) => EmployeesController()),
         ChangeNotifierProvider(create: (_) => EventController()),
         ChangeNotifierProvider(create: (_) => SettingsWageController()),

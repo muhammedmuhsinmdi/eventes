@@ -18,7 +18,7 @@ class CommonDropdown extends StatelessWidget {
   final String? label;
 
   final bool? textAlignCenter;
-  // final FormFieldValidator<DropDownValue>? validator;
+  final String? Function(DropDownValue?)? validator;
   const CommonDropdown(
       {Key? key,
       required this.hintText,
@@ -27,9 +27,9 @@ class CommonDropdown extends StatelessWidget {
       required this.onChanged,
       this.label,
       this.showSearchBox = true,
-      // this.validator,
       this.isVisibleClearButton = false,
-      this.textAlignCenter})
+      this.textAlignCenter,
+      this.validator})
       : super(key: key);
 
   @override
@@ -106,8 +106,7 @@ class CommonDropdown extends StatelessWidget {
                           BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16)),
                     ),
                   )),
-              // validator: validator,
-              // onSaved: onSave,
+              validator: validator,
               onChanged: (v) {
                 onChanged(v);
               },

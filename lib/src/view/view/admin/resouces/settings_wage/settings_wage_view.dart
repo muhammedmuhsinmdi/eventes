@@ -82,8 +82,7 @@ class _SettingsWageViewState extends State<SettingsWageView> {
 
   Widget searchField(Size kSize, BuildContext context) {
     return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
+      padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,12 +92,10 @@ class _SettingsWageViewState extends State<SettingsWageView> {
               text: '',
               hintText: AppStrings.searchText,
               suffixIcon: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
                 child: SvgPicture.asset(
                   AppImages.search,
-                  colorFilter: const ColorFilter.mode(
-                      AppColors.primaryColor, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
                 ),
               ),
             ),
@@ -129,16 +126,22 @@ class _SettingsWageViewState extends State<SettingsWageView> {
   Widget settingsListing(Size kSize) {
     final controller = context.watch<SettingsWageController>();
     return Expanded(
-        child: ListView.builder(
-            itemCount: controller.settingsWageLists.length,
-            padding: EdgeInsets.only(
-                bottom: kSize.height * 0.16,
-                left: AppConstants.baseBorderRadius,
-                right: AppConstants.baseBorderRadius),
-            itemBuilder: (context, index) {
-              return AddSettingsTile(
-                index: index,
-              );
-            }));
+        child: controller.isloading
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.primaryColor,
+                ),
+              )
+            : ListView.builder(
+                itemCount: controller.settingsWageLists.length,
+                padding: EdgeInsets.only(
+                    bottom: kSize.height * 0.16,
+                    left: AppConstants.baseBorderRadius,
+                    right: AppConstants.baseBorderRadius),
+                itemBuilder: (context, index) {
+                  return AddSettingsTile(
+                    index: index,
+                  );
+                }));
   }
 }
