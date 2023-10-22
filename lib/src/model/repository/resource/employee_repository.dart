@@ -22,7 +22,7 @@ class EmployeesController extends ChangeNotifier {
   TextEditingController codeEditingController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> employeeForm = GlobalKey<FormState>();
-  
+
   // EmployeeTypeViewstate() {
   //   employeeTypeRepo = Services.employeeTypeRepo;
   // }
@@ -181,11 +181,11 @@ class EmployeesController extends ChangeNotifier {
   Future<void> employeeAdd({required String token, required BuildContext context}) async {
     try {
       isloading = true;
-      if(employeeForm.currentState!.validate()){
+      if (employeeForm.currentState!.validate()) {
         employeeForm.currentState!.save();
         print(employeeData);
       }
-      
+
       // final response = await EmployeeProvider().addEmployee(
       //     token: token,
       //     data: EmployeeRequest(
@@ -232,8 +232,13 @@ class EmployeesController extends ChangeNotifier {
   }
 
   DateTime? date;
-  changeDate(value) {
-    date = value;
+  changeDate({required BuildContext context}) async {
+    date = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1960),
+      lastDate: DateTime(2100),
+    );
   }
 
 //=-=-=-=-=-=-=-= Employee Id =-=-=-=-=-=-=-=

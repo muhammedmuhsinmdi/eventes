@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:evantez/src/model/repository/auth/auth_controller.dart';
 import 'package:evantez/src/model/repository/resource/employee/add_employee_controller.dart';
 import 'package:evantez/src/model/repository/resource/employee_repository.dart';
@@ -9,6 +11,7 @@ import 'package:evantez/src/view/core//widgets/custom_textfield.dart';
 import 'package:evantez/src/view/core//widgets/footer_button.dart';
 import 'package:evantez/src/view/core/widgets/common_drop_down.dart';
 import 'package:evantez/src/view/core/widgets/drop_down_value.dart';
+import 'package:evantez/src/view/view/admin/resouces/employee/add_employee_view/widgets/emp_image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +42,15 @@ class AddEmployeeView extends StatelessWidget {
               key: empController.employeeForm,
               child: Column(
                 children: [
-                  uploadProImage(kSize),
+                  EmpImageTile(
+                    onSelectedImage: (pickedImage, base64Data) async {
+                      if (pickedImage != null) {
+                        empController.employeeImage = pickedImage;
+                        log(empController.employeeImage.path);
+                        empController.employee.image = pickedImage.path;
+                      }
+                    },
+                  ),
                   SizedBox(
                     height: kSize.height * 0.040,
                   ),
@@ -49,8 +60,8 @@ class AddEmployeeView extends StatelessWidget {
                     required: true,
                     hintText: "Enter ${AppStrings.fullNameText}",
                     validator: empController.nameValidator,
-                    onSave: (val){
-                       empController.employee.employeeName = val;
+                    onSave: (val) {
+                      empController.employee.employeeName = val;
                     },
                   ),
                   SizedBox(
@@ -58,27 +69,29 @@ class AddEmployeeView extends StatelessWidget {
                   ),
                   CustomTextField(
                     controller: empController.codeController,
-                    text: AppStrings.fullNameText,
+                    text: AppStrings.employeeCode,
                     required: true,
                     hintText: "Enter ${AppStrings.employeeCode}",
                     validator: empController.codeValidator,
-                    onSave: (val){
-                       empController.employee.code = val;
+                    onSave: (val) {
+                      empController.employee.code = val;
                     },
                   ),
                   SizedBox(
                     height: kSize.height * 0.040,
                   ),
                   CommonDropdown(
+                      text: "Employee Type",
+                      required: true,
                       hintText: 'Select Employee Type',
                       dropDownValue: empController.types,
-                      selecteItem: empController.selectedEmpType,                      
+                      selecteItem: empController.selectedEmpType,
                       validator: empController.empTypeValidator,
                       onChanged: (DropDownValue value) {
                         empController.selectedEmpType = value;
                         empController.employee.employeeType = value.id;
                       }),
-            
+
                   SizedBox(
                     height: kSize.height * 0.040,
                   ),
@@ -86,11 +99,13 @@ class AddEmployeeView extends StatelessWidget {
                     controller: empController.phoneController,
                     text: AppStrings.phoneText,
                     keyboardType: TextInputType.number,
+                    maxLength: 10,
+                    maxLines: 1,
                     required: true,
                     hintText: AppStrings.phoneHint,
                     validator: empController.phoneValidator,
-                    onSave: (val){
-                       empController.employee.employeeMobile = val;
+                    onSave: (val) {
+                      empController.employee.employeeMobile = val;
                     },
                   ),
                   SizedBox(
@@ -102,8 +117,8 @@ class AddEmployeeView extends StatelessWidget {
                     required: true,
                     hintText: 'Email',
                     validator: empController.emailValidator,
-                    onSave: (val){
-                       empController.employee.email = val;
+                    onSave: (val) {
+                      empController.employee.email = val;
                     },
                   ),
                   // SizedBox(
@@ -127,12 +142,17 @@ class AddEmployeeView extends StatelessWidget {
                         colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
                       ),
                     ),
-                    //  controller: dob,
+                    controller: empController.dobController,
                     hintText: AppStrings.dobText,
                     text: AppStrings.dobText,
-                     validator: empController.dobValidator,
+                    validator: empController.dobValidator,
+                    readOnly: true,
+                    onTap: () async {
+                      log(">>>>");
+                      empController.changeDateOfBirth(context);
+                    },
                     onChanged: (value) {
-                      controller.changeDate(value);
+                      // controller.changeDate(value);
                     },
                   ),
                   /* DatePickerContainer(
@@ -147,12 +167,14 @@ class AddEmployeeView extends StatelessWidget {
                   CustomTextField(
                     controller: empController.homeContact,
                     text: AppStrings.homeContactText,
+                    maxLength: 10,
+                    maxLines: 1,
                     required: true,
                     keyboardType: TextInputType.number,
                     hintText: AppStrings.homeContactHint,
                     validator: empController.homeContactValidator,
-                    onSave: (val){
-                       empController.employee.homeContact = val;
+                    onSave: (val) {
+                      empController.employee.homeContact = val;
                     },
                   ),
                   SizedBox(
@@ -165,8 +187,8 @@ class AddEmployeeView extends StatelessWidget {
                     maxLines: 3,
                     hintText: AppStrings.address,
                     validator: empController.homeContactValidator,
-                    onSave: (val){
-                       empController.employee.address = val;
+                    onSave: (val) {
+                      empController.employee.address = val;
                     },
                   ),
                   SizedBox(
@@ -176,7 +198,7 @@ class AddEmployeeView extends StatelessWidget {
                   CommonDropdown(
                       hintText: 'Id Proof',
                       dropDownValue: empController.employeeIdLists,
-                      selecteItem: empController.selectedIdType,                      
+                      selecteItem: empController.selectedIdType,
                       validator: empController.idTypeValidator,
                       onChanged: (DropDownValue value) {
                         empController.selectedIdType = value;
@@ -191,8 +213,8 @@ class AddEmployeeView extends StatelessWidget {
                     required: true,
                     hintText: AppStrings.panCardText,
                     validator: empController.idNumberValidator,
-                    onSave: (val){
-                       empController.employee.idProofNumber = val;
+                    onSave: (val) {
+                      empController.employee.idProofNumber = val;
                     },
                   ),
                   SizedBox(
@@ -202,9 +224,9 @@ class AddEmployeeView extends StatelessWidget {
                     controller: empController.bloodGroupController,
                     text: '',
                     required: true,
-                    hintText: 'Blood Group',                    
-                    onSave: (val){
-                       empController.employee.bloodGroup = val;
+                    hintText: 'Blood Group',
+                    onSave: (val) {
+                      empController.employee.bloodGroup = val;
                     },
                   ),
                   SizedBox(
@@ -213,7 +235,10 @@ class AddEmployeeView extends StatelessWidget {
                   FooterButton(
                     label: 'Add Employee',
                     onTap: () {
-                      empController.addEmployee(token: auth.accesToken ?? '', context: context).then((value) => controller.employeeList(token: auth.accesToken ?? ''));
+                      log(auth.accesToken!);
+                      empController
+                          .addEmployee(token: auth.accesToken ?? '', context: context)
+                          .then((value) => controller.employeeList(token: auth.accesToken ?? ''));
                     },
                   ),
                   SizedBox(

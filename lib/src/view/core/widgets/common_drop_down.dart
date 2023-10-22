@@ -16,6 +16,8 @@ class CommonDropdown extends StatelessWidget {
   final bool showSearchBox;
   final bool isVisibleClearButton;
   final String? label;
+  final String? text;
+  final bool? required;
 
   final bool? textAlignCenter;
   final String? Function(DropDownValue?)? validator;
@@ -29,7 +31,9 @@ class CommonDropdown extends StatelessWidget {
       this.showSearchBox = true,
       this.isVisibleClearButton = false,
       this.textAlignCenter,
-      this.validator})
+      this.validator,
+      this.text,
+      this.required})
       : super(key: key);
 
   @override
@@ -39,6 +43,25 @@ class CommonDropdown extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (text != null && text!.isNotEmpty)
+          Padding(
+            padding: EdgeInsets.only(bottom: kSize.height * 0.010),
+            child: RichText(
+                text: TextSpan(
+                    text: required != null && required! ? '*  ' : '',
+                    style: AppTypography.poppinsBold.copyWith(
+                      color: AppColors.statusCritical,
+                      fontSize: 16,
+                    ),
+                    children: [
+                  TextSpan(
+                      text: text,
+                      style: AppTypography.poppinsMedium.copyWith(
+                        fontSize: 16,
+                        color: AppColors.secondaryColor,
+                      ))
+                ])),
+          ),
         SizedBox(
           width: kSize.width,
           child: DropdownButtonHideUnderline(
@@ -66,7 +89,7 @@ class CommonDropdown extends StatelessWidget {
                           BorderSide(width: 2, style: BorderStyle.solid, color: AppColors.statusCritical)),
                 ),
                 baseStyle: AppTypography.poppinsRegular.copyWith(
-                  color: AppColors.secondaryColor,
+                  color: AppColors.primaryColor,
                   fontSize: 16,
                 ),
               ),
@@ -126,15 +149,19 @@ class CommonDropdown extends StatelessWidget {
         hintText,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
-          color: Color(0xffB0B0B0),
-          fontSize: 10,
+        style: AppTypography.poppinsMedium.copyWith(
+          color: AppColors.primaryColor,
+          fontSize: 16,
         ),
       );
     } else {
       return Text(
         item.value ?? '',
         maxLines: 1,
+        style: AppTypography.poppinsMedium.copyWith(
+          color: AppColors.primaryColor,
+          fontSize: 16,
+        ),
         overflow: TextOverflow.ellipsis,
         // style: textfieldTextStyle,
       );

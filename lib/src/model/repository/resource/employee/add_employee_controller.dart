@@ -1,9 +1,14 @@
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:evantez/app/app.dart';
 import 'package:evantez/src/model/components/snackbar_widget.dart';
 import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
 import 'package:evantez/src/serializer/models/employee_type/employee_model.dart';
 import 'package:evantez/src/view/core/widgets/drop_down_value.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AddEmployeeController extends ChangeNotifier {
   final GlobalKey<FormState> employeeForm = GlobalKey<FormState>();
@@ -30,6 +35,20 @@ class AddEmployeeController extends ChangeNotifier {
     notifyListeners();
   }
 
+  File? _employeeImage;
+  File get employeeImage => _employeeImage!;
+  set employeeImage(File val) {
+    _employeeImage = val;
+    notifyListeners();
+  }
+
+  DateTime _dob = DateTime.now();
+  DateTime get dob => _dob;
+  set dob(DateTime val) {
+    _dob = val;
+    notifyListeners();
+  }
+
   bool _isloading = false;
   bool get isloading => isloading;
   set isloading(bool val) {
@@ -40,17 +59,33 @@ class AddEmployeeController extends ChangeNotifier {
   DropDownValue? selectedEmpType;
   DropDownValue? selectedIdType;
 
-  Future<void> addEmployee(
-      {required String token, required BuildContext context}) async {
+  Future<void> addEmployee({required String token, required BuildContext context}) async {
     if (employeeForm.currentState!.validate()) {
       employeeForm.currentState!.save();
-      final response = await EmployeeProvider().addEmployee(
-          token: token,
-          data: employee);
+      /*     FormData formData = FormData.fromMap({
+        "employee_name": employee.employeeName,
+        "employee_mobile": phoneController.text,
+        "image": await MultipartFile.fromFile(
+          employeeImage.path,
+          filename: employeeImage.path.split('/').last,
+        ),
+        "code": codeController.text,
+        "dob": dobController.text,
+        "blood_group": bloodGroupController.text,
+        "home_contact": homeContact.text,
+        "email": emailTextController.text,
+        "address": addressContactTxtController.text,
+        "id_proof_number": idProofNumberController.text,
+        "employee_type": employee.employeeType,
+      });
+      formData.toString(); */
+      final response = await EmployeeProvider().addEmployee(token: token, data: employee);
       if (response != null) {
         rootScaffoldMessengerKey.currentState!
             .showSnackBar(snackBarWidget('Successfully added!', color: Colors.green));
-        Navigator.pop(context);
+        if (context.mounted) {
+          Navigator.pop(context);
+        }
         notifyListeners();
       }
       isloading = false;
@@ -62,12 +97,9 @@ class AddEmployeeController extends ChangeNotifier {
   Future<void> employeeTypesData({required String token}) async {
     try {
       isloading = true;
-      final response =
-          await EmployeeProvider().loadEmployeesTypes(token: token);
+      final response = await EmployeeProvider().loadEmployeesTypes(token: token);
       if (response != null) {
-        types = response
-            .map((e) => DropDownValue(id: e.id, value: e.name))
-            .toList();
+        types = response.map((e) => DropDownValue(id: e.id, value: e.name)).toList();
         notifyListeners();
       }
       isloading = false;
@@ -83,9 +115,7 @@ class AddEmployeeController extends ChangeNotifier {
       isloading = true;
       final response = await EmployeeProvider().employeeId(token: token);
       if (response != null) {
-        employeeIdLists = response
-            .map((e) => DropDownValue(id: e.id, value: e.name))
-            .toList();
+        employeeIdLists = response.map((e) => DropDownValue(id: e.id, value: e.name)).toList();
         notifyListeners();
       }
       isloading = false;
@@ -98,7 +128,6 @@ class AddEmployeeController extends ChangeNotifier {
     employee = EmployeeModel(id: 0);
     nameController = TextEditingController();
     phoneController = TextEditingController();
-    imageController = TextEditingController();
     totalEarningsController = TextEditingController();
     currentRatingController = TextEditingController();
     codeController = TextEditingController();
@@ -120,6 +149,7 @@ class AddEmployeeController extends ChangeNotifier {
       return null;
     }
   }
+
   String? codeValidator(String? val) {
     if (val!.isEmpty) {
       return "Code Required..";
@@ -127,6 +157,7 @@ class AddEmployeeController extends ChangeNotifier {
       return null;
     }
   }
+
   // emp type validator
   String? empTypeValidator(DropDownValue? value) {
     if (value == null) {
@@ -167,6 +198,7 @@ class AddEmployeeController extends ChangeNotifier {
       return null;
     }
   }
+
   //home contact validators
   String? homeContactValidator(String? value) {
     if (value!.isEmpty) {
@@ -184,6 +216,7 @@ class AddEmployeeController extends ChangeNotifier {
       return null;
     }
   }
+
   // id type validator
   String? idTypeValidator(DropDownValue? value) {
     if (value == null) {
@@ -191,6 +224,7 @@ class AddEmployeeController extends ChangeNotifier {
     }
     return null;
   }
+
   //id proof validators
   String? idProofValidator(int? value) {
     if (value == 0) {
@@ -208,6 +242,7 @@ class AddEmployeeController extends ChangeNotifier {
       return null;
     }
   }
+
   //Blood Group Validator
   String? bloodGroupValidator(String? value) {
     if (value == 0) {
@@ -217,4 +252,28 @@ class AddEmployeeController extends ChangeNotifier {
     }
   }
 
+  changeDateOfBirth(BuildContext context) async {
+    DateTime? date = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1960),
+      lastDate: DateTime(2100),
+    );
+
+    if (date != null) {
+      dob = date;
+      dobController.text = formatDate(dob);
+      log(dobController.text);
+      employee.dob = dobController.text;
+    }
+  }
+
+  String formatDate(DateTime inputDate) {
+    try {
+      final inputFormat = DateFormat('dd-MMM-yyyy').format(inputDate);
+      return inputFormat;
+    } catch (e) {
+      return "Invalid Date";
+    }
+  }
 }
