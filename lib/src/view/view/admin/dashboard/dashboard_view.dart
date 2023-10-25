@@ -1,7 +1,12 @@
+import 'dart:developer';
+
+import 'package:evantez/src/model/core/extensions/validation_extension.dart';
 import 'package:evantez/src/model/repository/auth/auth_controller.dart';
 import 'package:evantez/src/model/repository/resource/employee_repository.dart';
 import 'package:evantez/src/model/repository/resource/rentalitem_repository.dart';
 import 'package:evantez/src/model/repository/resource/settingswages_repository.dart';
+import 'package:evantez/src/serializer/models/common/paged_input_model.dart';
+import 'package:evantez/src/serializer/models/employee/employee_filter_model.dart';
 import 'package:evantez/src/view/view/admin/dashboard/widgets/bottom_nav_bar.dart';
 import 'package:evantez/src/view/view/admin/dashboard/events_view/events_view.dart';
 import 'package:evantez/src/view/view/admin/transactions/payment/payment_view/payment_view.dart';
@@ -131,17 +136,18 @@ class _DashBoardViewState extends State<DashBoardView> {
                                                 Navigator.pushNamed(context, e.routeUrl!, arguments: e)
                                                     .then((value) {});
                                                 if (e.menuName == "Employees") {
-                                                  controller.employeeList(token: auth.accesToken ?? '');
+                                                  controller.filterMode =  EmployeeFilterInputModel()..limit = 100..offset = 0;
+                                                  await controller.employeeList(token: auth.accesToken ?? '');
                                                 }
                                                 if (e.menuName == "Employee Types") {
-                                                  controller.employeeTypesData(token: auth.accesToken ?? '');
+                                                  await controller.employeeTypesData(token: auth.accesToken ?? '');
                                                 }
                                                 if (e.menuName == "Settings Wage") {
-                                                  settingsController.settingsWageList(
+                                                  await settingsController.settingsWageList(
                                                       token: auth.accesToken ?? '');
                                                 }
                                                 if (e.menuName == "Rental Items") {
-                                                  rentalItemsController.rentalItemList(
+                                                  await rentalItemsController.rentalItemList(
                                                       token: auth.accesToken ?? '');
                                                 }
                                               }

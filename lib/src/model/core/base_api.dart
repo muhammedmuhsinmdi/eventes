@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:evantez/app/app.dart';
 import 'package:evantez/src/model/components/snackbar_widget.dart';
-import 'package:provider/provider.dart';
 
 class BaseApi {
   Dio? dio;

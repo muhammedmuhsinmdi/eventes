@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:evantez/app/app.dart';
 import 'package:evantez/src/model/components/snackbar_widget.dart';
 import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
-import 'package:evantez/src/serializer/models/employee_type/employee_model.dart';
+import 'package:evantez/src/serializer/models/employee/employee_type/employee_model.dart';
 import 'package:evantez/src/view/core/widgets/drop_down_value.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

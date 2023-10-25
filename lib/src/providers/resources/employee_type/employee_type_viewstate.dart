@@ -2,22 +2,23 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:evantez/src/model/core/base_api_utilities.dart';
-import 'package:evantez/src/serializer/models/employee_details_response.dart';
-import 'package:evantez/src/serializer/models/employee_list_response.dart';
-import 'package:evantez/src/serializer/models/employee_payment_details.dart';
-import 'package:evantez/src/serializer/models/employee_request.dart';
-import 'package:evantez/src/serializer/models/employee_type/employee_model.dart';
-import 'package:evantez/src/serializer/models/employee_type_request.dart';
-import 'package:evantez/src/serializer/models/employee_types_response.dart';
+import 'package:evantez/src/serializer/models/employee/employee_details_response.dart';
+import 'package:evantez/src/serializer/models/employee/employee_filter_model.dart';
+import 'package:evantez/src/serializer/models/employee/employee_list_response.dart';
+import 'package:evantez/src/serializer/models/employee/employee_payment_details.dart';
+import 'package:evantez/src/serializer/models/employee/employee_type/employee_model.dart';
+import 'package:evantez/src/serializer/models/employee/employee_type_request.dart';
+import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
 import 'package:evantez/src/view/core/event_api.dart';
 
-import '../../../serializer/models/employee_proof_response.dart';
+import '../../../serializer/models/employee/employee_proof_response.dart';
 
 class EmployeeProvider extends EventApi {
   Future<List<EmployeeListResponse>> loadEmployee(
-      {required String token}) async {
+      {required String token , EmployeeFilterInputModel? filterMode}) async {
+       ///?${filterMode!.toQueryParam()}
     Response response =
-        await get('users/employee/', headers: apiHeaders(token));
+        await get('users/employee', headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
         return (response.data['results'] as List)

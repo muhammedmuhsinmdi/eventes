@@ -5,3 +5,17 @@ extension EmailValidator on String {
         .hasMatch(this);
   }
 }
+
+extension MapExtensions on Map<String, dynamic> {
+  String jsonToQueryParam() {
+    List<String> parts = [];
+
+    forEach((key, value) {
+      if (value != null) {
+        parts.add('$key=${Uri.encodeQueryComponent(value.toString())}');
+      }
+    });
+
+    return parts.join('&');
+  }
+}

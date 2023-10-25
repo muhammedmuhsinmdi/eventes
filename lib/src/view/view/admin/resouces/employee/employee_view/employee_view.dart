@@ -423,6 +423,7 @@ class EmployeeDetailView extends StatelessWidget {
   }
 
   Widget searchField(Size kSize, BuildContext context) {
+    final controller = context.watch<EmployeesController>();
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -430,7 +431,7 @@ class EmployeeDetailView extends StatelessWidget {
         Flexible(
           child: CustomTextField(
             text: '',
-            hintText: AppStrings.searchText,
+            hintText: AppStrings.searchText,            
             suffixIcon: Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),

@@ -79,6 +79,7 @@ class EmployeeListView extends StatelessWidget {
   }
 
   Widget searchField(BuildContext context, Size kSize) {
+    final controller = context.watch<EmployeesController>();
     return Padding(
       padding:
           const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
@@ -90,6 +91,7 @@ class EmployeeListView extends StatelessWidget {
             child: CustomTextField(
               text: '',
               hintText: AppStrings.searchText,
+              onChanged: controller.onSearchFiledChange,
               suffixIcon: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
