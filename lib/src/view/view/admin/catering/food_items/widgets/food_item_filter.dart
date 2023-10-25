@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:evantez/src/model/repository/auth/auth_controller.dart';
 import 'package:evantez/src/model/repository/catering/food_items_repository.dart';
 import 'package:evantez/src/view/core/themes/typography.dart';
@@ -20,6 +22,8 @@ class FoodItemFilter extends StatefulWidget {
 }
 
 class _FoodItemFilterState extends State<FoodItemFilter> {
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
@@ -28,16 +32,43 @@ class _FoodItemFilterState extends State<FoodItemFilter> {
       bottomSheet: */
         Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: AppColors.transparent,
+      appBar: AppBar(
+        elevation: 0,
+        leading: const SizedBox(),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text(
+          "Add Items",
+          style: AppTypography.poppinsSemiBold.copyWith(
+            fontSize: 18,
+            color: AppColors.secondaryColor,
+          ),
+        ),
+        centerTitle: true,
+        actions: [
+          InkWell(
+              highlightColor: AppColors.transparent,
+              splashColor: AppColors.transparent,
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Padding(
+                padding:
+                    EdgeInsets.symmetric(horizontal: kSize.width * 0.016, vertical: kSize.height * 0.020),
+                child: Text(
+                  AppStrings.closeText,
+                  style: AppTypography.poppinsMedium
+                      .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.6)),
+                ),
+              ))
+        ],
+      ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SizedBox(
         height: kSize.height,
         width: kSize.width,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(
-              AppConstants.baseBorderRadius,
-              AppConstants.baseBorderRadius,
-              AppConstants.baseBorderRadius,
-              kSize.height * 0.044),
+          padding: EdgeInsets.fromLTRB(AppConstants.baseBorderRadius, AppConstants.baseBorderRadius,
+              AppConstants.baseBorderRadius, kSize.height * 0.044),
           child: foodItems(context, kSize),
         ),
       ),
@@ -47,118 +78,110 @@ class _FoodItemFilterState extends State<FoodItemFilter> {
   Widget foodItems(BuildContext context, Size kSize) {
     final controller = context.watch<FoodItemsController>();
     final auth = context.watch<AuthController>();
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Row(
-          children: [
-            const Spacer(),
-            Text(
-              "Add Items",
-              style: AppTypography.poppinsSemiBold.copyWith(
-                fontSize: 18,
-                color: AppColors.secondaryColor,
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: kSize.height * 0.016,
+          ),
+          CustomTextField(
+            text: "Item Name",
+            hintText: "Item Name",
+            controller: controller.nameController,
+          ),
+          SizedBox(
+            height: kSize.height * 0.024,
+          ),
+          CommonDropdown(
+            text: "Item Type",
+            label: 'Item Type',
+            dropDownValue: controller.foodItemTypesList
+            /*   const [
+              'Chicken Biriyani',
+              "Fried Rice",
+              "Chicken Mandi",
+              "Soorbhiyan Rice"
+            ] */
+            ,
+            hintText: 'Select Item',
+            onChanged: (value) {
+              controller.changeId(value);
+            },
+          ),
+          /* CustomDropdownSearch(
+            label: 'Item Type',
+            items: ['Chicken Biriyani', "Fried Rice", "Chicken Mandi", "Soorbhiyan Rice"],
+            hintText: 'Select Item',
+          ), */
+          SizedBox(
+            height: kSize.height * 0.024,
+          ),
+          CustomTextField(
+            text: "Unit Type",
+            hintText: "KG,Ltr,etc",
+            controller: controller.foodItemUnitController,
+          ),
+          SizedBox(
+            height: kSize.height * 0.024,
+          ),
+          CustomTextField(
+            text: "Rate",
+            controller: controller.rateController,
+            hintText: AppStrings.amountText,
+          ),
+          SizedBox(
+            height: kSize.height * 0.032,
+          ),
+          const Spacer(),
+          if (controller.isloading) ...{
+            const Center(
+              child: CircularProgressIndicator(
+                color: AppColors.primaryColor,
               ),
-            ),
-            const Spacer(),
-            InkWell(
-                highlightColor: AppColors.transparent,
-                splashColor: AppColors.transparent,
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  AppStrings.closeText,
-                  style: AppTypography.poppinsMedium.copyWith(
-                      fontSize: 14,
-                      color: AppColors.secondaryColor.withOpacity(0.6)),
-                ))
-          ],
-        ),
-        SizedBox(
-          height: kSize.height * 0.032,
-        ),
-        CustomTextField(
-          text: "Item Name",
-          hintText: "Item Name",
-          controller: controller.nameController,
-        ),
-        SizedBox(
-          height: kSize.height * 0.024,
-        ),
-        CommonDropdown(
-          label: 'Item Type',
-          dropDownValue: controller.foodItemTypesList
-          /*   const [
-            'Chicken Biriyani',
-            "Fried Rice",
-            "Chicken Mandi",
-            "Soorbhiyan Rice"
-          ] */
-          ,
-          hintText: 'Select Item',
-          onChanged: (value) {
-            controller.changeId(value);
-          },
-        ),
-        /* CustomDropdownSearch(
-          label: 'Item Type',
-          items: ['Chicken Biriyani', "Fried Rice", "Chicken Mandi", "Soorbhiyan Rice"],
-          hintText: 'Select Item',
-        ), */
-        SizedBox(
-          height: kSize.height * 0.024,
-        ),
-        CustomTextField(
-          text: "Unit Type",
-          hintText: "KG,Ltr,etc",
-          controller: controller.foodItemUnitController,
-        ),
-        SizedBox(
-          height: kSize.height * 0.024,
-        ),
-        CustomTextField(
-          text: "Rate",
-          controller: controller.rateController,
-          hintText: AppStrings.amountText,
-        ),
-        SizedBox(
-          height: kSize.height * 0.032,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            FooterButton(
-                fillColor: AppColors.transparent,
-                width: kSize.width * 0.4,
-                label: "Cancel",
-                onTap: () {
-                  //
-                  Navigator.pop(context);
-                }),
-            FooterButton(
-              width: kSize.width * 0.4,
-              label: controller.isEdit ? "Update" : "Save",
-              onTap: () {
-                //
-                if (controller.isEdit) {
-                  controller.editFoodItem(
-                      token: auth.accesToken ?? '',
-                      context: context,
-                      id: controller.foodItemsList[widget.index].id);
-                } else {
-                  controller
-                      .addFoodItems(
-                          token: auth.accesToken ?? '', context: context)
-                      .then((value) {
-                    controller.foodItemList(token: auth.accesToken ?? '');
-                  });
-                }
-              },
-            ),
-          ],
-        )
-      ],
+            )
+          } else ...{
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                FooterButton(
+                    fillColor: AppColors.transparent,
+                    width: kSize.width * 0.4,
+                    label: "Cancel",
+                    onTap: () {
+                      //
+                      Navigator.pop(context);
+                    }),
+                FooterButton(
+                  width: kSize.width * 0.4,
+                  label: controller.isEdit ? "Update" : "Save",
+                  onTap: () {
+                    //
+
+                    if (_formKey.currentState!.validate()) {
+                      if (controller.isloading) {
+                        if (controller.isEdit) {
+                          controller.editFoodItem(
+                              token: auth.accesToken ?? '',
+                              context: context,
+                              id: controller.foodItemsList[widget.index].id!);
+                        } else {
+                          controller
+                              .addFoodItems(token: auth.accesToken ?? '', context: context)
+                              .then((value) {
+                            controller.foodItemList(token: auth.accesToken ?? '');
+                          });
+                        }
+                      }
+                    }
+                  },
+                ),
+              ],
+            )
+          }
+        ],
+      ),
     );
   }
 }

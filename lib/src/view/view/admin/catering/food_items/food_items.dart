@@ -6,6 +6,7 @@ import 'package:evantez/src/view/core//constants/app_strings.dart';
 import 'package:evantez/src/view/core//widgets/custom_back_btn.dart';
 import 'package:evantez/src/view/view/admin/catering/food_items/widgets/food_item_filter.dart';
 import 'package:evantez/src/view/view/admin/catering/food_items/widgets/food_items_tile.dart';
+import 'package:evantez/src/view/view/admin/resouces/rental_items/widgets/add_rental_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -25,8 +26,22 @@ class FoodItemsView extends StatefulWidget {
 }
 
 class _FoodItemsViewState extends State<FoodItemsView> {
+  late AuthController authController;
+  late FoodItemsController controller;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      controller.foodItemList(token: authController.accesToken!);
+      controller.foodItemTypeList(token: authController.accesToken!);
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    authController = context.watch<AuthController>();
+    controller = context.watch<FoodItemsController>();
     final kSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: appBar(context, kSize),
@@ -69,8 +84,8 @@ class _FoodItemsViewState extends State<FoodItemsView> {
         IconButton(
             onPressed: () async {
               controller.initStateLoading();
-              Navigator.pushNamed(context, RouterConstants.addFoodItemRoute,arguments: 0);
-             /*  showModalBottomSheet(
+              Navigator.pushNamed(context, RouterConstants.addFoodItemRoute, arguments: 0);
+              /* showModalBottomSheet(
                   isScrollControlled: true,
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
@@ -100,8 +115,7 @@ class _FoodItemsViewState extends State<FoodItemsView> {
 
   Widget searchField(Size kSize, BuildContext context) {
     return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
+      padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -111,12 +125,10 @@ class _FoodItemsViewState extends State<FoodItemsView> {
               text: '',
               hintText: AppStrings.searchText,
               suffixIcon: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
                 child: SvgPicture.asset(
                   AppImages.search,
-                  colorFilter: const ColorFilter.mode(
-                      AppColors.primaryColor, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
                 ),
               ),
             ),
@@ -146,16 +158,21 @@ class _FoodItemsViewState extends State<FoodItemsView> {
   }
 
   Widget foodItemsListing(Size kSize) {
-    final controller = context.watch<FoodItemsController>();
     return Expanded(
-        child: ListView.builder(
-            itemCount: controller.foodItemsList.length,
-            padding: EdgeInsets.only(
-                bottom: kSize.height * 0.16,
-                left: AppConstants.baseBorderRadius,
-                right: AppConstants.baseBorderRadius),
-            itemBuilder: (context, index) {
-              return FoodItemTile(index: index);
-            }));
+        child: controller.isloading
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.primaryColor,
+                ),
+              )
+            : ListView.builder(
+                itemCount: controller.foodItemsList.length,
+                padding: EdgeInsets.only(
+                    bottom: kSize.height * 0.16,
+                    left: AppConstants.baseBorderRadius,
+                    right: AppConstants.baseBorderRadius),
+                itemBuilder: (context, index) {
+                  return FoodItemTile(item: controller.foodItemsList[index]);
+                }));
   }
 }

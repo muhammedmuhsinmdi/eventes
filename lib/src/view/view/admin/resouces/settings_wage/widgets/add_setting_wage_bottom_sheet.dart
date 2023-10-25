@@ -79,7 +79,7 @@ class AddSettingWageBottomSheet {
             hintText: "Name",
             controller: controller.taskNameController,
             validator: (value) {
-              return value!.isEmpty ? "Item Name is Empty" : null;
+              return value!.isEmpty ? "Task Name is Empty" : null;
             },
           ),
           SizedBox(

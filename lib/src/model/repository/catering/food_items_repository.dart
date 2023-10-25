@@ -34,8 +34,7 @@ class FoodItemsController extends ChangeNotifier {
   TextEditingController foodItemTypeController = TextEditingController();
   TextEditingController foodItemUnitController = TextEditingController();
 
-  Future<void> addFoodItems(
-      {required String token, required BuildContext context}) async {
+  Future<void> addFoodItems({required String token, required BuildContext context}) async {
     try {
       isloading = true;
       final response = await FoodItemsProvider().addFoodItem(
@@ -47,8 +46,8 @@ class FoodItemsController extends ChangeNotifier {
             rate: rateController.text),
       );
       if (response != null) {
-        rootScaffoldMessengerKey.currentState!.showSnackBar(
-            snackBarWidget('Successfully added!', color: Colors.green));
+        rootScaffoldMessengerKey.currentState!
+            .showSnackBar(snackBarWidget('Successfully added!', color: Colors.green));
         await Future.delayed(const Duration(seconds: 2));
         if (context.mounted) Navigator.of(context).pop();
         notifyListeners();
@@ -63,10 +62,7 @@ class FoodItemsController extends ChangeNotifier {
 
   //=-=-=-=-=-=-= Edit Food Items =-=-=-=-==-=-=-=
 
-  Future<void> editFoodItem(
-      {required String token,
-      required BuildContext context,
-      required int id}) async {
+  Future<void> editFoodItem({required String token, required BuildContext context, required int id}) async {
     try {
       isloading = true;
       final response = await FoodItemsProvider().editFoodItem(
@@ -82,8 +78,8 @@ class FoodItemsController extends ChangeNotifier {
         if (indexToUpdate >= 0) {
           foodItemsList[indexToUpdate] = response;
         }
-        rootScaffoldMessengerKey.currentState!.showSnackBar(
-            snackBarWidget('Successfully upadted!', color: Colors.green));
+        rootScaffoldMessengerKey.currentState!
+            .showSnackBar(snackBarWidget('Successfully upadted!', color: Colors.green));
         await Future.delayed(const Duration(seconds: 2));
         if (context.mounted) Navigator.of(context).pop();
         notifyListeners();
@@ -101,12 +97,10 @@ class FoodItemsController extends ChangeNotifier {
   Future<void> foodItemTypeList({required String token}) async {
     try {
       isloading = true;
-      final response =
-          await FoodItemsProvider().loadFoodItemTypes(token: token);
+      final response = await FoodItemsProvider().loadFoodItemTypes(token: token);
       if (response != null) {
-        foodItemTypesList = response
-            .map((e) => DropDownValue(id: e.id, value: e.name))
-            .toList();
+        foodItemTypes = response;
+        foodItemTypesList = response.map((e) => DropDownValue(id: e.id, value: e.name)).toList();
         notifyListeners();
       }
       isloading = false;
@@ -134,10 +128,10 @@ class FoodItemsController extends ChangeNotifier {
       isEdit = false;
     } else {
       isEdit = true;
-      nameController.text = data.name;
+      nameController.text = data.name!;
       foodItemTypeController.text = data.foodItemType.toString();
       foodItemUnitController.text = data.foodItemUnit.toString();
-      rateController.text = data.rate;
+      rateController.text = data.rate!;
     }
   }
 }
