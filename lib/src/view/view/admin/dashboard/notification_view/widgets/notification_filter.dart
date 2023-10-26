@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//widgets/footer_button.dart';
 import 'package:evantez/src/view/view/admin/dashboard/notification_view/widgets/selected_emp_list.dart';
@@ -23,7 +24,7 @@ class NotificationFilter extends StatelessWidget {
 
   final ValueNotifier<String> selecteddate = ValueNotifier<String>('');
 
-  final ValueNotifier<List<String>> selectEmp = ValueNotifier([]);
+  final ValueNotifier<List<EmployeesTypesList>> selectEmp = ValueNotifier([]);
 
   @override
   Widget build(BuildContext context) {

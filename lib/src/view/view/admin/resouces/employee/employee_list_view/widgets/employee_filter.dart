@@ -1,3 +1,4 @@
+import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
 import 'package:evantez/src/view/view/admin/resouces/employee/employee_list_view/widgets/selection_rating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -15,7 +16,7 @@ class EmployeeFilter extends StatelessWidget {
 
   final ValueNotifier<String> selecteddate = ValueNotifier('');
 
-  final ValueNotifier<List<String>> selectEmp = ValueNotifier([]);
+  final ValueNotifier<List<EmployeesTypesList>> selectEmp = ValueNotifier([]);
 
   final ValueNotifier<List<String>> selectedRating = ValueNotifier([]);
 

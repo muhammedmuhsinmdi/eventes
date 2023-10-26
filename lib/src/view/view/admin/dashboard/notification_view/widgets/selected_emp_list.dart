@@ -1,12 +1,16 @@
 import 'dart:developer';
 
+import 'package:evantez/src/model/repository/auth/auth_controller.dart';
+import 'package:evantez/src/model/repository/resource/employee_repository.dart';
+import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../core/themes/colors.dart';
 import '../../../../../core/themes/typography.dart';
 
 class SelectEmpList extends StatefulWidget {
-  final Function(List<String>) onSelectedList;
+  final Function(List<EmployeesTypesList>) onSelectedList;
   const SelectEmpList({super.key, required this.onSelectedList});
 
   @override
@@ -14,7 +18,19 @@ class SelectEmpList extends StatefulWidget {
 }
 
 class _SelectEmpListState extends State<SelectEmpList> {
-  List<String> selectedEmp = [];
+  late EmployeesController employeesController;
+  late AuthController authController;
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      // log("${AppPrefs.token}");
+      employeesController.employeeTypesData(token: authController.accesToken!);
+      log("${employeesController.employeeTypesList}");
+    });
+    super.initState();
+  }
+
+  List<EmployeesTypesList> selectedEmp = [];
 
   List<String> employeeList = [
     'A Boy',
@@ -29,29 +45,31 @@ class _SelectEmpListState extends State<SelectEmpList> {
 
   @override
   Widget build(BuildContext context) {
+    employeesController = context.watch<EmployeesController>();
+    authController = context.watch<AuthController>();
     return Wrap(
       clipBehavior: Clip.antiAlias,
       spacing: 8,
       runSpacing: 8,
       children: List.generate(
-          employeeList.length,
+          employeesController.employeeTypesList.length,
           (index) => InkWell(
                 highlightColor: AppColors.transparent,
                 splashColor: AppColors.transparent,
                 onTap: () {
-                  if (selectedEmp.contains(employeeList[index])) {
-                    selectedEmp.remove(employeeList[index]);
+                  if (selectedEmp.contains(employeesController.employeeTypesList[index])) {
+                    selectedEmp.remove(employeesController.employeeTypesList[index]);
                   } else {
-                    selectedEmp.add(employeeList[index]);
+                    selectedEmp.add(employeesController.employeeTypesList[index]);
                   }
                   log("$selectedEmp");
                   setState(() {});
-                  widget.onSelectedList(selectedEmp);
+                  // widget.onSelectedList(selectedEmp);
                 },
                 child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                      color: selectedEmp.contains(employeeList[index])
+                      color: selectedEmp.contains(employeesController.employeeTypesList[index])
                           ? AppColors.primaryColor
                           : AppColors.transparent,
                       border: Border.all(
@@ -59,7 +77,7 @@ class _SelectEmpListState extends State<SelectEmpList> {
                       )),
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   child: Text(
-                    employeeList[index],
+                    employeesController.employeeTypesList[index].name!,
                     style:
                         AppTypography.poppinsRegular.copyWith(color: AppColors.secondaryColor, fontSize: 12),
                   ),
