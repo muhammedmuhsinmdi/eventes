@@ -17,8 +17,11 @@ class EmployeeProvider extends EventApi {
   Future<List<EmployeeListResponse>> loadEmployee(
       {required String token , EmployeeFilterInputModel? filterMode}) async {
        ///?${filterMode!.toQueryParam()}
+       filterMode!.limit = 1;
+       filterMode.offset = 0;
+      var queryParam = filterMode.toQueryParam();
     Response response =
-        await get('users/employee', headers: apiHeaders(token));
+        await get('users/employee/?$queryParam', headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
         return (response.data['results'] as List)

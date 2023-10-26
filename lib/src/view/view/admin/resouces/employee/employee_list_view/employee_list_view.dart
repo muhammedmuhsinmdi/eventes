@@ -1,4 +1,5 @@
 import 'package:evantez/app/router/router_constant.dart';
+import 'package:evantez/src/model/helper/debounce.dart';
 import 'package:evantez/src/model/repository/auth/auth_controller.dart';
 import 'package:evantez/src/model/repository/resource/employee/add_employee_controller.dart';
 import 'package:evantez/src/model/repository/resource/employee_repository.dart';
@@ -57,14 +58,16 @@ class EmployeeListView extends StatelessWidget {
       ),
       actions: [
         IconButton(
-            onPressed: () async{
+            onPressed: () async {
               await empAddcontroller.resetData();
               empAddcontroller.employee.user = auth.userId;
-              await empAddcontroller.employeeTypesData(token: auth.accesToken ?? '');
-              await empAddcontroller.employeeIdList(token: auth.accesToken ?? '');
-              if(context.mounted){
+              await empAddcontroller.employeeTypesData(
+                  token: auth.accesToken ?? '');
+              await empAddcontroller.employeeIdList(
+                  token: auth.accesToken ?? '');
+              if (context.mounted) {
                 Navigator.pushNamed(
-                  context, RouterConstants.addEmployeeViewRoute);
+                    context, RouterConstants.addEmployeeViewRoute);
               }              
             },
             icon: SvgPicture.asset(
@@ -80,6 +83,7 @@ class EmployeeListView extends StatelessWidget {
 
   Widget searchField(BuildContext context, Size kSize) {
     final controller = context.watch<EmployeesController>();
+    final auth = context.watch<AuthController>();
     return Padding(
       padding:
           const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
@@ -91,7 +95,15 @@ class EmployeeListView extends StatelessWidget {
             child: CustomTextField(
               text: '',
               hintText: AppStrings.searchText,
-              onChanged: controller.onSearchFiledChange,
+              onChanged: (value) {
+                debounceSearch(value, (String query) async {
+                  controller.filterMode.employeeName = value;
+                  controller.filterMode.limit = 50;
+                  controller.filterMode.offset = 0;
+                  controller.employeeLists = [];
+                  await controller.employeeList(token: auth.accesToken?? '');
+                });
+              },
               suffixIcon: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
