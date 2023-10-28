@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:evantez/app/router/router_constant.dart';
 import 'package:evantez/src/model/repository/catering/food_items_repository.dart';
 import 'package:evantez/src/serializer/models/food_items_list_response.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
@@ -10,7 +11,8 @@ import 'package:provider/provider.dart';
 
 class FoodItemTile extends StatelessWidget {
   final FoodItemListResponse item;
-  const FoodItemTile({super.key, required this.item});
+  final int index;
+  const FoodItemTile({super.key, required this.item, required this.index});
   @override
   Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
@@ -41,7 +43,8 @@ class FoodItemTile extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: AppConstants.baseTextFieldBorderRdious),
+                padding: const EdgeInsets.symmetric(
+                    vertical: AppConstants.baseTextFieldBorderRdious),
                 child: Text(
                   item.name!,
                   maxLines: 1,
@@ -55,8 +58,9 @@ class FoodItemTile extends StatelessWidget {
               RichText(
                 text: TextSpan(
                     text: 'Rate ',
-                    style: AppTypography.poppinsMedium
-                        .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.5)),
+                    style: AppTypography.poppinsMedium.copyWith(
+                        fontSize: 14,
+                        color: AppColors.secondaryColor.withOpacity(0.5)),
                     children: [
                       TextSpan(
                           text: item.rate,
@@ -75,9 +79,10 @@ class FoodItemTile extends StatelessWidget {
               initialValue: 'Edit',
               // Callback that sets the selected popup menu item.
               onSelected: (item) {
-                // setState(() {
-                log(item);
-                // });
+                controller.initStateLoading(
+                    data: controller.foodItemsList[index], index: index);
+                Navigator.pushNamed(context, RouterConstants.addFoodItemRoute,
+                    arguments: index);
               },
               clipBehavior: Clip.antiAlias,
               padding: EdgeInsets.symmetric(horizontal: kSize.height * 0.024),
@@ -110,6 +115,9 @@ class FoodItemTile extends StatelessWidget {
   }
 
   String getFoodItemType({required FoodItemsController controller}) {
-    return controller.foodItemTypes.where((e) => e.id == item.foodItemType).first.name;
+    return controller.foodItemTypes
+        .where((e) => e.id == item.foodItemType)
+        .first
+        .name;
   }
 }

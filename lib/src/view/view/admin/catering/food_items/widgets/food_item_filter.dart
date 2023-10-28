@@ -52,12 +52,14 @@ class _FoodItemFilterState extends State<FoodItemFilter> {
                 Navigator.pop(context);
               },
               child: Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: kSize.width * 0.016, vertical: kSize.height * 0.020),
+                padding: EdgeInsets.symmetric(
+                    horizontal: kSize.width * 0.016,
+                    vertical: kSize.height * 0.020),
                 child: Text(
                   AppStrings.closeText,
-                  style: AppTypography.poppinsMedium
-                      .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.6)),
+                  style: AppTypography.poppinsMedium.copyWith(
+                      fontSize: 14,
+                      color: AppColors.secondaryColor.withOpacity(0.6)),
                 ),
               ))
         ],
@@ -67,8 +69,11 @@ class _FoodItemFilterState extends State<FoodItemFilter> {
         height: kSize.height,
         width: kSize.width,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(AppConstants.baseBorderRadius, AppConstants.baseBorderRadius,
-              AppConstants.baseBorderRadius, kSize.height * 0.044),
+          padding: EdgeInsets.fromLTRB(
+              AppConstants.baseBorderRadius,
+              AppConstants.baseBorderRadius,
+              AppConstants.baseBorderRadius,
+              kSize.height * 0.044),
           child: foodItems(context, kSize),
         ),
       ),
@@ -97,6 +102,7 @@ class _FoodItemFilterState extends State<FoodItemFilter> {
           CommonDropdown(
             text: "Item Type",
             label: 'Item Type',
+            selecteItem: controller.selectedId,
             dropDownValue: controller.foodItemTypesList
             /*   const [
               'Chicken Biriyani',
@@ -118,11 +124,13 @@ class _FoodItemFilterState extends State<FoodItemFilter> {
           SizedBox(
             height: kSize.height * 0.024,
           ),
-          CustomTextField(
-            text: "Unit Type",
-            hintText: "KG,Ltr,etc",
-            controller: controller.foodItemUnitController,
-          ),
+          CommonDropdown(
+              selecteItem: controller.selectedUnitId,
+              hintText: "KG,Ltr,etc",
+              dropDownValue: controller.foodItemUnitsList,
+              onChanged: (value) {
+                controller.changeUnitId(value);
+              }),
           SizedBox(
             height: kSize.height * 0.024,
           ),
@@ -158,21 +166,19 @@ class _FoodItemFilterState extends State<FoodItemFilter> {
                   label: controller.isEdit ? "Update" : "Save",
                   onTap: () {
                     //
-
                     if (_formKey.currentState!.validate()) {
-                      if (controller.isloading) {
-                        if (controller.isEdit) {
-                          controller.editFoodItem(
-                              token: auth.accesToken ?? '',
-                              context: context,
-                              id: controller.foodItemsList[widget.index].id!);
-                        } else {
-                          controller
-                              .addFoodItems(token: auth.accesToken ?? '', context: context)
-                              .then((value) {
-                            controller.foodItemList(token: auth.accesToken ?? '');
-                          });
-                        }
+                      if (controller.isEdit) {
+                        controller.editFoodItem(
+                            token: auth.accesToken ?? '',
+                            context: context,
+                            id: controller.foodItemsList[widget.index].id!);
+                      } else {
+                        controller
+                            .addFoodItems(
+                                token: auth.accesToken ?? '', context: context)
+                            .then((value) {
+                          controller.foodItemList(token: auth.accesToken ?? '');
+                        });
                       }
                     }
                   },

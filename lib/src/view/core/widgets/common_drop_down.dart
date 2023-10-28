@@ -67,14 +67,18 @@ class CommonDropdown extends StatelessWidget {
           child: DropdownButtonHideUnderline(
               child: DecoratedBox(
             decoration: const BoxDecoration(
-                border: Border(bottom: BorderSide(width: 2, color: AppColors.primaryColor))),
+                border: Border(
+                    bottom:
+                        BorderSide(width: 2, color: AppColors.primaryColor))),
             child: DropdownSearch<DropDownValue>(
               items: dropDownValue,
+              selectedItem: selecteItem,
               dropdownButtonProps: DropdownButtonProps(
                 hoverColor: Colors.transparent,
                 icon: SvgPicture.asset(
                   AppImages.arrowDropDown,
-                  colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                      AppColors.primaryColor, BlendMode.srcIn),
                   fit: BoxFit.contain,
                 ),
               ),
@@ -85,8 +89,10 @@ class CommonDropdown extends StatelessWidget {
                   contentPadding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
                   suffixIconColor: AppColors.primaryColor,
                   errorBorder: const UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(width: 2, style: BorderStyle.solid, color: AppColors.statusCritical)),
+                      borderSide: BorderSide(
+                          width: 2,
+                          style: BorderStyle.solid,
+                          color: AppColors.statusCritical)),
                 ),
                 baseStyle: AppTypography.poppinsRegular.copyWith(
                   color: AppColors.primaryColor,
@@ -95,8 +101,9 @@ class CommonDropdown extends StatelessWidget {
               ),
               popupProps: PopupProps.bottomSheet(
                   title: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppConstants.baseBorderRadius,
+                        vertical: 16),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -115,7 +122,8 @@ class CommonDropdown extends StatelessWidget {
                           },
                           child: Text(AppStrings.closeText,
                               style: AppTypography.poppinsMedium.copyWith(
-                                color: AppColors.secondaryColor.withOpacity(0.4),
+                                color:
+                                    AppColors.secondaryColor.withOpacity(0.4),
                               )),
                         )
                       ],
@@ -125,8 +133,9 @@ class CommonDropdown extends StatelessWidget {
                     backgroundColor: AppColors.darkBgColor2,
                     clipBehavior: Clip.antiAlias,
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16)),
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(16),
+                          topLeft: Radius.circular(16)),
                     ),
                   )),
               validator: validator,

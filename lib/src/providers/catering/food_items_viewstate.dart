@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:evantez/src/model/core/base_api_utilities.dart';
 import 'package:evantez/src/serializer/models/food_item_details.dart';
 import 'package:evantez/src/serializer/models/food_item_type_response.dart';
+import 'package:evantez/src/serializer/models/food_item_unit_response.dart';
 import 'package:evantez/src/serializer/models/food_items_list_response.dart';
 import 'package:evantez/src/serializer/models/food_items_request.dart';
 import 'package:evantez/src/view/core/event_api.dart';
@@ -64,6 +65,21 @@ class FoodItemsProvider extends EventApi {
       case 200:
         return (response.data['results'] as List)
             .map((e) => FoodItemTypeResponse.fromJson(e))
+            .toList();
+      default:
+        throw Exception('Response Error');
+    }
+  }
+  //-----------------Food Item Units----------------------
+
+  Future<List<FoodItemUnitResponse>> loadFoodItemUnits(
+      {required String token}) async {
+    Response response =
+        await get('inventories/food-item-unit/', headers: apiHeaders(token));
+    switch (response.statusCode) {
+      case 200:
+        return (response.data['results'] as List)
+            .map((e) => FoodItemUnitResponse.fromJson(e))
             .toList();
       default:
         throw Exception('Response Error');
