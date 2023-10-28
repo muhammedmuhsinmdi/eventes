@@ -71,8 +71,8 @@ class _NewQuotationViewState extends State<NewQuotationView> {
                   ],
                 ),
               ),
-              CustomServiceCounter(label: "", items: const ['Ceramic Plates', 'House ']),
-              CustomServiceCounter(label: "", items: const ['Ceramic Plates', 'House ']),
+              const CustomServiceCounter(label: "", items: []),
+              const CustomServiceCounter(label: "", items: []),
               SizedBox(
                 height: kSize.height * 0.032,
               ),
@@ -97,8 +97,8 @@ class _NewQuotationViewState extends State<NewQuotationView> {
                   ],
                 ),
               ),
-              CustomServiceCounter(label: "", items: const ['Head', 'A Boy ']),
-              CustomServiceCounter(label: "", items: const ['B Boy', 'Captain']),
+              const CustomServiceCounter(label: "", items: []),
+              const CustomServiceCounter(label: "", items: []),
               SizedBox(
                 height: kSize.height * 0.032,
               ),

@@ -11,8 +11,7 @@ import '../../serializer/models/event_site_model.dart';
 class EventProvider extends EventApi {
   //=-=-=-=-=-=-=-=-= Events =-=-=-=-=-=-=-=-=-=
   Future<EventsResponse> loadEvents(String token) async {
-    Response response =
-        await get('events/event-venue/', headers: apiHeaders(token));
+    Response response = await get('events/event-venue/', headers: apiHeaders(token));
 
     switch (response.statusCode) {
       case 200:
@@ -24,10 +23,8 @@ class EventProvider extends EventApi {
   }
 
   //=-=-=-=-=-=-==-=-= Events Details =-=-=-=-=-=-=
-  Future<EventsDetailResponse> loadEventDetails(
-      {required String token, required int id}) async {
-    Response response =
-        await get('events/event-venue/$id', headers: apiHeaders(token));
+  Future<EventsDetailResponse> loadEventDetails({required String token, required int id}) async {
+    Response response = await get('events/event-venue/$id', headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
         return EventsDetailResponse.fromJson(response.data);
@@ -38,8 +35,8 @@ class EventProvider extends EventApi {
 
   //-=-=-=-=-=-=-=-=-=  Event Type -=-=-=-=-=-=-
   Future addEventType({required String token, required String eventadd}) async {
-    Response response = await post('events/event-type/',
-        headers: apiHeaders(token), data: {'name': '$eventadd'});
+    Response response =
+        await post('events/event-type/', headers: apiHeaders(token), data: {'name': '$eventadd'});
     switch (response.statusCode) {
       case 201:
         return response.data;
@@ -83,8 +80,7 @@ class EventProvider extends EventApi {
     required int amount,
   }) async {
     Response response = await post('users/employee-type/',
-        headers: apiHeaders(token),
-        data: {"name": name, "code": code, "amount": amount});
+        headers: apiHeaders(token), data: {"name": name, "code": code, "amount": amount});
     switch (response.statusCode) {
       case 201:
         return response.data;
@@ -95,10 +91,20 @@ class EventProvider extends EventApi {
 
 // -=-=-=-=-=-=-= Event Site -=-=-=-=-=-=-=-=-=-=
 
-  Future<dynamic> EventSiteAdd(
-      {required String token, required EventSite eventSite}) async {
-    Response response = await post('events/event-site/',
-        headers: apiHeaders(token), data: eventSite.toJson());
+  Future<dynamic> EventSiteAdd({required String token, required EventSite eventSite}) async {
+    Response response =
+        await post('events/event-site/', headers: apiHeaders(token), data: eventSite.toJson());
+    switch (response.statusCode) {
+      case 201:
+        return response.data;
+      default:
+        throw Exception('Error');
+    }
+  }
+
+// -=-=-=-=-=-=-= Event Site -=-=-=-=-=-=-=-=-=-=
+  Future<dynamic> getEventTypes({required String token}) async {
+    Response response = await get('events/event-type/', headers: apiHeaders(token));
     switch (response.statusCode) {
       case 201:
         return response.data;

@@ -23,11 +23,10 @@ class NewFoodQuotesView extends StatelessWidget {
         height: kSize.height,
         width: kSize.width,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(AppConstants.baseBorderRadius,
-              AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, 0),
+          padding: const EdgeInsets.fromLTRB(
+              AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, 0),
           child: SingleChildScrollView(
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               quoteNo(kSize),
               Padding(
                 padding: EdgeInsets.only(bottom: kSize.height * 0.024),
@@ -64,10 +63,8 @@ class NewFoodQuotesView extends StatelessWidget {
                   ],
                 ),
               ),
-              CustomServiceCounter(
-                  label: "", items: const ['Biriyani Chicken', 'Fried Rice']),
-              CustomServiceCounter(
-                  label: "", items: const ['Biriyani Chicken', 'Fried Rice']),
+              const CustomServiceCounter(label: "", items: []),
+              const CustomServiceCounter(label: "", items: []),
               SizedBox(
                 height: kSize.height * 0.032,
               ),
@@ -85,10 +82,8 @@ class NewFoodQuotesView extends StatelessWidget {
                   ],
                 ),
               ),
-              CustomServiceCounter(
-                  label: "", items: const ['Ice creams', 'Gulab Jam']),
-              CustomServiceCounter(
-                  label: "", items: const ['Ice creams', 'Gulab Jam']),
+              const CustomServiceCounter(label: "", items: []),
+              const CustomServiceCounter(label: "", items: []),
               SizedBox(
                 height: kSize.height * 0.032,
               ),
@@ -125,13 +120,11 @@ class NewFoodQuotesView extends StatelessWidget {
                   )),
                   Padding(
                     padding: const EdgeInsets.only(
-                        left: AppConstants.marginSpace,
-                        bottom: AppConstants.marginSpace),
+                        left: AppConstants.marginSpace, bottom: AppConstants.marginSpace),
                     child: Text(
                       '10%',
-                      style: AppTypography.poppinsMedium.copyWith(
-                          fontSize: 14,
-                          color: AppColors.secondaryColor.withOpacity(0.6)),
+                      style: AppTypography.poppinsMedium
+                          .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.6)),
                     ),
                   )
                 ],
