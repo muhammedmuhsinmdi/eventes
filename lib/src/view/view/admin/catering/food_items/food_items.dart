@@ -34,6 +34,7 @@ class _FoodItemsViewState extends State<FoodItemsView> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       controller.foodItemList(token: authController.accesToken!);
       controller.foodItemTypeList(token: authController.accesToken!);
+      controller.foodItemUnitList(token: authController.accesToken!);
     });
     super.initState();
   }
@@ -84,7 +85,8 @@ class _FoodItemsViewState extends State<FoodItemsView> {
         IconButton(
             onPressed: () async {
               controller.initStateLoading();
-              Navigator.pushNamed(context, RouterConstants.addFoodItemRoute, arguments: 0);
+              Navigator.pushNamed(context, RouterConstants.addFoodItemRoute,
+                  arguments: 0);
               /* showModalBottomSheet(
                   isScrollControlled: true,
                   shape: const RoundedRectangleBorder(
@@ -115,7 +117,8 @@ class _FoodItemsViewState extends State<FoodItemsView> {
 
   Widget searchField(Size kSize, BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
+      padding:
+          const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -125,10 +128,12 @@ class _FoodItemsViewState extends State<FoodItemsView> {
               text: '',
               hintText: AppStrings.searchText,
               suffixIcon: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
                 child: SvgPicture.asset(
                   AppImages.search,
-                  colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                      AppColors.primaryColor, BlendMode.srcIn),
                 ),
               ),
             ),
@@ -172,7 +177,10 @@ class _FoodItemsViewState extends State<FoodItemsView> {
                     left: AppConstants.baseBorderRadius,
                     right: AppConstants.baseBorderRadius),
                 itemBuilder: (context, index) {
-                  return FoodItemTile(item: controller.foodItemsList[index]);
+                  return FoodItemTile(
+                    item: controller.foodItemsList[index],
+                    index: index,
+                  );
                 }));
   }
 }
