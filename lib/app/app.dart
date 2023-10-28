@@ -7,14 +7,14 @@ import 'package:evantez/src/controller/resources/employee/employee_controller.da
 import 'package:evantez/src/controller/resources/rentalitem_controller.dart';
 import 'package:evantez/src/controller/resources/settingswages_controller.dart';
 import 'package:evantez/src/controller/auth/auth_controller.dart';
+import 'package:evantez/src/controller/transaction/new_event/new_event_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../src/view/core//constants/app_strings.dart';
 import '../src/view/core//themes/theme.dart';
 
-final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
-    GlobalKey<ScaffoldMessengerState>();
+final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SettingsWageController()),
         ChangeNotifierProvider(create: (_) => RentalItemsController()),
         ChangeNotifierProvider(create: (_) => FoodItemsController()),
+        ChangeNotifierProvider(create: (_) => NewEventController()),
       ],
       child: MaterialApp(
         scaffoldMessengerKey: rootScaffoldMessengerKey,

@@ -2,9 +2,10 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:evantez/src/controller/events/events_controller.dart';
+import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
 import 'package:evantez/src/controller/transaction/new_event/new_event_controller.dart';
 import 'package:evantez/src/model/components/snackbar_widget.dart';
-import 'package:evantez/src/model/repository/resource/employee_repository.dart';
 
 import 'package:evantez/src/view/core//constants/app_strings.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
@@ -23,7 +24,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../controller/auth/auth_controller.dart';
-import '../../../../../model/repository/events/events_controller.dart';
 
 import '../../../../core/themes/typography.dart';
 
