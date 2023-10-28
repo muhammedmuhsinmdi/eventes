@@ -1,12 +1,12 @@
 import 'package:evantez/app/router/router.dart';
 import 'package:evantez/app/router/router_constant.dart';
-import 'package:evantez/src/model/repository/events/events_controller.dart';
-import 'package:evantez/src/model/repository/catering/food_items_repository.dart';
-import 'package:evantez/src/model/repository/resource/employee/add_employee_controller.dart';
-import 'package:evantez/src/model/repository/resource/employee_repository.dart';
-import 'package:evantez/src/model/repository/resource/rentalitem_repository.dart';
-import 'package:evantez/src/model/repository/resource/settingswages_repository.dart';
-import 'package:evantez/src/model/repository/auth/auth_controller.dart';
+import 'package:evantez/src/controller/events/events_controller.dart';
+import 'package:evantez/src/controller/catering/food_items_repository.dart';
+import 'package:evantez/src/controller/resources/employee/add_employee_controller.dart';
+import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
+import 'package:evantez/src/controller/resources/rentalitem_controller.dart';
+import 'package:evantez/src/controller/resources/settingswages_controller.dart';
+import 'package:evantez/src/controller/auth/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:evantez/src/model/repository/resource/rentalitem_repository.dart';
+import 'package:evantez/src/controller/resources/rentalitem_controller.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';

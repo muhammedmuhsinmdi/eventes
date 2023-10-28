@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:evantez/app/router/router_constant.dart';
-import 'package:evantez/src/model/repository/catering/food_items_repository.dart';
+import 'package:evantez/src/controller/catering/food_items_repository.dart';
 import 'package:evantez/src/serializer/models/food_items_list_response.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';

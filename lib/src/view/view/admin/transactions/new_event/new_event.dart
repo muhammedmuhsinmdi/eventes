@@ -20,8 +20,8 @@ import 'package:evantez/src/view/view/admin/transactions/new_event/widgets/servi
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../model/repository/auth/auth_controller.dart';
-import '../../../../../model/repository/events/events_controller.dart';
+import '../../../../../controller/auth/auth_controller.dart';
+import '../../../../../controller/events/events_controller.dart';
 
 import '../../../../../serializer/models/event_site_model.dart';
 import '../../../../core/themes/typography.dart';

@@ -1,5 +1,5 @@
-import 'package:evantez/src/model/repository/auth/auth_controller.dart';
-import 'package:evantez/src/model/repository/resource/settingswages_repository.dart';
+import 'package:evantez/src/controller/auth/auth_controller.dart';
+import 'package:evantez/src/controller/resources/settingswages_controller.dart';
 import 'package:evantez/src/view/core//widgets/footer_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

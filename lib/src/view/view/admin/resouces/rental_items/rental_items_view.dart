@@ -1,5 +1,5 @@
 import 'package:evantez/src/model/core/models/menu/menu_model.dart';
-import 'package:evantez/src/model/repository/resource/rentalitem_repository.dart';
+import 'package:evantez/src/controller/resources/rentalitem_controller.dart';
 import 'package:evantez/src/view/core//constants/app_strings.dart';
 import 'package:evantez/src/view/core//widgets/custom_back_btn.dart';
 import 'package:evantez/src/view/view/admin/resouces/rental_items/widgets/add_rental_items.dart';

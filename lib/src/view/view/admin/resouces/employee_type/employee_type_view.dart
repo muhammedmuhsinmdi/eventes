@@ -1,4 +1,4 @@
-import 'package:evantez/src/model/repository/resource/employee_repository.dart';
+import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
 import 'package:evantez/src/model/core/models/employeetype/employeetype_model.dart';
 import 'package:evantez/src/model/core/models/menu/menu_model.dart';
 import 'package:evantez/src/view/core//widgets/custom_back_btn.dart';

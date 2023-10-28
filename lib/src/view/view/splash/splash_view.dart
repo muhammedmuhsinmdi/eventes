@@ -1,7 +1,7 @@
 import 'package:evantez/app/router/router_constant.dart';
-import 'package:evantez/src/model/repository/events/events_controller.dart';
+import 'package:evantez/src/controller/events/events_controller.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
-import 'package:evantez/src/model/repository/auth/auth_controller.dart';
+import 'package:evantez/src/controller/auth/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

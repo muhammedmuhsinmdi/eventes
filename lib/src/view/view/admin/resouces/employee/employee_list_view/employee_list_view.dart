@@ -1,8 +1,8 @@
 import 'package:evantez/app/router/router_constant.dart';
 import 'package:evantez/src/model/helper/debounce.dart';
-import 'package:evantez/src/model/repository/auth/auth_controller.dart';
-import 'package:evantez/src/model/repository/resource/employee/add_employee_controller.dart';
-import 'package:evantez/src/model/repository/resource/employee_repository.dart';
+import 'package:evantez/src/controller/auth/auth_controller.dart';
+import 'package:evantez/src/controller/resources/employee/add_employee_controller.dart';
+import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
 import 'package:evantez/src/view/core/widgets/custom_back_btn.dart';
 import 'package:evantez/src/view/view/admin/resouces/employee/employee_list_view/widgets/employee_filter.dart';
 import 'package:evantez/src/view/view/admin/resouces/employee/employee_list_view/widgets/employee_tile.dart';

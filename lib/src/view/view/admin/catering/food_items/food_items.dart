@@ -1,7 +1,7 @@
 import 'package:evantez/app/router/router_constant.dart';
 import 'package:evantez/src/model/core/models/menu/menu_model.dart';
-import 'package:evantez/src/model/repository/auth/auth_controller.dart';
-import 'package:evantez/src/model/repository/catering/food_items_repository.dart';
+import 'package:evantez/src/controller/auth/auth_controller.dart';
+import 'package:evantez/src/controller/catering/food_items_repository.dart';
 import 'package:evantez/src/view/core//constants/app_strings.dart';
 import 'package:evantez/src/view/core//widgets/custom_back_btn.dart';
 import 'package:evantez/src/view/view/admin/catering/food_items/widgets/food_item_filter.dart';

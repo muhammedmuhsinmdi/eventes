@@ -5,19 +5,17 @@ import 'dart:developer';
 import 'package:evantez/app/app.dart';
 import 'package:evantez/src/model/helper/debounce.dart';
 import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
-import 'package:evantez/src/serializer/models/common/paged_input_model.dart';
 import 'package:evantez/src/serializer/models/employee/employee_details_response.dart';
 import 'package:evantez/src/serializer/models/employee/employee_filter_model.dart';
 import 'package:evantez/src/serializer/models/employee/employee_list_response.dart';
 import 'package:evantez/src/serializer/models/employee/employee_payment_details.dart';
-import 'package:evantez/src/serializer/models/employee/employee_request.dart';
 import 'package:evantez/src/serializer/models/employee/employee_type_request.dart';
 import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
 import 'package:evantez/src/view/core/widgets/drop_down_value.dart';
 import 'package:flutter/material.dart';
 
 import '../../../serializer/models/employee/employee_proof_response.dart';
-import '../../components/snackbar_widget.dart';
+import '../../../model/components/snackbar_widget.dart';
 
 class EmployeesController extends ChangeNotifier {
   // late IEmployeeTypeRepository employeeTypeRepo;

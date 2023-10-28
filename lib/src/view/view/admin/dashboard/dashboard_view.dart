@@ -1,10 +1,10 @@
 import 'dart:developer';
 
 import 'package:evantez/src/model/core/extensions/validation_extension.dart';
-import 'package:evantez/src/model/repository/auth/auth_controller.dart';
-import 'package:evantez/src/model/repository/resource/employee_repository.dart';
-import 'package:evantez/src/model/repository/resource/rentalitem_repository.dart';
-import 'package:evantez/src/model/repository/resource/settingswages_repository.dart';
+import 'package:evantez/src/controller/auth/auth_controller.dart';
+import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
+import 'package:evantez/src/controller/resources/rentalitem_controller.dart';
+import 'package:evantez/src/controller/resources/settingswages_controller.dart';
 import 'package:evantez/src/serializer/models/common/paged_input_model.dart';
 import 'package:evantez/src/serializer/models/employee/employee_filter_model.dart';
 import 'package:evantez/src/view/view/admin/dashboard/widgets/bottom_nav_bar.dart';
