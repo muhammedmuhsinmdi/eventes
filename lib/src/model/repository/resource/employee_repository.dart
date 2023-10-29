@@ -4,9 +4,11 @@ import 'dart:developer';
 
 import 'package:evantez/app/app.dart';
 import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
+import 'package:evantez/src/serializer/models/employee_detail_reponse.dart';
 import 'package:evantez/src/serializer/models/employee_details_response.dart';
 import 'package:evantez/src/serializer/models/employee_list_response.dart';
 import 'package:evantez/src/serializer/models/employee_payment_details.dart';
+import 'package:evantez/src/serializer/models/employee_rating_response.dart';
 import 'package:evantez/src/serializer/models/employee_request.dart';
 import 'package:evantez/src/serializer/models/employee_type_request.dart';
 import 'package:evantez/src/serializer/models/employee_types_response.dart';
@@ -105,15 +107,17 @@ class EmployeesController extends ChangeNotifier {
   }
 
   //=-=-=-=-=-=-=-= Employee Details =-=-==-=-=-=-=
-  EmployeeDetails? employeeData;
+  EmployeeDetailResponse? employeeData;
   Future<void> employeeDetails({required String token, required int id}) async {
     try {
       isloading = true;
       selectedPosition = null;
-      final response = await EmployeeProvider().loadEmployeeDetails(token: token, id: id);
+      final response =
+          await EmployeeProvider().loadEmployeeDetails(token: token, id: 1);
       if (response != null) {
         employeeData = response;
-        selectedPosition = types.firstWhere((element) => element.id == employeeData?.employeeType);
+        selectedPosition = types
+            .firstWhere((element) => element.id == employeeData?.employeeType);
       }
       isloading = false;
       notifyListeners();
@@ -142,10 +146,13 @@ class EmployeesController extends ChangeNotifier {
       isloading = true;
       notifyListeners();
 
-      final response = await EmployeeProvider().loadEmployeesTypes(token: token);
+      final response =
+          await EmployeeProvider().loadEmployeesTypes(token: token);
       if (response != null) {
         employeeTypesList = response;
-        types = response.map((e) => DropDownValue(id: e.id, value: e.name)).toList();
+        types = response
+            .map((e) => DropDownValue(id: e.id, value: e.name))
+            .toList();
 
         notifyListeners();
       }
@@ -157,14 +164,17 @@ class EmployeesController extends ChangeNotifier {
     }
   }
 
-  final ValueNotifier<List<String>> selectedEmpList = ValueNotifier<List<String>>([]);
+  final ValueNotifier<List<String>> selectedEmpList =
+      ValueNotifier<List<String>>([]);
 
   //=-=-=-=-=-=-=-= Employee Payemnt =-=-=-=-=-=-=-=
   EmployeeBank? employeePayment;
-  Future<void> employeePayments({required String token, required int id}) async {
+  Future<void> employeePayments(
+      {required String token, required int id}) async {
     try {
       isloading = true;
-      final response = await EmployeeProvider().employeePayment(token: token, id: id);
+      final response =
+          await EmployeeProvider().employeePayment(token: token, id: id);
       if (response != null) {
         employeePayment = response;
         notifyListeners();
@@ -178,7 +188,8 @@ class EmployeesController extends ChangeNotifier {
 
   //=-=-=-=-=-=-=-= Add Employee  =-=-=-=-=-=-=-=
 
-  Future<void> employeeAdd({required String token, required BuildContext context}) async {
+  Future<void> employeeAdd(
+      {required String token, required BuildContext context}) async {
     try {
       isloading = true;
       if (employeeForm.currentState!.validate()) {
@@ -251,7 +262,9 @@ class EmployeesController extends ChangeNotifier {
       final response = await EmployeeProvider().employeeId(token: token);
       if (response != null) {
         employeeId = response;
-        employeeIdLists = response.map((e) => DropDownValue(id: e.id, value: e.name)).toList();
+        employeeIdLists = response
+            .map((e) => DropDownValue(id: e.id, value: e.name))
+            .toList();
         notifyListeners();
       }
       isloading = false;
@@ -266,7 +279,8 @@ class EmployeesController extends ChangeNotifier {
   TextEditingController codeController = TextEditingController();
   TextEditingController amount = TextEditingController();
 
-  Future<void> employeeTypeAdd({required String token, required BuildContext context}) async {
+  Future<void> employeeTypeAdd(
+      {required String token, required BuildContext context}) async {
     try {
       isloading = true;
       notifyListeners();
@@ -277,8 +291,8 @@ class EmployeesController extends ChangeNotifier {
         amount: int.parse(amount.text),
       );
       if (response != null) {
-        rootScaffoldMessengerKey.currentState!
-            .showSnackBar(snackBarWidget('Successfully added!', color: Colors.green));
+        rootScaffoldMessengerKey.currentState!.showSnackBar(
+            snackBarWidget('Successfully added!', color: Colors.green));
         Navigator.pop(context);
       }
       isloading = false;
@@ -302,15 +316,18 @@ class EmployeesController extends ChangeNotifier {
       final response = await EmployeeProvider().editEmployeeType(
           token: token,
           data: EmployeeTypeRequest(
-              name: nameTypeController.text, code: codeController.text, amount: amount.text),
+              name: nameTypeController.text,
+              code: codeController.text,
+              amount: amount.text),
           id: id);
       if (response != null) {
-        int indexToUpdate = employeeTypesList.indexWhere((item) => item.id == id);
+        int indexToUpdate =
+            employeeTypesList.indexWhere((item) => item.id == id);
         if (indexToUpdate >= 0) {
           employeeTypesList[indexToUpdate] = response;
         }
-        rootScaffoldMessengerKey.currentState!
-            .showSnackBar(snackBarWidget('Successfully upadted!', color: Colors.green));
+        rootScaffoldMessengerKey.currentState!.showSnackBar(
+            snackBarWidget('Successfully upadted!', color: Colors.green));
         Navigator.pop(context);
       }
       isloading = false;
@@ -318,6 +335,23 @@ class EmployeesController extends ChangeNotifier {
     } catch (e, s) {
       log(e.toString());
       log('message', stackTrace: s);
+      isloading = false;
+      notifyListeners();
+    }
+  }
+
+//=-=-==-=-=-=-=-=-= Employee Rating History =-=-=-=-=-=
+  List<EmployeeRatingHistoryResponse> employeeRatingsList = [];
+  Future<void> employeeRatingHistory(
+      {required String token, required String category}) async {
+    try {
+      isloading = true;
+      notifyListeners();
+      final response = await EmployeeProvider()
+          .employeeRatingHistory(token: token, category: category);
+      employeeRatingsList = response;
+    } catch (e) {
+      log('message');
       isloading = false;
       notifyListeners();
     }

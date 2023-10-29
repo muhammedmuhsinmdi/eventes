@@ -1,17 +1,20 @@
 import 'dart:developer';
 
+import 'package:evantez/src/model/repository/resource/employee_repository.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
 import 'package:evantez/src/view/core//widgets/custom_rating_star.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HistoryTile extends StatelessWidget {
-  const HistoryTile({super.key});
-
+  const HistoryTile({super.key, required this.index});
+  final int index;
   @override
   Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
+    final controller = context.watch<EmployeesController>();
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: kSize.height * 0.018,
@@ -76,7 +79,9 @@ class HistoryTile extends StatelessWidget {
 
   Widget paymentStatus() {
     return Container(
-      decoration: BoxDecoration(color: AppColors.statusPending, borderRadius: BorderRadius.circular(16)),
+      decoration: BoxDecoration(
+          color: AppColors.statusPending,
+          borderRadius: BorderRadius.circular(16)),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       child: Text(
         "Payment Pending",

@@ -57,15 +57,17 @@ class EmployeeListView extends StatelessWidget {
       ),
       actions: [
         IconButton(
-            onPressed: () async{
+            onPressed: () async {
               await empAddcontroller.resetData();
               empAddcontroller.employee.user = auth.userId;
-              await empAddcontroller.employeeTypesData(token: auth.accesToken ?? '');
-              await empAddcontroller.employeeIdList(token: auth.accesToken ?? '');
-              if(context.mounted){
+              await empAddcontroller.employeeTypesData(
+                  token: auth.accesToken ?? '');
+              await empAddcontroller.employeeIdList(
+                  token: auth.accesToken ?? '');
+              if (context.mounted) {
                 Navigator.pushNamed(
-                  context, RouterConstants.addEmployeeViewRoute);
-              }              
+                    context, RouterConstants.addEmployeeViewRoute);
+              }
             },
             icon: SvgPicture.asset(
               AppImages.addCircle,
@@ -164,9 +166,11 @@ class EmployeeListView extends StatelessWidget {
                   controller.employeePayments(
                       token: auth.accesToken ?? '',
                       id: controller.employeeLists[index].id ?? 0);
-
                   Navigator.pushNamed(
-                      context, RouterConstants.employeeDetailViewRoute);
+                    context,
+                    RouterConstants.employeeDetailViewRoute,
+                    arguments: controller.employeeLists[index].id ?? 0,
+                  );
                 },
                 child: EmployeeTile(
                   index: index,

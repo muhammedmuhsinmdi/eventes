@@ -36,8 +36,11 @@ class AddEmployeeView extends StatelessWidget {
         width: kSize.width,
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(AppConstants.baseBorderRadius, AppConstants.baseBorderRadius,
-                AppConstants.baseBorderRadius, 0),
+            padding: const EdgeInsets.fromLTRB(
+                AppConstants.baseBorderRadius,
+                AppConstants.baseBorderRadius,
+                AppConstants.baseBorderRadius,
+                0),
             child: Form(
               key: empController.employeeForm,
               child: Column(
@@ -139,7 +142,8 @@ class AddEmployeeView extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: SvgPicture.asset(
                         AppImages.calender,
-                        colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                        colorFilter: const ColorFilter.mode(
+                            AppColors.primaryColor, BlendMode.srcIn),
                       ),
                     ),
                     controller: empController.dobController,
@@ -237,8 +241,10 @@ class AddEmployeeView extends StatelessWidget {
                     onTap: () {
                       log(auth.accesToken!);
                       empController
-                          .addEmployee(token: auth.accesToken ?? '', context: context)
-                          .then((value) => controller.employeeList(token: auth.accesToken ?? ''));
+                          .addEmployee(
+                              token: auth.accesToken ?? '', context: context)
+                          .then((value) => controller.employeeList(
+                              token: auth.accesToken ?? ''));
                     },
                   ),
                   SizedBox(
@@ -254,13 +260,14 @@ class AddEmployeeView extends StatelessWidget {
   }
 
   AppBar appBar(BuildContext context, Size kSize) {
+    final empController = context.watch<AddEmployeeController>();
     return AppBar(
       elevation: 0,
       leading: const CustomBackButton(),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       centerTitle: true,
       title: Text(
-        "Add Employee",
+        empController.isEdit ? "Edit Employee" : "Add Employee",
         style: AppTypography.poppinsSemiBold.copyWith(
           color: AppColors.secondaryColor,
         ),
@@ -283,7 +290,8 @@ class AddEmployeeView extends StatelessWidget {
           ),
           child: SvgPicture.asset(
             AppImages.camera,
-            colorFilter: const ColorFilter.mode(AppColors.secondaryColor, BlendMode.srcIn),
+            colorFilter: const ColorFilter.mode(
+                AppColors.secondaryColor, BlendMode.srcIn),
             // color: AppColors.secondaryColor,
           ),
         ),
@@ -312,14 +320,19 @@ class AddEmployeeView extends StatelessWidget {
   }
 }
 
-Widget smallLabelText(String label, {double? topPadding, double bottomPadding = 5, bool isRequired = false}) {
+Widget smallLabelText(String label,
+    {double? topPadding, double bottomPadding = 5, bool isRequired = false}) {
   return Padding(
       padding: EdgeInsets.only(bottom: bottomPadding, top: topPadding ?? 15),
       child: RichText(
         text: TextSpan(text: label, style: const TextStyle(), children: [
           if (isRequired)
             const TextSpan(
-                text: ' *', style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600, fontSize: 15))
+                text: ' *',
+                style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15))
         ]),
       )
       // Text(label,

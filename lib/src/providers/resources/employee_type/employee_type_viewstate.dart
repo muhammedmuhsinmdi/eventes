@@ -1,10 +1,11 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:evantez/src/model/core/base_api_utilities.dart';
+import 'package:evantez/src/serializer/models/employee_detail_reponse.dart';
 import 'package:evantez/src/serializer/models/employee_details_response.dart';
 import 'package:evantez/src/serializer/models/employee_list_response.dart';
 import 'package:evantez/src/serializer/models/employee_payment_details.dart';
+import 'package:evantez/src/serializer/models/employee_rating_response.dart';
 import 'package:evantez/src/serializer/models/employee_request.dart';
 import 'package:evantez/src/serializer/models/employee_type/employee_model.dart';
 import 'package:evantez/src/serializer/models/employee_type_request.dart';
@@ -30,13 +31,13 @@ class EmployeeProvider extends EventApi {
   }
 
   //=-=-=-=-=-=-= Employee Details =-=-=-=-=-=-=
-  Future<EmployeeDetails> loadEmployeeDetails(
+  Future<EmployeeDetailResponse> loadEmployeeDetails(
       {required String token, required int id}) async {
     Response response =
-        await get('users/employee/$id', headers: apiHeaders(token));
+        await get('users/employee/$id/', headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
-        return EmployeeDetails.fromJson(response.data);
+        return EmployeeDetailResponse.fromJson(response.data);
       default:
         throw Exception('Response Error');
     }
@@ -74,8 +75,8 @@ class EmployeeProvider extends EventApi {
   //=-=-=-=-=-=-= Employee ADdd =-=-=-=-=-=-=
   Future<EmployeeDetails> addEmployee(
       {required String token, required EmployeeModel data}) async {
-        var jsonData = data.toAddJson();
-        var dd = json.encode(jsonData);
+    var jsonData = data.toAddJson();
+    var dd = json.encode(jsonData);
     Response response = await post('users/employee/',
         data: json.encode(jsonData), headers: apiHeaders(token));
     switch (response.statusCode) {
@@ -134,6 +135,23 @@ class EmployeeProvider extends EventApi {
       case 200:
       case 201:
         return EmployeesTypesList.fromJson(response.data);
+      default:
+        throw Exception('Response Error');
+    }
+  }
+
+  //=-=-=-=-=-=-= Employee Rating History =-=-=-=-=-=-=
+
+  Future<List<EmployeeRatingHistoryResponse>> employeeRatingHistory(
+      {required String token, required String category}) async {
+    Response response =
+        await get('users/employee-rating-history/', headers: apiHeaders(token));
+    switch (response.statusCode) {
+      case 200:
+      case 201:
+        return (response.data['results'] as List)
+            .map((e) => EmployeeRatingHistoryResponse.fromJson(e))
+            .toList();
       default:
         throw Exception('Response Error');
     }
