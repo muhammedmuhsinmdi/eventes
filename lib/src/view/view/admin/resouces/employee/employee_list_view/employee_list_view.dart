@@ -68,7 +68,7 @@ class EmployeeListView extends StatelessWidget {
               if (context.mounted) {
                 Navigator.pushNamed(
                     context, RouterConstants.addEmployeeViewRoute);
-              }              
+              }
             },
             icon: SvgPicture.asset(
               AppImages.addCircle,
@@ -101,7 +101,7 @@ class EmployeeListView extends StatelessWidget {
                   controller.filterMode.limit = 50;
                   controller.filterMode.offset = 0;
                   controller.employeeLists = [];
-                  await controller.employeeList(token: auth.accesToken?? '');
+                  await controller.employeeList(token: auth.accesToken ?? '');
                 });
               },
               suffixIcon: Padding(
@@ -178,9 +178,11 @@ class EmployeeListView extends StatelessWidget {
                   controller.employeePayments(
                       token: auth.accesToken ?? '',
                       id: controller.employeeLists[index].id ?? 0);
-
                   Navigator.pushNamed(
-                      context, RouterConstants.employeeDetailViewRoute);
+                    context,
+                    RouterConstants.employeeDetailViewRoute,
+                    arguments: controller.employeeLists[index].id ?? 0,
+                  );
                 },
                 child: EmployeeTile(
                   index: index,

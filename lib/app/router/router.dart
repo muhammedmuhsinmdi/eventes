@@ -87,8 +87,9 @@ class AppRouter {
           builder: (_) => const EmployeeListView(),
         );
       case RouterConstants.employeeDetailViewRoute:
+        final args = settings.arguments as int;
         return MaterialPageRoute<EmployeeDetailView>(
-          builder: (_) => EmployeeDetailView(),
+          builder: (_) => EmployeeDetailView(id: args),
         );
       case RouterConstants.addEmployeeViewRoute:
         return MaterialPageRoute<AddEmployeeView>(

@@ -50,7 +50,8 @@ class HistoryView extends StatelessWidget {
 
   Widget searchField(Size kSize) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
+      padding:
+          const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,10 +61,12 @@ class HistoryView extends StatelessWidget {
               text: '',
               hintText: AppStrings.searchText,
               suffixIcon: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
                 child: SvgPicture.asset(
                   AppImages.search,
-                  colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                      AppColors.primaryColor, BlendMode.srcIn),
                 ),
               ),
             ),
@@ -76,12 +79,14 @@ class HistoryView extends StatelessWidget {
             child: TextButton(
                 style: TextButton.styleFrom(
                   backgroundColor: AppColors.transparent,
-                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 12.0, horizontal: 8.0),
                 ),
                 onPressed: () {},
                 child: SvgPicture.asset(
                   AppImages.filter,
-                  colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                      AppColors.primaryColor, BlendMode.srcIn),
                 )),
           )
         ],
@@ -98,7 +103,9 @@ class HistoryView extends StatelessWidget {
                 left: AppConstants.baseBorderRadius,
                 right: AppConstants.baseBorderRadius),
             itemBuilder: (context, index) {
-              return const HistoryTile();
+              return HistoryTile(
+                index: index,
+              );
             }));
   }
 }
