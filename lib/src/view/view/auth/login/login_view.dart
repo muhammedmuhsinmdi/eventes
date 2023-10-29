@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:evantez/src/model/repository/auth/auth_controller.dart';
+import 'package:evantez/src/controller/auth/auth_controller.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//constants/app_strings.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';

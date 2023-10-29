@@ -55,7 +55,7 @@ class _EmployeeSettingWorkState extends State<EmployeeSettingWork> {
                   children: List.generate(settingWorkCount.value, (index) {
                     return CustomServiceCounter(
                       label: "Setting Work",
-                      items: settingWorkItems,
+                      items: [] // settingWorkItems,
                     );
                   }),
                 );

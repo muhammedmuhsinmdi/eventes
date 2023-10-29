@@ -3,20 +3,21 @@
 import 'dart:developer';
 
 import 'package:evantez/app/app.dart';
+import 'package:evantez/src/model/helper/debounce.dart';
 import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
+import 'package:evantez/src/serializer/models/employee/employee_details_response.dart';
+import 'package:evantez/src/serializer/models/employee/employee_filter_model.dart';
+import 'package:evantez/src/serializer/models/employee/employee_list_response.dart';
+import 'package:evantez/src/serializer/models/employee/employee_payment_details.dart';
+import 'package:evantez/src/serializer/models/employee/employee_type_request.dart';
+import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
 import 'package:evantez/src/serializer/models/employee_detail_reponse.dart';
-import 'package:evantez/src/serializer/models/employee_details_response.dart';
-import 'package:evantez/src/serializer/models/employee_list_response.dart';
-import 'package:evantez/src/serializer/models/employee_payment_details.dart';
 import 'package:evantez/src/serializer/models/employee_rating_response.dart';
-import 'package:evantez/src/serializer/models/employee_request.dart';
-import 'package:evantez/src/serializer/models/employee_type_request.dart';
-import 'package:evantez/src/serializer/models/employee_types_response.dart';
 import 'package:evantez/src/view/core/widgets/drop_down_value.dart';
 import 'package:flutter/material.dart';
 
-import '../../../serializer/models/employee_proof_response.dart';
-import '../../components/snackbar_widget.dart';
+import '../../../serializer/models/employee/employee_proof_response.dart';
+import '../../../model/components/snackbar_widget.dart';
 
 class EmployeesController extends ChangeNotifier {
   // late IEmployeeTypeRepository employeeTypeRepo;
@@ -25,6 +26,15 @@ class EmployeesController extends ChangeNotifier {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> employeeForm = GlobalKey<FormState>();
 
+  EmployeeFilterInputModel _filterMode =
+      EmployeeFilterInputModel(limit: 50, offset: 0);
+  EmployeeFilterInputModel get filterMode => _filterMode;
+  set filterMode(EmployeeFilterInputModel model) {
+    _filterMode = model;
+    notifyListeners();
+  }
+
+  late String token;
   // EmployeeTypeViewstate() {
   //   employeeTypeRepo = Services.employeeTypeRepo;
   // }
@@ -49,6 +59,15 @@ class EmployeesController extends ChangeNotifier {
   //   _employeeTypes = val;
   //   notifyListeners();
   // }
+
+  onSearchFiledChange(String? value) {
+    debounceSearch(value!, (String query) async {
+      filterMode.employeeName = value;
+      filterMode.limit = 50;
+      filterMode.offset = 0;
+      //await employeeList(token: token);
+    });
+  }
 
   // validators
   String? nameValidator(String? value) {
@@ -91,10 +110,12 @@ class EmployeesController extends ChangeNotifier {
   bool isloading = false;
   List<EmployeeListResponse> employeeLists = [];
   Future<void> employeeList({required String token}) async {
+    token = token;
     try {
       isloading = true;
       notifyListeners();
-      final response = await EmployeeProvider().loadEmployee(token: token);
+      final response = await EmployeeProvider()
+          .loadEmployee(token: token, filterMode: filterMode);
       if (response != null) {
         employeeLists = response;
       }

@@ -1,6 +1,6 @@
 import 'package:evantez/app/router/router_constant.dart';
-import 'package:evantez/src/model/repository/auth/auth_controller.dart';
-import 'package:evantez/src/model/repository/events/events_controller.dart';
+import 'package:evantez/src/controller/auth/auth_controller.dart';
+import 'package:evantez/src/controller/events/events_controller.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
 import 'package:evantez/src/view/core//widgets/custom_textfield.dart';

@@ -1,29 +1,30 @@
 import 'dart:convert';
 
 import 'package:evantez/src/model/core/app_prefs/app_prefs.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-PagedInput pagedInputFromJson(String str) => PagedInput.fromJson(json.decode(str));
+BaseFilterModel baseFilterModelFromJson(String str) => BaseFilterModel.fromJson(json.decode(str));
 
-String pagedInputToJson(PagedInput data) => json.encode(data.toJson());
+String baseFilterModelToJson(BaseFilterModel data) => json.encode(data.toJson());
 
-class PagedInput {
-    final int? limit;
-    final int? offset;
+class BaseFilterModel {
+    int? limit;
+    int? offset;
+    String? search;
 
-    PagedInput({
+    BaseFilterModel({
         this.limit = AppPrefs.limit ,
         this.offset = 0,
+        this.search
     });
 
-    factory PagedInput.fromJson(Map<String, dynamic> json) => PagedInput(
+    factory BaseFilterModel.fromJson(Map<String, dynamic> json) => BaseFilterModel(
         limit: json["limit"],
-        offset: json["offset"],
+        offset: json["offset"]
     );
 
     Map<String, dynamic> toJson() => {
         "limit": limit,
-        "offset": offset,
+        "offset": offset
     };
 }
 

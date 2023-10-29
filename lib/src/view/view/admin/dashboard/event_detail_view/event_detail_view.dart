@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:evantez/app/router/router_constant.dart';
-import 'package:evantez/src/model/repository/events/events_controller.dart';
+import 'package:evantez/src/controller/events/events_controller.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//widgets/custom_back_btn.dart';
 import 'package:evantez/src/view/core//widgets/custom_date_picker.dart';

@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:evantez/src/model/repository/auth/auth_controller.dart';
-import 'package:evantez/src/model/repository/catering/food_items_repository.dart';
+import 'package:evantez/src/controller/auth/auth_controller.dart';
+import 'package:evantez/src/controller/catering/food_items_repository.dart';
 import 'package:evantez/src/view/core/themes/typography.dart';
 import 'package:evantez/src/view/core/widgets/common_drop_down.dart';
 import 'package:evantez/src/view/core/widgets/custom_drop_down.dart';

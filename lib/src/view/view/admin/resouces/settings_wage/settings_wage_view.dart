@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../model/repository/resource/settingswages_repository.dart';
+import '../../../../../controller/resources/settingswages_controller.dart';
 import '../../../../core/constants/app_images.dart';
 import '../../../../core/constants/constants.dart';
 import '../../../../core/themes/colors.dart';

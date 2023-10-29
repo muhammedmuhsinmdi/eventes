@@ -2,6 +2,9 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:evantez/src/controller/events/events_controller.dart';
+import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
+import 'package:evantez/src/controller/transaction/new_event/new_event_controller.dart';
 import 'package:evantez/src/model/components/snackbar_widget.dart';
 
 import 'package:evantez/src/view/core//constants/app_strings.dart';
@@ -20,10 +23,8 @@ import 'package:evantez/src/view/view/admin/transactions/new_event/widgets/servi
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../model/repository/auth/auth_controller.dart';
-import '../../../../../model/repository/events/events_controller.dart';
+import '../../../../../controller/auth/auth_controller.dart';
 
-import '../../../../../serializer/models/event_site_model.dart';
 import '../../../../core/themes/typography.dart';
 
 class NewEventView extends StatefulWidget {
@@ -33,6 +34,13 @@ class NewEventView extends StatefulWidget {
 }
 
 class _NewEventViewState extends State<NewEventView> {
+  late EmployeesController employeeController;
+  late EventController controller;
+  late AuthController authcontroller;
+  late NewEventController newEventController;
+
+  final _formKey = GlobalKey<FormState>();
+
   List<String> serviceReq = [
     "Head",
     "Captain",
@@ -44,7 +52,7 @@ class _NewEventViewState extends State<NewEventView> {
   String? eventtype;
   File? imagefile;
 
-  TextEditingController eventVenue = TextEditingController();
+  /* TextEditingController eventVenue = TextEditingController();
   TextEditingController customerName = TextEditingController();
   TextEditingController customerPhone = TextEditingController();
   TextEditingController customeraddress = TextEditingController();
@@ -52,289 +60,333 @@ class _NewEventViewState extends State<NewEventView> {
   TextEditingController normalhours = TextEditingController();
   TextEditingController addtionalhours = TextEditingController();
   TextEditingController scheduleddate = TextEditingController();
-  TextEditingController scheduledtime = TextEditingController();
+  TextEditingController scheduledtime = TextEditingController(); */
   // TextEditingController dateController = TextEditingController();
   // TextEditingController timeController = TextEditingController();
 
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      newEventController.initData();
+      employeeController.employeeTypesData(token: authcontroller.accesToken!);
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final controller = context.watch<EventController>();
-    final authcontroller = context.watch<AuthController>();
+    employeeController = context.watch<EmployeesController>();
+    // controller = context.watch<EventController>();
+    newEventController = context.watch<NewEventController>();
+    authcontroller = context.watch<AuthController>();
     final kSize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: appBar(context, kSize),
-      body: SizedBox(
-        height: kSize.height,
-        width: kSize.width,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.only(
-                top: kSize.height * 0.032,
-                right: AppConstants.baseBorderRadius,
-                left: AppConstants.baseBorderRadius),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                eventID("EV24215"),
-                EventImageUpload(
-                  onPicked: (eventImage) {
-                    // You will the image file here
-                    // eventImage
+      body: Form(
+        key: _formKey,
+        child: SizedBox(
+          height: kSize.height,
+          width: kSize.width,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(
+                  top: kSize.height * 0.032,
+                  right: AppConstants.baseBorderRadius,
+                  left: AppConstants.baseBorderRadius),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  eventID("EV24215"),
+                  EventImageUpload(
+                    onPicked: (eventImage) {
+                      // You will the image file here
+                      // eventImage
 
-                    imagefile = eventImage;
-                  },
-                ),
-                SizedBox(
-                  height: kSize.height * 0.032,
-                ),
-                Divider(
-                  color: AppColors.secondaryColor.withOpacity(0.2),
-                ),
-                SizedBox(
-                  height: kSize.height * 0.024,
-                ),
-                EventTypeDropDown(
-                  intialValue: eventtype ?? '',
-                  eventTypes: eventTypeList,
-                  onSelected: (eventType) {
-                    log(eventType);
-                    eventtype = eventType;
-                  },
-                ),
-                SizedBox(
-                  height: kSize.height * 0.024,
-                ),
-                CustomTextField(
-                  text: "Event Venue",
-                  hintText: 'Enter Venue',
-                  controller: eventVenue,
-                  required: true,
-                  onChanged: (eventVenue) {
-                    log(eventVenue);
-                  },
-                ),
-                SizedBox(
-                  height: kSize.height * 0.024,
-                ),
-                dateTime(onSelectDate: (date) {
-                  scheduleddate.text = date;
-                }, onSelectTime: (time) {
-                  scheduledtime.text = time;
-                }),
-                SizedBox(
-                  height: kSize.height * 0.024,
-                ),
-                CustomTextField(
-                  text: AppStrings.customerName,
-                  required: true,
-                  hintText: "Name",
-                  onChanged: (name) {
-                    customerName.text = name;
-                  },
-                ),
-                SizedBox(
-                  height: kSize.height * 0.024,
-                ),
-                CustomTextField(
-                  text: AppStrings.phoneText,
-                  required: true,
-                  hintText: "Phone Number",
-                  onChanged: (phone) {
-                    customerPhone.text = phone;
-                  },
-                ),
-                SizedBox(
-                  height: kSize.height * 0.024,
-                ),
-                CustomTextField(
-                  text: AppStrings.address,
-                  required: true,
-                  maxLines: 2,
-                  hintText: "Address",
-                  onChanged: (address) {
-                    customeraddress.text = address;
-                  },
-                ),
-                SizedBox(
-                  height: kSize.height * 0.024,
-                ),
-                CustomTextField(
-                  text: 'Additional Information',
-                  hintText: "Notes/Instructions",
-                  onChanged: (notes) {
-                    additionalnote.text = notes;
-                  },
-                ),
-                SizedBox(
-                  height: kSize.height * 0.032,
-                ),
-                Divider(
-                  color: AppColors.secondaryColor.withOpacity(0.2),
-                ),
-                SizedBox(
-                  height: kSize.height * 0.032,
-                ),
-                Text(
-                  AppStrings.overTimeText,
-                  style: AppTypography.poppinsSemiBold.copyWith(
-                    color: AppColors.secondaryColor,
-                  ),
-                ),
-                SizedBox(
-                  height: kSize.height * 0.018,
-                ),
-                overTimeDetail(
-                    kSize: kSize,
-                    getNormalHours: (workingHours) {
-                      normalhours.text = workingHours;
+                      imagefile = eventImage;
                     },
-                    getOverTimeRate: (overTimeRate) {
-                      addtionalhours.text = overTimeRate;
-                    }),
-                SizedBox(
-                  height: kSize.height * 0.032,
-                ),
-                Text(
-                  AppStrings.serviceBoystext,
-                  style: AppTypography.poppinsSemiBold.copyWith(
-                    color: AppColors.secondaryColor,
                   ),
-                ),
-                SizedBox(
-                  height: kSize.height * 0.018,
-                ),
-                ServiceBoys(
-                    items: serviceReq,
-                    onSelected: (serviceBoysList) {
-                      //
-                    }),
-                SizedBox(
-                  height: kSize.height * 0.032,
-                ),
-                Divider(
-                  color: AppColors.secondaryColor.withOpacity(0.2),
-                ),
-                SizedBox(
-                  height: kSize.height * 0.032,
-                ),
-                Text(
-                  AppStrings.filterBoysText,
-                  style: AppTypography.poppinsSemiBold.copyWith(
-                    color: AppColors.secondaryColor,
+                  SizedBox(
+                    height: kSize.height * 0.032,
                   ),
-                ),
-                SizedBox(
-                  height: kSize.height * 0.018,
-                ),
-                FilterBoysRating(
-                  onSelected: (rating) {
-                    log(rating);
-                  },
-                ),
-                SizedBox(
-                  height: kSize.height * 0.032,
-                ),
-                FooterButton(
-                    label: "Save",
-                    onTap: () async {
-                      int? eventTypeid;
-                      int? eventVenueId;
-                      int? empTypeId;
-
-                      if (imagefile == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(snackBarWidget('Please select an Image',
-                            color: Colors.black26, duration: const Duration(seconds: 2)));
-                      } else {
-                        if (eventtype == null ||
-                            eventVenue.text.isEmpty ||
-                            customerName.text.isEmpty ||
-                            customeraddress.text.isEmpty ||
-                            // customerphone == null ||
-                            // scheduledtime == null ||
-                            // scheduleddate == null ||
-                            addtionalhours.text.isEmpty ||
-                            normalhours.text.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(snackBarWidget(
-                              'Please Fill all the Parameter',
-                              color: Colors.black26,
-                              duration: const Duration(seconds: 2)));
-                        } else {
-                          // -=-= -=--=-=-=-=-= EventType -=-=-=-=-==-=--=-
-
-                          await controller
-                              .addEventType(token: authcontroller.accesToken ?? '', eventadd: eventtype!)
-                              .then((value) {
-                            eventTypeid = value.id;
-                          });
-
-                          // -=-=-=-=-=-=-=-=- Event Venue -=-=-=-=-=-=-=-=-=-=-=-
-
-                          FormData formData = FormData.fromMap({
-                            'name': eventVenue.text,
-                            'image': await MultipartFile.fromFile(
-                              imagefile!.path,
-                              filename: imagefile!.path.split('/').last,
-                            ),
-                            'lat': '23.075689',
-                            'log': '72.772426',
-                          });
-
-                          await controller
-                              .addEventvenue(token: authcontroller.accesToken ?? '', data: formData)
-                              .then((value) {
-                            eventVenueId = value.id;
-                          }
-
-                                  // -=-=-=-=-=-=-=-= EventSite Add -=-=-=-=-=-=-=-=-=-=
-
-                                  // await controller.eventSiteAdd(
-                                  //   token: authcontroller.accesToken ?? '',
-                                  //   eventSite: EventSite(
-                                  //       eventTypeId: eventTypeid,
-                                  //       venueId: eventVenueId,
-                                  //       scheduledDatetime:
-                                  //           '2023-07-14T06:59:34.349688Z',
-                                  //       customerName: customername,
-                                  //       customerPhone: customerphone,
-                                  //       customerAddress: customeraddress,
-                                  //       notes: additionalnote,
-                                  //       normalHours: normalhours,
-                                  //       overtimeHourlyCharge: addtionalhours,
-                                  //       eventSiteSettings: [
-                                  //         EventSiteSettings(
-                                  //           service: 1,
-                                  //         )
-                                  //       ],
-                                  //       eventSiteEmployeeRequirement: [
-                                  //         EventSiteEmployeeRequirement(
-                                  //           charge: '300',
-                                  //           employeeType: 3,
-                                  //           requirementCount: 3,
-                                  //         )
-                                  //       ],
-                                  //       code: "EVC001",
-                                  //       status: 'open'),
-
-                                  //-=-=-=-=-=-=-=-=--= Employee Type -=-=-=-=-=-=-=-=-=-=
-                                  // await controller
-                                  //     .employeeType(
-                                  //   token: authcontroller.accesToken ?? '',
-                                  //   name: 'Name',
-                                  //   amount: 500,
-                                  //   code: 'Code',
-                                  // )
-                                  //     .then((value) {
-                                  //   print(value.id);
-                                  // })
-                                  );
-                        }
+                  Divider(
+                    color: AppColors.secondaryColor.withOpacity(0.2),
+                  ),
+                  SizedBox(
+                    height: kSize.height * 0.024,
+                  ),
+                  /* EventTypeDropDown(
+                    intialValue: eventtype ?? '',
+                    eventTypes: eventTypeList,
+                    onSelected: (eventType) {
+                      log(eventType);
+                      eventtype = eventType;
+                    },
+                  ), */
+                  SizedBox(
+                    height: kSize.height * 0.024,
+                  ),
+                  CustomTextField(
+                    text: "Event Venue",
+                    hintText: 'Enter Venue',
+                    controller: newEventController.eventVenue,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Enter Event Venue';
                       }
-                    }),
-                SizedBox(
-                  height: kSize.height * 0.12,
-                ),
-              ],
+                      return null;
+                    },
+                    required: true,
+                    onChanged: (eventVenue) {
+                      log(eventVenue);
+                    },
+                  ),
+                  SizedBox(
+                    height: kSize.height * 0.024,
+                  ),
+                  dateTime(onSelectDate: (date) {
+                    newEventController.scheduledDate.text = date;
+                  }, onSelectTime: (time) {
+                    newEventController.scheduledTime.text = time;
+                  }),
+                  SizedBox(
+                    height: kSize.height * 0.024,
+                  ),
+                  CustomTextField(
+                    text: AppStrings.customerName,
+                    required: true,
+                    hintText: "Name",
+                    controller: newEventController.customerName,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Enter Customer Name";
+                      }
+                      return null;
+                    },
+                    onChanged: (name) {
+                      // newEventController.customerName.text = name;
+                    },
+                  ),
+                  SizedBox(
+                    height: kSize.height * 0.024,
+                  ),
+                  CustomTextField(
+                    text: AppStrings.phoneText,
+                    required: true,
+                    hintText: "Phone Number",
+                    keyboardType: TextInputType.phone,
+                    controller: newEventController.customerPhone,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Enter Customer Phone";
+                      }
+                      return null;
+                    },
+                    onChanged: (phone) {
+                      // customerPhone.text = phone;
+                    },
+                  ),
+                  SizedBox(
+                    height: kSize.height * 0.024,
+                  ),
+                  CustomTextField(
+                    text: AppStrings.address,
+                    required: true,
+                    maxLines: 2,
+                    hintText: "Address",
+                    controller: newEventController.customerAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Enter Customer Address";
+                      }
+                      return null;
+                    },
+                    onChanged: (address) {
+                      // customeraddress.text = address;
+                    },
+                  ),
+                  SizedBox(
+                    height: kSize.height * 0.024,
+                  ),
+                  CustomTextField(
+                    text: 'Additional Information',
+                    hintText: "Notes/Instructions",
+                    controller: newEventController.additionalInfo,
+                    onChanged: (notes) {
+                      // additionalnote.text = notes;
+                    },
+                  ),
+                  SizedBox(
+                    height: kSize.height * 0.032,
+                  ),
+                  Divider(
+                    color: AppColors.secondaryColor.withOpacity(0.2),
+                  ),
+                  SizedBox(
+                    height: kSize.height * 0.032,
+                  ),
+                  Text(
+                    AppStrings.overTimeText,
+                    style: AppTypography.poppinsSemiBold.copyWith(
+                      color: AppColors.secondaryColor,
+                    ),
+                  ),
+                  SizedBox(
+                    height: kSize.height * 0.018,
+                  ),
+                  overTimeDetail(
+                      kSize: kSize,
+                      getNormalHours: (workingHours) {
+                        // normalhours.text = workingHours;
+                      },
+                      getOverTimeRate: (overTimeRate) {
+                        // addtionalhours.text = overTimeRate;
+                      }),
+                  SizedBox(
+                    height: kSize.height * 0.032,
+                  ),
+                  Text(
+                    AppStrings.serviceBoystext,
+                    style: AppTypography.poppinsSemiBold.copyWith(
+                      color: AppColors.secondaryColor,
+                    ),
+                  ),
+                  SizedBox(
+                    height: kSize.height * 0.018,
+                  ),
+                  ServiceBoys(
+                      items: employeeController.employeeTypesList,
+                      onSelected: (serviceBoysList) {
+                        //
+                      }),
+                  SizedBox(
+                    height: kSize.height * 0.032,
+                  ),
+                  Divider(
+                    color: AppColors.secondaryColor.withOpacity(0.2),
+                  ),
+                  SizedBox(
+                    height: kSize.height * 0.032,
+                  ),
+                  Text(
+                    AppStrings.filterBoysText,
+                    style: AppTypography.poppinsSemiBold.copyWith(
+                      color: AppColors.secondaryColor,
+                    ),
+                  ),
+                  SizedBox(
+                    height: kSize.height * 0.018,
+                  ),
+                  FilterBoysRating(
+                    onSelected: (rating) {
+                      log(rating);
+                    },
+                  ),
+                  SizedBox(
+                    height: kSize.height * 0.032,
+                  ),
+                  FooterButton(
+                      label: "Save",
+                      onTap: () async {
+                        if (_formKey.currentState!.validate()) {}
+                        /* int? eventTypeid;
+                        int? eventVenueId;
+                        int? empTypeId;
+
+                        if (imagefile == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(snackBarWidget('Please select an Image',
+                              color: Colors.black26, duration: const Duration(seconds: 2)));
+                        } else {
+                          if (eventtype == null ||
+                              eventVenue.text.isEmpty ||
+                              customerName.text.isEmpty ||
+                              customeraddress.text.isEmpty ||
+                              // customerphone == null ||
+                              // scheduledtime == null ||
+                              // scheduleddate == null ||
+                              addtionalhours.text.isEmpty ||
+                              normalhours.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(snackBarWidget(
+                                'Please Fill all the Parameter',
+                                color: Colors.black26,
+                                duration: const Duration(seconds: 2)));
+                          } else {
+                            // -=-= -=--=-=-=-=-= EventType -=-=-=-=-==-=--=-
+
+                            await controller
+                                .addEventType(token: authcontroller.accesToken ?? '', eventadd: eventtype!)
+                                .then((value) {
+                              eventTypeid = value.id;
+                            });
+
+                            // -=-=-=-=-=-=-=-=- Event Venue -=-=-=-=-=-=-=-=-=-=-=-
+
+                            FormData formData = FormData.fromMap({
+                              'name': eventVenue.text,
+                              'image': await MultipartFile.fromFile(
+                                imagefile!.path,
+                                filename: imagefile!.path.split('/').last,
+                              ),
+                              'lat': '23.075689',
+                              'log': '72.772426',
+                            });
+
+                            await controller
+                                .addEventvenue(token: authcontroller.accesToken ?? '', data: formData)
+                                .then((value) {
+                              eventVenueId = value.id;
+                            }
+
+                                    // -=-=-=-=-=-=-=-= EventSite Add -=-=-=-=-=-=-=-=-=-=
+
+                                    // await controller.eventSiteAdd(
+                                    //   token: authcontroller.accesToken ?? '',
+                                    //   eventSite: EventSite(
+                                    //       eventTypeId: eventTypeid,
+                                    //       venueId: eventVenueId,
+                                    //       scheduledDatetime:
+                                    //           '2023-07-14T06:59:34.349688Z',
+                                    //       customerName: customername,
+                                    //       customerPhone: customerphone,
+                                    //       customerAddress: customeraddress,
+                                    //       notes: additionalnote,
+                                    //       normalHours: normalhours,
+                                    //       overtimeHourlyCharge: addtionalhours,
+                                    //       eventSiteSettings: [
+                                    //         EventSiteSettings(
+                                    //           service: 1,
+                                    //         )
+                                    //       ],
+                                    //       eventSiteEmployeeRequirement: [
+                                    //         EventSiteEmployeeRequirement(
+                                    //           charge: '300',
+                                    //           employeeType: 3,
+                                    //           requirementCount: 3,
+                                    //         )
+                                    //       ],
+                                    //       code: "EVC001",
+                                    //       status: 'open'),
+
+                                    //-=-=-=-=-=-=-=-=--= Employee Type -=-=-=-=-=-=-=-=-=-=
+                                    // await controller
+                                    //     .employeeType(
+                                    //   token: authcontroller.accesToken ?? '',
+                                    //   name: 'Name',
+                                    //   amount: 500,
+                                    //   code: 'Code',
+                                    // )
+                                    //     .then((value) {
+                                    //   print(value.id);
+                                    // })
+                                    );
+                          }
+                        } */
+                      }),
+                  SizedBox(
+                    height: kSize.height * 0.12,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -396,7 +448,7 @@ class _NewEventViewState extends State<NewEventView> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         CustomDatePicker(
-          controller: scheduleddate,
+          controller: newEventController.scheduledDate,
           type: "Date",
           label: "Date",
           onChanged: (value) {
@@ -404,7 +456,7 @@ class _NewEventViewState extends State<NewEventView> {
           },
         ),
         CustomDatePicker(
-            controller: scheduledtime,
+            controller: newEventController.scheduledTime,
             type: 'Time',
             label: 'Time',
             onChanged: (value) {
@@ -419,10 +471,11 @@ class _NewEventViewState extends State<NewEventView> {
       required Function(String) getNormalHours,
       required Function(String) getOverTimeRate}) {
     return Row(
-      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SizedBox(
-          width: kSize.width * 0.17,
+          width: 55,
           child: Text(
             "Normal Hours",
             textAlign: TextAlign.end,
@@ -437,6 +490,13 @@ class _NewEventViewState extends State<NewEventView> {
           // width: kSize.width * 0.2,
           child: CustomTextField(
             text: '',
+            controller: newEventController.normalHours,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Enter Normal Hours";
+              }
+              return null;
+            },
             keyboardType: TextInputType.number,
             onChanged: (workingHours) {
               getNormalHours(workingHours);
@@ -452,7 +512,7 @@ class _NewEventViewState extends State<NewEventView> {
           ),
         ),
         SizedBox(
-          width: kSize.width * 0.016,
+          width: kSize.width * 0.024,
         ),
         Container(
           height: kSize.height * 0.04,
@@ -460,10 +520,10 @@ class _NewEventViewState extends State<NewEventView> {
           color: AppColors.secondaryColor.withOpacity(0.6),
         ),
         SizedBox(
-          width: kSize.width * 0.016,
+          width: kSize.width * 0.024,
         ),
         SizedBox(
-          width: kSize.width * 0.2,
+          width: 70,
           child: Text(
             "Overtime Rate/Hr",
             textAlign: TextAlign.end,
@@ -478,35 +538,19 @@ class _NewEventViewState extends State<NewEventView> {
           child: CustomTextField(
             keyboardType: TextInputType.number,
             text: '',
+            controller: newEventController.overTimeRate,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Enter Overtime Rates";
+              }
+              return null;
+            },
             onChanged: (rate) {
               getOverTimeRate(rate);
             },
           ),
         ),
       ],
-    );
-  }
-
-  Widget serviceBoys(Size kSize, List<String> selectedReq) {
-    return SizedBox(
-      width: kSize.width,
-      child: Column(
-        children: List.generate(
-          serviceReq.length + 1,
-          (index) => serviceReq.length == index
-              ? FooterButton(
-                  fillColor: AppColors.transparent,
-                  label: "Add +",
-                  onTap: () {
-                    // serviceReq.length++;
-                  },
-                )
-              : CustomServiceCounter(
-                  label: "",
-                  items: serviceReq,
-                ),
-        ),
-      ),
     );
   }
 }

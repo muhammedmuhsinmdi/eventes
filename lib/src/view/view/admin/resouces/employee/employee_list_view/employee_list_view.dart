@@ -1,7 +1,8 @@
 import 'package:evantez/app/router/router_constant.dart';
-import 'package:evantez/src/model/repository/auth/auth_controller.dart';
-import 'package:evantez/src/model/repository/resource/employee/add_employee_controller.dart';
-import 'package:evantez/src/model/repository/resource/employee_repository.dart';
+import 'package:evantez/src/model/helper/debounce.dart';
+import 'package:evantez/src/controller/auth/auth_controller.dart';
+import 'package:evantez/src/controller/resources/employee/add_employee_controller.dart';
+import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
 import 'package:evantez/src/view/core/widgets/custom_back_btn.dart';
 import 'package:evantez/src/view/view/admin/resouces/employee/employee_list_view/widgets/employee_filter.dart';
 import 'package:evantez/src/view/view/admin/resouces/employee/employee_list_view/widgets/employee_tile.dart';
@@ -81,6 +82,8 @@ class EmployeeListView extends StatelessWidget {
   }
 
   Widget searchField(BuildContext context, Size kSize) {
+    final controller = context.watch<EmployeesController>();
+    final auth = context.watch<AuthController>();
     return Padding(
       padding:
           const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
@@ -92,6 +95,15 @@ class EmployeeListView extends StatelessWidget {
             child: CustomTextField(
               text: '',
               hintText: AppStrings.searchText,
+              onChanged: (value) {
+                debounceSearch(value, (String query) async {
+                  controller.filterMode.employeeName = value;
+                  controller.filterMode.limit = 50;
+                  controller.filterMode.offset = 0;
+                  controller.employeeLists = [];
+                  await controller.employeeList(token: auth.accesToken ?? '');
+                });
+              },
               suffixIcon: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),

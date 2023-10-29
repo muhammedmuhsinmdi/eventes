@@ -1,7 +1,13 @@
+import 'dart:developer';
+
+import 'package:dropdown_search/dropdown_search.dart';
+import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//widgets/custom_dropdown_search.dart';
 import 'package:evantez/src/view/core//widgets/custom_textfield.dart';
+import 'package:evantez/src/view/core/constants/app_strings.dart';
+import 'package:evantez/src/view/core/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -11,11 +17,12 @@ class CustomServiceCounter extends StatefulWidget {
   final String label;
   final bool? required;
   final Color? labelTextColor;
-  final List<String> items;
+  final List<EmployeesTypesList> items;
   final String? intialValue;
   final bool? isEmployeeAssign;
   final Function()? onSelected;
-  final Function(List<String>)? onSelectedEmp;
+  final Function(int, int)? countCallBack;
+  final Function(EmployeesTypesList)? onSelectedEmp;
   const CustomServiceCounter(
       {super.key,
       required this.label,
@@ -25,7 +32,8 @@ class CustomServiceCounter extends StatefulWidget {
       this.onSelectedEmp,
       this.required,
       this.labelTextColor,
-      this.onSelected});
+      this.onSelected,
+      this.countCallBack});
 
   @override
   State<CustomServiceCounter> createState() => _CustomServiceCounterState();
@@ -33,6 +41,8 @@ class CustomServiceCounter extends StatefulWidget {
 
 class _CustomServiceCounterState extends State<CustomServiceCounter> {
   final TextEditingController _totalController = TextEditingController();
+
+  final TextEditingController employeeTypeController = TextEditingController();
 
   final TextEditingController wageController = TextEditingController();
 
@@ -47,8 +57,12 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
     final kSize = MediaQuery.of(context).size;
     return Container(
       width: kSize.width,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: AppColors.secondaryColor.withOpacity(0.01),
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
-      color: AppColors.blackColor.withOpacity(0.1),
       margin: EdgeInsets.only(bottom: kSize.height * 0.032),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,18 +120,41 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        width: kSize.width * 0.55,
-                        child: CustomDropdownSearch(
-                          items: widget.items,
-                          label: widget.label.isNotEmpty ? widget.label : "Items",
+                        width: kSize.width * 0.5,
+                        child: CustomTextField(
+                          readOnly: true,
+                          controller: employeeTypeController,
+                          text: "",
+                          onTap: () {
+                            showEmployeeTypeSheet(
+                                kSize: kSize,
+                                onSelected: (employee) {
+                                  employeeTypeController.text = employee.name!;
+                                  wageController.text =
+                                      "${double.parse(employee.amount!).toDouble().round()}";
+                                  _totalController.text = wageController.text;
+
+                                  log("${employee.toJson()}");
+                                });
+                          },
+                          suffixIcon: Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: SvgPicture.asset(
+                              AppImages.arrowDropDown,
+                              colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+                              fit: BoxFit.contain,
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(
                         width: 10,
                       ),
                       SizedBox(
-                          width: kSize.width * 0.2,
+                          width: kSize.width * 0.25,
                           child: CustomTextField(
+                            maxLines: 1,
+                            readOnly: true,
                             keyboardType: TextInputType.number,
                             controller: wageController,
                             onChanged: (value) {
@@ -144,6 +181,10 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
                                         count.value--;
                                         double wg = double.parse(wageController.text);
                                         _totalController.text = "${(wg * count.value).toInt()}";
+                                        if (widget.countCallBack != null) {
+                                          widget.countCallBack!(
+                                              count.value, int.parse(_totalController.text));
+                                        }
                                       }
                                     }
                                   },
@@ -165,6 +206,9 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
                                       count.value++;
                                       double wg = double.parse(wageController.text);
                                       _totalController.text = "${(wg * count.value).toInt()}";
+                                      if (widget.countCallBack != null) {
+                                        widget.countCallBack!(count.value, int.parse(_totalController.text));
+                                      }
                                     }
                                   },
                                   icon: SvgPicture.asset(
@@ -224,5 +268,107 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
         ],
       ),
     );
+  }
+
+  showEmployeeTypeSheet({required Size kSize, required Function(EmployeesTypesList) onSelected}) {
+    showModalBottomSheet<void>(
+        clipBehavior: Clip.antiAlias,
+        isScrollControlled: true,
+        isDismissible: false,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16)),
+        ),
+        backgroundColor: AppColors.darkBgColor2,
+        context: context,
+        builder: (context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius, vertical: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Spacer(
+                      flex: 2,
+                    ),
+                    Text("Select Service Boys",
+                        style: AppTypography.poppinsSemiBold.copyWith(
+                          color: AppColors.secondaryColor,
+                          fontSize: 18,
+                        )),
+                    const Spacer(),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(AppStrings.closeText,
+                          style: AppTypography.poppinsMedium.copyWith(
+                            color: AppColors.secondaryColor.withOpacity(0.4),
+                          )),
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: kSize.height * 0.35,
+                child: ListView.builder(
+                    itemCount: widget.items.length,
+                    padding: const EdgeInsets.only(
+                        right: AppConstants.baseBorderRadius,
+                        left: AppConstants.baseBorderRadius,
+                        bottom: AppConstants.largePadding),
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        highlightColor: AppColors.transparent,
+                        splashColor: AppColors.transparent,
+                        onTap: () {
+                          //
+                          onSelected(widget.items[index]);
+                          Navigator.pop(context);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(widget.items[index].name!,
+                                  style: AppTypography.poppinsMedium.copyWith(
+                                    color: AppColors.secondaryColor,
+                                  )),
+                              Text("₹${widget.items[index].amount!}",
+                                  style: AppTypography.poppinsMedium.copyWith(
+                                    color: AppColors.secondaryColor,
+                                  ))
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+              )
+              /* Column(
+                children: List.generate(
+                    widget.items.length,
+                    (index) => Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(widget.items[index].name!,
+                                style: AppTypography.poppinsMedium.copyWith(
+                                  color: AppColors.secondaryColor.withOpacity(0.4),
+                                )),
+                            Text(widget.items[index].amount!,
+                                style: AppTypography.poppinsMedium.copyWith(
+                                  color: AppColors.secondaryColor.withOpacity(0.4),
+                                ))
+                          ],
+                        )),
+              ) */
+            ],
+          );
+        });
   }
 }

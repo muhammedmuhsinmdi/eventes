@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:evantez/src/model/repository/resource/employee_repository.dart';
+import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core/widgets/drop_down_value.dart';

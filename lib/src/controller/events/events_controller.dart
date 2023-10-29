@@ -6,8 +6,8 @@ import 'package:evantez/src/serializer/models/event_details.response.dart';
 import 'package:evantez/src/serializer/models/event_response.dart';
 import 'package:flutter/material.dart';
 
-import '../../../serializer/models/event_model.dart';
-import '../../../serializer/models/event_site_model.dart';
+import '../../serializer/models/event_model.dart';
+import '../../serializer/models/event_site_model.dart';
 
 class EventController extends ChangeNotifier {
   bool _isLoading = false;
