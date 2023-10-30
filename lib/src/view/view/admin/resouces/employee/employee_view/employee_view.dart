@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:evantez/app/router/router_constant.dart';
 import 'package:evantez/src/controller/auth/auth_controller.dart';
+import 'package:evantez/src/controller/resources/employee/add_employee_controller.dart';
 import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
@@ -18,24 +20,32 @@ import '../../../../../core/widgets/custom_back_btn.dart';
 import '../../../../../core/widgets/custom_textfield.dart';
 import '../employee_list_view/widgets/emp_history_filter.dart';
 
-class EmployeeDetailView extends StatelessWidget {
-  EmployeeDetailView({super.key});
+class EmployeeDetailView extends StatefulWidget {
+  EmployeeDetailView({super.key, required this.id});
+  final int id;
+  @override
+  State<EmployeeDetailView> createState() => _EmployeeDetailViewState();
+}
 
+class _EmployeeDetailViewState extends State<EmployeeDetailView> {
   final ValueNotifier<int> selectedTab = ValueNotifier<int>(0);
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final EmployeesController controller =
+          context.read<EmployeesController>();
+      final AuthController authController = context.read<AuthController>();
+      controller.employeeDetails(
+          token: authController.accesToken ?? "", id: widget.id);
+      controller.employeeRatingHistory(
+          token: authController.accesToken ?? "", category: '');
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final EmployeesController controller =
-          context.read<EmployeesController>();
-
-      if (controller.types.isEmpty) {
-        controller.employeeTypesData(token: AuthController().accesToken ?? '');
-      }
-    });
-
     return Scaffold(
       appBar: appBar(context, kSize),
       body: SizedBox(
@@ -79,7 +89,7 @@ class EmployeeDetailView extends StatelessWidget {
 
   Widget empProPicDetail({required Size kSize, required BuildContext context}) {
     final controller = context.watch<EmployeesController>();
-
+    final addEmployeeController = context.watch<AddEmployeeController>();
     return Row(
       children: [
         CircleAvatar(
@@ -92,17 +102,21 @@ class EmployeeDetailView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Employee Name',
-              style: AppTypography.poppinsSemiBold.copyWith(fontSize: 24),
+            SizedBox(
+              width: kSize.width * .6,
+              child: Text(
+                controller.employeeData?.employeeName ?? '',
+                maxLines: 2,
+                style: AppTypography.poppinsSemiBold.copyWith(fontSize: 24),
+              ),
             ),
             Row(
               children: [
-                Wrap(
+                /*    Wrap(
                   children: List.generate(
                       controller.selectedEmpList.value.length,
                       (index) => Text(controller.selectedEmpList.value[index])),
-                ),
+                ), */
                 Text(
                   controller.selectedPosition?.value ?? '',
                   style: AppTypography.poppinsMedium.copyWith(fontSize: 14),
@@ -112,6 +126,10 @@ class EmployeeDetailView extends StatelessWidget {
                 ),
                 IconButton(
                     onPressed: () {
+                      Navigator.pushNamed(
+                          context, RouterConstants.addEmployeeViewRoute);
+                      addEmployeeController.employeeInitStateLoading(
+                          data: controller.employeeData);
                       //
                       // List<String> positions = [
                       //   "Supervisor",
@@ -293,7 +311,7 @@ class EmployeeDetailView extends StatelessWidget {
                 height: kSize.height * 0.01,
               ),
               Text(
-                "AIHU999777888",
+                controller.employeeData?.idProofNumber ?? "0",
                 maxLines: 4,
                 style: AppTypography.poppinsRegular.copyWith(
                   color: AppColors.secondaryColor.withOpacity(0.6),
@@ -331,7 +349,7 @@ class EmployeeDetailView extends StatelessWidget {
                 height: kSize.height * 0.01,
               ),
               Text(
-                "₹ 20568",
+                "₹ ${controller.employeeData?.totalEarnings}",
                 maxLines: 4,
                 style: AppTypography.poppinsRegular.copyWith(
                   color: AppColors.secondaryColor.withOpacity(0.6),
@@ -412,12 +430,15 @@ class EmployeeDetailView extends StatelessWidget {
   }
 
   Widget historyListing(Size kSize) {
+    final controller = context.watch<EmployeesController>();
     return Expanded(
       child: ListView.builder(
-          itemCount: 10,
+          itemCount: controller.employeeRatingsList.length,
           padding: EdgeInsets.only(bottom: kSize.height * 0.1),
           itemBuilder: (context, index) {
-            return const HistoryTile();
+            return HistoryTile(
+              index: index,
+            );
           }),
     );
   }
@@ -431,7 +452,7 @@ class EmployeeDetailView extends StatelessWidget {
         Flexible(
           child: CustomTextField(
             text: '',
-            hintText: AppStrings.searchText,            
+            hintText: AppStrings.searchText,
             suffixIcon: Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),

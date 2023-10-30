@@ -45,8 +45,8 @@ class NewEventModel {
             json["event_site_settings"].map((x) => EventSiteSettingsModel.fromJson(x))),
         eventSiteEmployeeRequirement: List<EventSiteEmployeeReqModel>.from(
             json["event_site_employee_requirement"].map((x) => EventSiteEmployeeReqModel.fromJson(x))),
-        eventTypeId: json["event_type_id"],
-        venueId: json["venue_id"],
+        eventTypeId: json["event_type_id"] ?? 0,
+        venueId: json["venue_id"] ?? 0,
         code: json["code"],
         customerName: json["customer_name"],
         customerAddress: json["customer_address"],

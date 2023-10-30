@@ -6,6 +6,7 @@ import 'package:evantez/app/app.dart';
 import 'package:evantez/src/model/components/snackbar_widget.dart';
 import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
 import 'package:evantez/src/serializer/models/employee/employee_type/employee_model.dart';
+import 'package:evantez/src/serializer/models/employee_detail_reponse.dart';
 import 'package:evantez/src/view/core/widgets/drop_down_value.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -59,7 +60,8 @@ class AddEmployeeController extends ChangeNotifier {
   DropDownValue? selectedEmpType;
   DropDownValue? selectedIdType;
 
-  Future<void> addEmployee({required String token, required BuildContext context}) async {
+  Future<void> addEmployee(
+      {required String token, required BuildContext context}) async {
     if (employeeForm.currentState!.validate()) {
       employeeForm.currentState!.save();
       /*     FormData formData = FormData.fromMap({
@@ -79,10 +81,11 @@ class AddEmployeeController extends ChangeNotifier {
         "employee_type": employee.employeeType,
       });
       formData.toString(); */
-      final response = await EmployeeProvider().addEmployee(token: token, data: employee);
+      final response =
+          await EmployeeProvider().addEmployee(token: token, data: employee);
       if (response != null) {
-        rootScaffoldMessengerKey.currentState!
-            .showSnackBar(snackBarWidget('Successfully added!', color: Colors.green));
+        rootScaffoldMessengerKey.currentState!.showSnackBar(
+            snackBarWidget('Successfully added!', color: Colors.green));
         if (context.mounted) {
           Navigator.pop(context);
         }
@@ -97,9 +100,12 @@ class AddEmployeeController extends ChangeNotifier {
   Future<void> employeeTypesData({required String token}) async {
     try {
       isloading = true;
-      final response = await EmployeeProvider().loadEmployeesTypes(token: token);
+      final response =
+          await EmployeeProvider().loadEmployeesTypes(token: token);
       if (response != null) {
-        types = response.map((e) => DropDownValue(id: e.id, value: e.name)).toList();
+        types = response
+            .map((e) => DropDownValue(id: e.id, value: e.name))
+            .toList();
         notifyListeners();
       }
       isloading = false;
@@ -115,7 +121,9 @@ class AddEmployeeController extends ChangeNotifier {
       isloading = true;
       final response = await EmployeeProvider().employeeId(token: token);
       if (response != null) {
-        employeeIdLists = response.map((e) => DropDownValue(id: e.id, value: e.name)).toList();
+        employeeIdLists = response
+            .map((e) => DropDownValue(id: e.id, value: e.name))
+            .toList();
         notifyListeners();
       }
       isloading = false;
@@ -274,6 +282,35 @@ class AddEmployeeController extends ChangeNotifier {
       return inputFormat;
     } catch (e) {
       return "Invalid Date";
+    }
+  }
+
+  //=-=-=-=-=-=-= Employee Init State Loading =-=-=-=-==-=-=-=
+
+  bool isEdit = false;
+  void employeeInitStateLoading({EmployeeDetailResponse? data, int? index}) {
+    if (data == null) {
+      nameController.clear();
+      phoneController.clear();
+      addressContactTxtController.clear();
+      bloodGroupController.clear();
+      homeContact.clear();
+      emailTextController.clear();
+      codeController.clear();
+      idNumberTxtController.clear();
+      selectedIdType = null;
+      selectedEmpType = null;
+      isEdit = false;
+    } else {
+      isEdit = true;
+      nameController.text = data.employeeName ?? '';
+      phoneController.text = data.employeeMobile ?? '';
+      addressContactTxtController.text = data.address ?? '';
+      bloodGroupController.text = data.bloodGroup ?? '';
+      homeContact.text = data.homeContact ?? '';
+      emailTextController.text = data.email ?? '';
+      codeController.text = data.code ?? '';
+      idNumberTxtController.text = data.idProofNumber ?? '';
     }
   }
 }

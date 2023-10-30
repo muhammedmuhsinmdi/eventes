@@ -1,6 +1,10 @@
 import 'dart:developer';
 
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:evantez/app/app.dart';
+import 'package:evantez/src/controller/transaction/new_event/new_event_controller.dart';
+import 'package:evantez/src/model/components/snackbar_widget.dart';
+import 'package:evantez/src/model/core/models/event/event_site_emp_requirement/event_site_emp_req_model.dart';
 import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
@@ -10,6 +14,7 @@ import 'package:evantez/src/view/core/constants/app_strings.dart';
 import 'package:evantez/src/view/core/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../core/themes/typography.dart';
 
@@ -40,6 +45,8 @@ class CustomServiceCounter extends StatefulWidget {
 }
 
 class _CustomServiceCounterState extends State<CustomServiceCounter> {
+  late NewEventController newEventController;
+
   final TextEditingController _totalController = TextEditingController();
 
   final TextEditingController employeeTypeController = TextEditingController();
@@ -54,6 +61,7 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
 
   @override
   Widget build(BuildContext context) {
+    newEventController = context.watch<NewEventController>();
     final kSize = MediaQuery.of(context).size;
     return Container(
       width: kSize.width,
@@ -328,8 +336,28 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
                         splashColor: AppColors.transparent,
                         onTap: () {
                           //
-                          onSelected(widget.items[index]);
-                          Navigator.pop(context);
+                          if (newEventController.eventModel!.eventSiteEmployeeRequirement.isNotEmpty) {
+                            for (var item in newEventController.eventModel!.eventSiteEmployeeRequirement) {
+                              if (item.id != widget.items[index].id) {
+                                rootScaffoldMessengerKey.currentState!
+                                    .showSnackBar(snackBarWidget('Already Selected!', color: Colors.red));
+                                /*  EventSiteEmployeeReqModel temp = newEventController
+                                .eventModel!.eventSiteEmployeeRequirement
+                                .firstWhere((e) => e.id == widget.items[index].id); */
+                              } else {
+                                onSelected(widget.items[index]);
+                                Navigator.pop(context);
+                              }
+                            }
+
+                            /*   if (newEventController.eventModel!.eventSiteEmployeeRequirement.contains(temp)) {
+                              rootScaffoldMessengerKey.currentState!
+                                  .showSnackBar(snackBarWidget('Already Selected!', color: Colors.red));
+                            } else {
+                              onSelected(widget.items[index]);
+                              Navigator.pop(context);
+                            } */
+                          }
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),

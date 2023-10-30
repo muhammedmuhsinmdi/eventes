@@ -1,7 +1,13 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:evantez/src/model/core/base_api_utilities.dart';
+import 'package:evantez/src/model/core/models/event/event_site_emp_requirement/event_site_emp_req_model.dart';
+import 'package:evantez/src/model/core/models/event/event_type/event_type_model.dart';
+import 'package:evantez/src/model/core/models/event/new_event_model/new_event_model.dart';
+import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 import 'package:evantez/src/serializer/models/event_details.response.dart';
 import 'package:evantez/src/serializer/models/event_response.dart';
 import 'package:evantez/src/view/core/event_api.dart';
@@ -10,13 +16,21 @@ import '../../serializer/models/event_site_model.dart';
 
 class EventProvider extends EventApi {
   //=-=-=-=-=-=-=-=-= Events =-=-=-=-=-=-=-=-=-=
-  Future<EventsResponse> loadEvents(String token) async {
-    Response response = await get('events/event-venue/', headers: apiHeaders(token));
+  Future<List<EventSiteModel>> loadEvents(String token) async {
+    Response response = await get('events/event-site/', headers: apiHeaders(token));
+    switch (response.statusCode) {
+      case 200:
+        return (response.data['results'] as List).map((e) => EventSiteModel.fromJson(e)).toList();
+      default:
+        throw Exception('Error');
+    }
+  }
 
+  Future<EventsResponse> loadEventVenue(String token) async {
+    Response response = await get('events/event-venue/', headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
         return EventsResponse.fromJson(response.data);
-
       default:
         throw Exception('Error');
     }
@@ -24,7 +38,7 @@ class EventProvider extends EventApi {
 
   //=-=-=-=-=-=-==-=-= Events Details =-=-=-=-=-=-=
   Future<EventsDetailResponse> loadEventDetails({required String token, required int id}) async {
-    Response response = await get('events/event-venue/$id', headers: apiHeaders(token));
+    Response response = await get('events/event-site/$id', headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
         return EventsDetailResponse.fromJson(response.data);
@@ -46,30 +60,34 @@ class EventProvider extends EventApi {
   }
 
 //-=-=-=-=-=-=--== Event Venue -=-=-=-=-==-===-=
-  Future<dynamic> AddEventVenue({
+  Future<dynamic> addEventVenue({
     required String token,
     required FormData data,
   }) async {
-    Response response = await post('events/event-venue/',
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Accept': 'application/json',
-          'Content-Type': 'multipart/form-data'
-        },
-        data: data
-        // {
-        //   // "name": name,
-        //   // "image": image,
-        //   // "lat": lat,
-        //   // "log": log
-        // }
-        );
-    switch (response.statusCode) {
-      case 201:
-        return response.data;
-      default:
-        throw Exception('Error');
-    }
+    try {
+      Response response = await post('events/event-venue/',
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
+            'Content-Type': 'multipart/form-data'
+          },
+          data: data
+          // {
+          //   // "name": name,
+          //   // "image": image,
+          //   // "lat": lat,
+          //   // "log": log
+          // }
+          );
+      log("${response.statusCode}");
+      log("${response.data}");
+      switch (response.statusCode) {
+        case 201:
+          return response.data;
+        default:
+          throw Exception('Error');
+      }
+    } catch (_) {}
   }
 // -=-=-=-=-=-=-= Employee type =-=-=-=-=-=-=-=-=
 
@@ -91,9 +109,27 @@ class EventProvider extends EventApi {
 
 // -=-=-=-=-=-=-= Event Site -=-=-=-=-=-=-=-=-=-=
 
-  Future<dynamic> EventSiteAdd({required String token, required EventSite eventSite}) async {
+  Future<dynamic> eventSiteAdd({required String token, required NewEventModel eventSite}) async {
+    log("${eventSite.toJson()}");
+    var eventJson = {
+      "event_site_settings": List<dynamic>.from(eventSite.eventSiteSettings.map((x) => x.toJson())),
+      "event_site_employee_requirement":
+          List<dynamic>.from(eventSite.eventSiteEmployeeRequirement.map((x) => x.toJson())),
+      "event_type_id": eventSite.eventTypeId,
+      "venue_id": eventSite.venueId,
+      "code": eventSite.code,
+      "customer_name": eventSite.customerName,
+      "customer_address": eventSite.customerAddress,
+      "customer_phone": eventSite.customerPhone,
+      "notes": eventSite.notes,
+      "normal_hours": eventSite.normalHours,
+      "overtime_hourly_charge": eventSite.overtimeHourlyCharge,
+      "status": eventSite.status,
+    };
     Response response =
         await post('events/event-site/', headers: apiHeaders(token), data: eventSite.toJson());
+    log("${response.statusCode}");
+    log('${response.data}');
     switch (response.statusCode) {
       case 201:
         return response.data;
@@ -103,13 +139,18 @@ class EventProvider extends EventApi {
   }
 
 // -=-=-=-=-=-=-= Event Site -=-=-=-=-=-=-=-=-=-=
-  Future<dynamic> getEventTypes({required String token}) async {
-    Response response = await get('events/event-type/', headers: apiHeaders(token));
-    switch (response.statusCode) {
-      case 201:
-        return response.data;
-      default:
-        throw Exception('Error');
+  Future<List<EventTypeModel>> getEventTypes({required String token}) async {
+    try {
+      Response response = await get('events/event-type/', headers: apiHeaders(token));
+      switch (response.statusCode) {
+        case 200:
+          return (response.data['results'] as List).map((e) => EventTypeModel.fromJson(e)).toList();
+
+        default:
+          throw Exception('Error');
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 }

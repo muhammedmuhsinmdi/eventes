@@ -46,7 +46,6 @@ class CustomDropdownSearch extends StatelessWidget {
                 style: AppTypography.poppinsBold.copyWith(
                   color: AppColors.statusCritical,
                   fontSize: 16,
-                  
                 ),
                 children: [
                   TextSpan(

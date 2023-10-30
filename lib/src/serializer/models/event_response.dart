@@ -2,7 +2,7 @@ class EventsResponse {
   final int? total;
   final dynamic next;
   final dynamic previous;
-  final List<EventsList>? results;
+  final List<EventsVenue>? results;
 
   EventsResponse({
     this.total,
@@ -17,21 +17,18 @@ class EventsResponse {
         previous: json["previous"],
         results: json["results"] == null
             ? []
-            : List<EventsList>.from(
-                json["results"]!.map((x) => EventsList.fromJson(x))),
+            : List<EventsVenue>.from(json["results"]!.map((x) => EventsVenue.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "total": total,
         "next": next,
         "previous": previous,
-        "results": results == null
-            ? []
-            : List<dynamic>.from(results!.map((x) => x.toJson())),
+        "results": results == null ? [] : List<dynamic>.from(results!.map((x) => x.toJson())),
       };
 }
 
-class EventsList {
+class EventsVenue {
   final int? id;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -40,7 +37,7 @@ class EventsList {
   final String? lat;
   final String? log;
 
-  EventsList({
+  EventsVenue({
     this.id,
     this.createdAt,
     this.updatedAt,
@@ -50,14 +47,10 @@ class EventsList {
     this.log,
   });
 
-  factory EventsList.fromJson(Map<String, dynamic> json) => EventsList(
+  factory EventsVenue.fromJson(Map<String, dynamic> json) => EventsVenue(
         id: json["id"],
-        createdAt: json["created_at"] == null
-            ? null
-            : DateTime.parse(json["created_at"]),
-        updatedAt: json["updated_at"] == null
-            ? null
-            : DateTime.parse(json["updated_at"]),
+        createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
         name: json["name"],
         image: json["image"],
         lat: json["lat"],

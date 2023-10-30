@@ -47,7 +47,7 @@ class _EventTypeDropDownState extends State<EventTypeDropDown> {
                   ),
                   children: [
                 TextSpan(
-                    text: "",
+                    text: "Event Type",
                     style: AppTypography.poppinsMedium.copyWith(
                       fontSize: 16,
                       color: AppColors.secondaryColor,
@@ -64,6 +64,7 @@ class _EventTypeDropDownState extends State<EventTypeDropDown> {
                 AppImages.arrowDropDown,
                 colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
               ),
+
               style: AppTypography.poppinsMedium.copyWith(color: AppColors.secondaryColor),
               hint: Text(
                 "Select Event Type",
@@ -84,19 +85,8 @@ class _EventTypeDropDownState extends State<EventTypeDropDown> {
                 },
               ).toList(),
               onChanged: (val) {
-                // if (val != null) {
                 dropDownValue = val ?? intialValue;
-
                 widget.onSelected(dropDownValue!);
-
-                // }
-
-                // widget.onSelected(ConvertService.convertString(val));
-                // setState(
-                //   () {
-                //     dropDownValue = val as String;
-                //   },
-                // );
               },
 
               value: dropDownValue,
@@ -110,17 +100,5 @@ class _EventTypeDropDownState extends State<EventTypeDropDown> {
         )
       ],
     );
-    /*  return CustomDropDown(
-      label: "Type of Event",
-      required: true,
-      intialValue: widget.intialValue,
-      hintText: "Select Event Type",
-      onSelected: (eventType) {
-        if (eventType.isNotEmpty) {
-          widget.onSelected(eventType);
-        }
-      },
-      items: widget.eventTypes,
-    ); */
   }
 }
