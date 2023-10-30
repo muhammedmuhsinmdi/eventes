@@ -1,4 +1,5 @@
 import 'package:evantez/app/router/router_constant.dart';
+import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 import 'package:evantez/src/model/core/models/menu/menu_model.dart';
 import 'package:evantez/src/model/core/models/signin/pm_signin.dart';
 import 'package:evantez/src/view/view/admin/catering/food_items/widgets/food_item_filter.dart';
@@ -117,9 +118,11 @@ class AppRouter {
           builder: (_) => RentalItemsView(menu: args),
         );
       case RouterConstants.eventDetailRoute:
-        // final args = settings.arguments as MenuData;
+        final args = settings.arguments as EventSiteModel;
         return MaterialPageRoute<EventDetailView>(
-          builder: (_) => const EventDetailView(),
+          builder: (_) => EventDetailView(
+            eventModel: args,
+          ),
         );
       case RouterConstants.invoiceRoute:
         final args = settings.arguments as MenuData;

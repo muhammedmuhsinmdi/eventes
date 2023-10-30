@@ -33,15 +33,15 @@ class SplashView extends StatelessWidget {
 
   Future<void> loadCurrentUser(BuildContext context) async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      EventController eventController =
-          Provider.of<EventController>(context, listen: false);
+      EventController eventController = Provider.of<EventController>(context, listen: false);
       NavigatorState navigator = Navigator.of(context);
-      AuthController authController =
-          Provider.of<AuthController>(context, listen: false);
+      AuthController authController = Provider.of<AuthController>(context, listen: false);
 
       if (await authController.loadCurrentUser() != null) {
+        await eventController.events(authController.accesToken ?? '').then((value) async {
+          await eventController.getEventVenues(authController.accesToken ?? '');
+        });
         navigator.popAndPushNamed(RouterConstants.dashboardRoute);
-        eventController.events(authController.accesToken ?? '');
       } else {
         navigator.popAndPushNamed(RouterConstants.loginRoute);
       }

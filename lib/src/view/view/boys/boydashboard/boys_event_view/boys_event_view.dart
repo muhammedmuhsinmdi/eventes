@@ -1,4 +1,6 @@
 import 'package:evantez/app/router/router_constant.dart';
+import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
+import 'package:evantez/src/serializer/models/event_site_model.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
 import 'package:evantez/src/view/core//widgets/custom_textfield.dart';
@@ -48,8 +50,7 @@ class BoysEventView extends StatelessWidget {
     return AppBar(
       elevation: 0,
       leading: Padding(
-        padding: const EdgeInsets.fromLTRB(
-            AppConstants.basePadding, AppConstants.basePadding, 0, 0),
+        padding: const EdgeInsets.fromLTRB(AppConstants.basePadding, AppConstants.basePadding, 0, 0),
         child: IconButton(
             style: IconButton.styleFrom(),
             onPressed: () {
@@ -87,8 +88,7 @@ class BoysEventView extends StatelessWidget {
 
   Widget tabBar() {
     return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
+      padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
       child: CustomTabBarView(
         tabItems: const ["Ongoing", "Upcoming", "Completed"],
         selectedTap: (tab) {
@@ -100,8 +100,7 @@ class BoysEventView extends StatelessWidget {
 
   Widget searchField(Size kSize) {
     return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
+      padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -111,12 +110,10 @@ class BoysEventView extends StatelessWidget {
               text: '',
               hintText: AppStrings.searchText,
               suffixIcon: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
                 child: SvgPicture.asset(
                   AppImages.search,
-                  colorFilter: const ColorFilter.mode(
-                      AppColors.primaryColor, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
                 ),
               ),
             ),
@@ -129,16 +126,14 @@ class BoysEventView extends StatelessWidget {
             child: TextButton(
                 style: TextButton.styleFrom(
                   backgroundColor: AppColors.transparent,
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 12.0, horizontal: 8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
                 ),
                 onPressed: () {
                   //
                 },
                 child: SvgPicture.asset(
                   AppImages.filter,
-                  colorFilter: const ColorFilter.mode(
-                      AppColors.primaryColor, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
                 )),
           )
         ],
@@ -167,14 +162,14 @@ class BoysEventView extends StatelessWidget {
                 highlightColor: AppColors.transparent,
                 splashColor: AppColors.transparent,
                 onTap: () {
-                  Navigator.pushNamed(
-                      context, RouterConstants.boyEventDetailRoute);
+                  Navigator.pushNamed(context, RouterConstants.boyEventDetailRoute);
                 },
                 child: EventTile(
-                  eventList: [],
+                  event: EventSiteModel(),
+                  // eventList: [],
                   isBoy: true,
-                  i: index,
-                  itemCount: 10,
+                  // i: index,
+                  // itemCount: 10,
                 ),
               );
             }));

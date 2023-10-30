@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:evantez/app/router/router_constant.dart';
 import 'package:evantez/src/controller/auth/auth_controller.dart';
 import 'package:evantez/src/controller/events/events_controller.dart';
@@ -51,8 +53,7 @@ class EventsView extends StatelessWidget {
     return AppBar(
       elevation: 0,
       leading: Padding(
-        padding: const EdgeInsets.fromLTRB(
-            AppConstants.basePadding, AppConstants.basePadding, 0, 0),
+        padding: const EdgeInsets.fromLTRB(AppConstants.basePadding, AppConstants.basePadding, 0, 0),
         child: IconButton(
             style: IconButton.styleFrom(),
             onPressed: () {
@@ -90,8 +91,7 @@ class EventsView extends StatelessWidget {
 
   Widget tabBar() {
     return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
+      padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
       child: CustomTabBarView(
         tabItems: const ["Ongoing", "Upcoming", "Completed"],
         selectedTap: (tab) {
@@ -103,8 +103,7 @@ class EventsView extends StatelessWidget {
 
   Widget searchField(Size kSize) {
     return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
+      padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,12 +113,10 @@ class EventsView extends StatelessWidget {
               text: '',
               hintText: AppStrings.searchText,
               suffixIcon: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
                 child: SvgPicture.asset(
                   AppImages.search,
-                  colorFilter: const ColorFilter.mode(
-                      AppColors.primaryColor, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
                 ),
               ),
             ),
@@ -172,19 +169,24 @@ class EventsView extends StatelessWidget {
               left: AppConstants.baseBorderRadius,
               right: AppConstants.baseBorderRadius),
           itemBuilder: (context, index) {
+            log(">>>>>  ${controller.eventList[index].toJson()} ");
+            var eventVenue = controller.eventVenues
+                .firstWhere((element) => element.id == controller.eventList[index].venue!.id);
             return InkWell(
               highlightColor: AppColors.transparent,
               splashColor: AppColors.transparent,
               onTap: () {
                 controller.eventsDetails(
-                    token: authcontroller.accesToken ?? "",
-                    id: controller.eventList[index].id ?? 0);
-                Navigator.pushNamed(context, RouterConstants.eventDetailRoute);
+                    token: authcontroller.accesToken ?? "", id: controller.eventList[index].venue!.id ?? 0);
+                Navigator.pushNamed(context, RouterConstants.eventDetailRoute,
+                    arguments: controller.eventList[index]);
               },
               child: EventTile(
-                eventList: controller.eventList,
-                i: index,
-                itemCount: 10,
+                event: controller.eventList[index],
+                eventVenue: eventVenue,
+                // controller.eventVenues.firstWhere((e) => e.id == controller.eventList[index].venue),
+                // eventVenue:
+                //           ,
               ),
             );
           }),

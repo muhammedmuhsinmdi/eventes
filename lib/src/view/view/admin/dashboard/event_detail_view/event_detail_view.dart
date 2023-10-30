@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:evantez/app/router/router_constant.dart';
 import 'package:evantez/src/controller/events/events_controller.dart';
+import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//widgets/custom_back_btn.dart';
 import 'package:evantez/src/view/core//widgets/custom_date_picker.dart';
@@ -26,7 +27,8 @@ import '../../../../core/themes/typography.dart';
 import '../../../../core/widgets/custom_textfield.dart';
 
 class EventDetailView extends StatefulWidget {
-  const EventDetailView({super.key});
+  final EventSiteModel eventModel;
+  const EventDetailView({super.key, required this.eventModel});
 
   @override
   State<EventDetailView> createState() => _EventDetailViewState();
@@ -34,6 +36,13 @@ class EventDetailView extends StatefulWidget {
 
 class _EventDetailViewState extends State<EventDetailView> {
   final ValueNotifier<String> selectedeventStatus = ValueNotifier<String>('');
+
+  @override
+  void initState() {
+    selectedeventStatus.value = widget.eventModel.status!;
+    log("${widget.eventModel.toJson()}");
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,11 +63,12 @@ class _EventDetailViewState extends State<EventDetailView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: kSize.height * 0.016),
-                        eventImage(
-                            kSize, context, selectedeventStatus.value, controller.eventsDetail?.image ?? ""),
+                        eventImage(kSize, context, selectedeventStatus.value,
+                            widget.eventModel.venue!.image! /* controller.eventsDetail?.image ?? "" */),
                         SizedBox(height: kSize.height * 0.024),
                         Text(
-                          controller.eventsDetail?.name ?? '',
+                          widget.eventModel.venue!.name!,
+                          // controller.eventsDetail?.name ?? '',
                           style: AppTypography.poppinsMedium.copyWith(
                             fontSize: 24,
                             color: AppColors.primaryColor,
@@ -68,7 +78,8 @@ class _EventDetailViewState extends State<EventDetailView> {
                           height: kSize.height * 0.01,
                         ),
                         Text(
-                          "Marriage Function",
+                          widget.eventModel.eventType!.name!,
+                          // "Marriage Function",
                           style: AppTypography.poppinsRegular.copyWith(
                             fontSize: 16,
                             color: AppColors.secondaryColor.withOpacity(0.6),
@@ -399,7 +410,10 @@ class _EventDetailViewState extends State<EventDetailView> {
                 AppConstants.basePadding,
               )),
           child: CachedNetworkImage(
-            imageUrl: image ?? '',
+            imageUrl: image,
+            errorWidget: (context, url, error) {
+              return const SizedBox();
+            },
             fit: BoxFit.cover,
           ),
         ),

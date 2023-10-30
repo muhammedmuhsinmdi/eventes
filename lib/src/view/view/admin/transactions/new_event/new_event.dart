@@ -15,7 +15,6 @@ import 'package:evantez/src/view/core//widgets/custom_date_picker.dart';
 import 'package:evantez/src/view/core//widgets/custom_drop_down.dart';
 import 'package:evantez/src/view/core//widgets/custom_textfield.dart';
 import 'package:evantez/src/view/core//widgets/footer_button.dart';
-import 'package:evantez/src/view/view/admin/transactions/new_event/widgets/custom_service_counter.dart';
 import 'package:evantez/src/view/view/admin/transactions/new_event/widgets/event_image_upload.dart';
 import 'package:evantez/src/view/view/admin/transactions/new_event/widgets/event_type_dropdown.dart';
 import 'package:evantez/src/view/view/admin/transactions/new_event/widgets/filter_boys_rating.dart';
@@ -52,22 +51,11 @@ class _NewEventViewState extends State<NewEventView> {
   String? eventtype;
   File? imagefile;
 
-  /* TextEditingController eventVenue = TextEditingController();
-  TextEditingController customerName = TextEditingController();
-  TextEditingController customerPhone = TextEditingController();
-  TextEditingController customeraddress = TextEditingController();
-  TextEditingController additionalnote = TextEditingController();
-  TextEditingController normalhours = TextEditingController();
-  TextEditingController addtionalhours = TextEditingController();
-  TextEditingController scheduleddate = TextEditingController();
-  TextEditingController scheduledtime = TextEditingController(); */
-  // TextEditingController dateController = TextEditingController();
-  // TextEditingController timeController = TextEditingController();
-
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       newEventController.initData();
+      newEventController.getEventTypes(authcontroller.accesToken!);
       employeeController.employeeTypesData(token: authcontroller.accesToken!);
     });
     super.initState();
@@ -115,14 +103,16 @@ class _NewEventViewState extends State<NewEventView> {
                   SizedBox(
                     height: kSize.height * 0.024,
                   ),
-                  /* EventTypeDropDown(
-                    intialValue: eventtype ?? '',
-                    eventTypes: eventTypeList,
+                  EventTypeDropDown(
+                    intialValue: newEventController.eventTypeString,
+                    eventTypes: newEventController.eventTypeList,
                     onSelected: (eventType) {
-                      log(eventType);
-                      eventtype = eventType;
+                      newEventController.eventModel!.eventTypeId = eventType.id!;
+                      newEventController.eventTypeString = newEventController.eventTypeList
+                          .firstWhere((e) => e.id == newEventController.eventModel!.eventTypeId)
+                          .name!;
                     },
-                  ), */
+                  ),
                   SizedBox(
                     height: kSize.height * 0.024,
                   ),
@@ -164,7 +154,7 @@ class _NewEventViewState extends State<NewEventView> {
                       return null;
                     },
                     onChanged: (name) {
-                      // newEventController.customerName.text = name;
+                      newEventController.eventModel!.customerName = name;
                     },
                   ),
                   SizedBox(
@@ -174,6 +164,17 @@ class _NewEventViewState extends State<NewEventView> {
                     text: AppStrings.phoneText,
                     required: true,
                     hintText: "Phone Number",
+                    maxLength: 10,
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                      child: Text(
+                        "+91",
+                        style: AppTypography.poppinsMedium.copyWith(
+                          color: AppColors.primaryColor,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
                     keyboardType: TextInputType.phone,
                     controller: newEventController.customerPhone,
                     validator: (value) {
@@ -183,6 +184,7 @@ class _NewEventViewState extends State<NewEventView> {
                       return null;
                     },
                     onChanged: (phone) {
+                      newEventController.eventModel!.customerPhone = phone;
                       // customerPhone.text = phone;
                     },
                   ),
@@ -202,6 +204,7 @@ class _NewEventViewState extends State<NewEventView> {
                       return null;
                     },
                     onChanged: (address) {
+                      newEventController.eventModel!.customerAddress = address;
                       // customeraddress.text = address;
                     },
                   ),
@@ -213,6 +216,7 @@ class _NewEventViewState extends State<NewEventView> {
                     hintText: "Notes/Instructions",
                     controller: newEventController.additionalInfo,
                     onChanged: (notes) {
+                      newEventController.eventModel!.notes = notes;
                       // additionalnote.text = notes;
                     },
                   ),
@@ -237,9 +241,11 @@ class _NewEventViewState extends State<NewEventView> {
                   overTimeDetail(
                       kSize: kSize,
                       getNormalHours: (workingHours) {
+                        newEventController.eventModel!.normalHours = workingHours;
                         // normalhours.text = workingHours;
                       },
                       getOverTimeRate: (overTimeRate) {
+                        newEventController.eventModel!.overtimeHourlyCharge = overTimeRate;
                         // addtionalhours.text = overTimeRate;
                       }),
                   SizedBox(
@@ -258,6 +264,8 @@ class _NewEventViewState extends State<NewEventView> {
                       items: employeeController.employeeTypesList,
                       onSelected: (serviceBoysList) {
                         //
+                        newEventController.eventModel!.eventSiteEmployeeRequirement = serviceBoysList;
+                        log(" Service Boys List >>>>> ${serviceBoysList.length}");
                       }),
                   SizedBox(
                     height: kSize.height * 0.032,
@@ -288,7 +296,41 @@ class _NewEventViewState extends State<NewEventView> {
                   FooterButton(
                       label: "Save",
                       onTap: () async {
-                        if (_formKey.currentState!.validate()) {}
+                        if (_formKey.currentState!.validate()) {
+                          newEventController.eventModel!.code = "EV006";
+                          if (newEventController.eventVenue.text.isNotEmpty) {
+                            if (imagefile != null) {
+                              FormData formData = FormData.fromMap({
+                                'name': newEventController.eventVenue.text,
+                                'image': await MultipartFile.fromFile(
+                                  imagefile!.path,
+                                  filename: imagefile!.path.split('/').last,
+                                ),
+                                'lat': '23.075689',
+                                'log': '72.772426',
+                              });
+
+                              /* await newEventController
+                                  .addEventvenue(token: authcontroller.accesToken!, data: formData)
+                                  .then((eventVenue) {
+                                if (eventVenue.id != 0) {
+                                  newEventController.eventModel!.venueId = eventVenue.id!;
+                                  // log("${newEventController.eventModel!.venueId}");
+                                }
+                              }); */
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(snackBarWidget(
+                                  'Please select an Image',
+                                  color: Colors.black26,
+                                  duration: const Duration(seconds: 2)));
+                            }
+                            // if (newEventController.eventModel!.venueId != 0) {
+                            newEventController.eventModel!.venueId = 6;
+                            newEventController.eventModel!.status = 'Upcoming - Hold';
+                            newEventController.addEventSite(token: authcontroller.accesToken!);
+                            // }
+                          }
+                        }
                         /* int? eventTypeid;
                         int? eventVenueId;
                         int? empTypeId;
@@ -397,7 +439,23 @@ class _NewEventViewState extends State<NewEventView> {
   AppBar appBar(BuildContext context, Size kSize) {
     return AppBar(
       elevation: 0,
-      leading: const CustomBackButton(),
+      leading: CustomBackButton(
+        onTap: () {
+          imagefile = null;
+          eventtype = '';
+          newEventController.eventType = null;
+          newEventController.eventVenue.clear();
+          newEventController.customerName.clear();
+          newEventController.customerPhone.clear();
+          newEventController.customerAddress.clear();
+          newEventController.additionalInfo.clear();
+          newEventController.normalHours.clear();
+          newEventController.overTimeRate.clear();
+          newEventController.scheduledDate.clear();
+          newEventController.scheduledTime.clear();
+          Navigator.pop(context);
+        },
+      ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       centerTitle: true,
       title: Text(

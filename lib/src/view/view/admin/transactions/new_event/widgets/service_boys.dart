@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:evantez/src/controller/auth/auth_controller.dart';
+import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
 import 'package:evantez/src/controller/transaction/new_event/new_event_controller.dart';
 import 'package:evantez/src/model/core/models/event/event_service_boys/event_service_boys_model.dart';
 import 'package:evantez/src/model/core/models/event/event_site_emp_requirement/event_site_emp_req_model.dart';
@@ -14,7 +16,7 @@ import '../../../../../core/widgets/footer_button.dart';
 
 class ServiceBoys extends StatefulWidget {
   final List<EmployeesTypesList> items;
-  final Function(List<EmployeesTypesList>) onSelected;
+  final Function(List<EventSiteEmployeeReqModel>) onSelected;
   const ServiceBoys({super.key, required this.items, required this.onSelected});
 
   @override
@@ -22,7 +24,9 @@ class ServiceBoys extends StatefulWidget {
 }
 
 class _ServiceBoysState extends State<ServiceBoys> {
+  late AuthController authController;
   late NewEventController newEventController;
+  late EmployeesController employeesController;
 
   EventSiteEmployeeReqModel employeeReqModel = EventSiteEmployeeReqModel(
     charge: '',
@@ -42,15 +46,23 @@ class _ServiceBoysState extends State<ServiceBoys> {
     serviceItems.addAll(widget.items);
     log(" Service Items >>> ${serviceItems.length}");
     serviceBoysCount.value = 1;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      // initData();
-      newEventController.eventModel!.eventSiteEmployeeRequirement.add(employeeReqModel);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      /* employeeReqModel =
+          EventSiteEmployeeReqModel(employeeType: employeesController.employeeTypesList.first.id);
+      log("${employeeReqModel.toJson()}"); */
+      await employeesController.employeeTypesData(token: authController.accesToken!);
+      newEventController.eventModel!.eventSiteEmployeeRequirement.add(EventSiteEmployeeReqModel(
+        employeeType: employeesController.employeeTypesList.first.id ?? 0,
+      ));
+      log("${newEventController.eventModel!.eventSiteEmployeeRequirement.length}");
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    authController = context.watch<AuthController>();
+    employeesController = context.watch<EmployeesController>();
     newEventController = context.watch<NewEventController>();
     final kSize = MediaQuery.of(context).size;
     return SizedBox(
@@ -92,7 +104,7 @@ class _ServiceBoysState extends State<ServiceBoys> {
                       if (serviceBoysCount.value < serviceItems.length) {
                         serviceBoysCount.value++;
                         newEventController.eventModel!.eventSiteEmployeeRequirement.add(employeeReqModel);
-                        // widget.onSelected();
+                        //  widget.onSelected();
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Max Limit Reached')),

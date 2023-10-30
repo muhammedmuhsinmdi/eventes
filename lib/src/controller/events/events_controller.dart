@@ -1,6 +1,9 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:evantez/src/model/core/models/event/new_event_model/new_event_model.dart';
+import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 import 'package:evantez/src/providers/dashboard/events_provider.dart';
 import 'package:evantez/src/serializer/models/event_details.response.dart';
 import 'package:evantez/src/serializer/models/event_response.dart';
@@ -20,13 +23,32 @@ class EventController extends ChangeNotifier {
   }
 
 //=-=-=-==-=-=-=-=-=-= Events =-=-=-=-=-=-=-=-=-=-=
-  List<EventsList> eventList = [];
+  List<EventSiteModel> eventList = [];
   Future<void> events(String token) async {
     try {
       isLoading = true;
       final response = await EventProvider().loadEvents(token);
-      if (response.results?.isNotEmpty ?? false) {
-        eventList = response.results ?? [];
+      log(" event list >>>>. ${response.length}");
+      if (response.isNotEmpty) {
+        eventList = response;
+        notifyListeners();
+      }
+      isLoading = false;
+    } catch (e) {
+      log("$e");
+      isLoading = false;
+    }
+  }
+
+  // Event Venues
+  List<EventsVenue> eventVenues = [];
+  Future<void> getEventVenues(String token) async {
+    try {
+      isLoading = true;
+      final response = await EventProvider().loadEventVenue(token);
+      log("${response.results!.length}");
+      if (response.results!.isNotEmpty) {
+        eventVenues = response.results!;
         notifyListeners();
       }
       isLoading = false;
@@ -40,9 +62,9 @@ class EventController extends ChangeNotifier {
   Future<void> eventsDetails({required String token, required int id}) async {
     try {
       isLoading = true;
-      final response =
-          await EventProvider().loadEventDetails(token: token, id: id);
+      final response = await EventProvider().loadEventDetails(token: token, id: id);
       eventsDetail = response;
+      log("${eventsDetail!.toJson()}");
       notifyListeners();
       isLoading = false;
     } catch (e) {
@@ -51,11 +73,9 @@ class EventController extends ChangeNotifier {
   }
 
   // -=-=-=-=-=-=-=-=-=-=- Event Type =--=-=-=-=-=-===---=--=
-  Future<Eventtype> addEventType(
-      {required String token, required String eventadd}) async {
+  Future<Eventtype> addEventType({required String token, required String eventadd}) async {
     try {
-      final response =
-          await EventProvider().addEventType(token: token, eventadd: eventadd);
+      final response = await EventProvider().addEventType(token: token, eventadd: eventadd);
 
       return Eventtype.fromJson(response);
     } catch (e) {
@@ -65,15 +85,12 @@ class EventController extends ChangeNotifier {
 
 // -=-=-=-=-=-=-=-=== Event Venue -=-=-=-=-=-=-=-=-=-=-=--=-=
 
-  Future<EventVenue> addEventvenue(
-      {required String token,
-      
-      required FormData data,
-   }) async {
-   
+  Future<EventVenue> addEventvenue({
+    required String token,
+    required FormData data,
+  }) async {
     try {
-      final response = await EventProvider().AddEventVenue(
-          token: token, data: data);
+      final response = await EventProvider().addEventVenue(token: token, data: data);
 
       return EventVenue.fromJson(response);
     } catch (e) {
@@ -90,8 +107,7 @@ class EventController extends ChangeNotifier {
     required int amount,
   }) async {
     try {
-      final response = await EventProvider()
-          .EmpType(token: token, name: name, code: code, amount: amount);
+      final response = await EventProvider().EmpType(token: token, name: name, code: code, amount: amount);
 
       return EmpType.fromJson(response);
     } catch (e) {
@@ -101,11 +117,9 @@ class EventController extends ChangeNotifier {
 
   // -=-=-=-=-=-=-= Event Site -=-=-=-=-=-=-=-=-=-=
 
-  Future<EventSite> eventSiteAdd(
-      {required String token, required EventSite eventSite}) async {
+  Future<EventSite> eventSiteAdd({required String token, required NewEventModel eventSite}) async {
     try {
-      final response = await EventProvider()
-          .EventSiteAdd(token: token, eventSite: eventSite);
+      final response = await EventProvider().eventSiteAdd(token: token, eventSite: eventSite);
 
       return EventSite.fromJson(response);
     } catch (e) {
