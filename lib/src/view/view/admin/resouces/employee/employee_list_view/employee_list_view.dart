@@ -141,6 +141,10 @@ class EmployeeListView extends StatelessWidget {
                       context: context,
                       builder: (context) {
                         return EmployeeFilter();
+                      }).then((value)  {
+                        if(value){
+                          controller.employeeList(token: auth.accesToken!);
+                        }
                       });
                   // EmployeeFilter(context).show();
                 },

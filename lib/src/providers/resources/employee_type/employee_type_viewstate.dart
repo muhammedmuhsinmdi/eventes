@@ -17,7 +17,7 @@ class EmployeeProvider extends EventApi {
   Future<List<EmployeeListResponse>> loadEmployee(
       {required String token , EmployeeFilterInputModel? filterMode}) async {
        ///?${filterMode!.toQueryParam()}
-       filterMode!.limit = 1;
+       filterMode!.limit = 50;
        filterMode.offset = 0;
       var queryParam = filterMode.toQueryParam();
     Response response =

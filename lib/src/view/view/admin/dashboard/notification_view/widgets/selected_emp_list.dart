@@ -32,17 +32,6 @@ class _SelectEmpListState extends State<SelectEmpList> {
 
   List<EmployeesTypesList> selectedEmp = [];
 
-  List<String> employeeList = [
-    'A Boy',
-    'B Boy',
-    'C Boy',
-    'Fresher Boy',
-    'Head',
-    'Captain',
-    'Vice Captain',
-    'Supervisor',
-  ];
-
   @override
   Widget build(BuildContext context) {
     employeesController = context.watch<EmployeesController>();
@@ -57,19 +46,18 @@ class _SelectEmpListState extends State<SelectEmpList> {
                 highlightColor: AppColors.transparent,
                 splashColor: AppColors.transparent,
                 onTap: () {
-                  if (selectedEmp.contains(employeesController.employeeTypesList[index])) {
-                    selectedEmp.remove(employeesController.employeeTypesList[index]);
-                  } else {
-                    selectedEmp.add(employeesController.employeeTypesList[index]);
-                  }
-                  log("$selectedEmp");
-                  setState(() {});
-                  // widget.onSelectedList(selectedEmp);
+                  // if (selectedEmp.contains(employeesController.employeeTypesList[index])) {
+                  //   selectedEmp.remove(employeesController.employeeTypesList[index]);
+                  // } else {
+                  //   selectedEmp.add(employeesController.employeeTypesList[index]);
+                  // }
+                  employeesController.filterMode.employeeType = employeesController.employeeTypesList[index].id;
+                  
                 },
                 child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                      color: selectedEmp.contains(employeesController.employeeTypesList[index])
+                      color: employeesController.employeeTypesList[index].id ==  employeesController.filterMode.employeeType
                           ? AppColors.primaryColor
                           : AppColors.transparent,
                       border: Border.all(

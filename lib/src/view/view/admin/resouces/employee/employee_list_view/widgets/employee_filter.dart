@@ -1,7 +1,10 @@
+import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
+import 'package:evantez/src/serializer/models/employee/employee_filter_model.dart';
 import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
 import 'package:evantez/src/view/view/admin/resouces/employee/employee_list_view/widgets/selection_rating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../../core/constants/app_images.dart';
 import '../../../../../../core/constants/app_strings.dart';
@@ -35,6 +38,7 @@ class EmployeeFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
+    final employeesController = context.watch<EmployeesController>();
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Padding(
@@ -74,7 +78,7 @@ class EmployeeFilter extends StatelessWidget {
                     spacing: 8.0,
                     runSpacing: 8.0,
                     children: List.generate(
-                        3,
+                        orderList.length,
                         (index) => InkWell(
                               highlightColor: AppColors.transparent,
                               splashColor: AppColors.transparent,
@@ -200,7 +204,7 @@ class EmployeeFilter extends StatelessWidget {
                         label: "Cancel",
                         onTap: () {
                           //
-                          Navigator.pop(context);
+                          Navigator.of(context).pop(false);
                         })),
                 SizedBox(
                   width: kSize.width * 0.016,
@@ -209,7 +213,7 @@ class EmployeeFilter extends StatelessWidget {
                     child: FooterButton(
                         label: "Update",
                         onTap: () {
-                          //
+                          Navigator.of(context).pop(true);
                         }))
               ],
             )
@@ -255,6 +259,7 @@ class EmployeeFilter extends StatelessWidget {
   }
 
   Widget header(BuildContext context, Size kSize) {
+    final employeeContriller = context.watch<EmployeesController>();
     return Row(
       children: [
         const Spacer(),
@@ -270,7 +275,8 @@ class EmployeeFilter extends StatelessWidget {
             highlightColor: AppColors.transparent,
             splashColor: AppColors.transparent,
             onTap: () {
-              Navigator.pop(context);
+              employeeContriller.filterMode = EmployeeFilterInputModel(limit: 50, offset: 0);
+              Navigator.of(context).pop(true);
             },
             child: Text(
               AppStrings.clearText,
