@@ -5,9 +5,12 @@ import 'package:evantez/src/controller/resources/employee/employee_controller.da
 import 'package:evantez/src/controller/transaction/new_event/new_event_controller.dart';
 import 'package:evantez/src/model/core/models/event/event_service_boys/event_service_boys_model.dart';
 import 'package:evantez/src/model/core/models/event/event_site_emp_requirement/event_site_emp_req_model.dart';
+import 'package:evantez/src/model/core/models/event/event_type/event_type_model.dart';
 import 'package:evantez/src/model/core/models/event/new_event_model/new_event_model.dart';
+import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
 import 'package:evantez/src/view/view/admin/transactions/new_event/widgets/custom_service_counter.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,8 +19,10 @@ import '../../../../../core/widgets/footer_button.dart';
 
 class ServiceBoys extends StatefulWidget {
   final List<EmployeesTypesList> items;
+  final EmployeesController employeesController;
   final Function(List<EventSiteEmployeeReqModel>) onSelected;
-  const ServiceBoys({super.key, required this.items, required this.onSelected});
+  const ServiceBoys(
+      {super.key, required this.items, required this.onSelected, required this.employeesController});
 
   @override
   State<ServiceBoys> createState() => _ServiceBoysState();
@@ -28,11 +33,10 @@ class _ServiceBoysState extends State<ServiceBoys> {
   late NewEventController newEventController;
   late EmployeesController employeesController;
 
-  EventSiteEmployeeReqModel employeeReqModel = EventSiteEmployeeReqModel(
+  List<EventSiteEmployeeReqModel> empReqlist = [];
+
+  EventSiteEmployeeReqModel? employeeReqModel = EventSiteEmployeeReqModel(
     charge: '',
-    employeeType: 0,
-    eventSite: 0,
-    id: 0,
     requirementCount: 0,
   );
   List<EmployeesTypesList> serviceItems = [];
@@ -43,26 +47,22 @@ class _ServiceBoysState extends State<ServiceBoys> {
 
   @override
   void initState() {
-    serviceItems.addAll(widget.items);
-    log(" Service Items >>> ${serviceItems.length}");
+    // serviceItems.addAll(widget.employeesController.employeeTypesList);
     serviceBoysCount.value = 1;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      /* employeeReqModel =
-          EventSiteEmployeeReqModel(employeeType: employeesController.employeeTypesList.first.id);
-      log("${employeeReqModel.toJson()}"); */
       await employeesController.employeeTypesData(token: authController.accesToken!);
-      newEventController.eventModel!.eventSiteEmployeeRequirement.add(EventSiteEmployeeReqModel(
-        employeeType: employeesController.employeeTypesList.first.id ?? 0,
-      ));
-      log("${newEventController.eventModel!.eventSiteEmployeeRequirement.length}");
+      log(" ??? ${employeesController.employeeTypesList.length}");
+      serviceItems.addAll(employeesController.employeeTypesList);
+      log("${serviceItems.length}");
+      // newEventController.eventModel.eventSiteEmployeeRequirement!.add(employeeReqModel);
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    authController = context.watch<AuthController>();
     employeesController = context.watch<EmployeesController>();
+    authController = context.watch<AuthController>();
     newEventController = context.watch<NewEventController>();
     final kSize = MediaQuery.of(context).size;
     return SizedBox(
@@ -79,16 +79,29 @@ class _ServiceBoysState extends State<ServiceBoys> {
                       label: "",
                       items: serviceItems,
                       countCallBack: (count, total) {
-                        log("$count");
-                        log("$total");
-                        newEventController.eventModel!.eventSiteEmployeeRequirement[index].charge = "$total";
-                        newEventController.eventModel!.eventSiteEmployeeRequirement[index].requirementCount =
+                        if (kDebugMode) {
+                          log("$count");
+                          log("$total");
+                          log("Index .>>> ${index}");
+                        }
+
+                        newEventController.eventModel.eventSiteEmployeeRequirement[index].charge = "$total";
+                        newEventController.eventModel.eventSiteEmployeeRequirement[index].requirementCount =
                             count;
-                        log("${newEventController.eventModel!.eventSiteEmployeeRequirement[index].toJson()}");
+                        if (kDebugMode) {
+                          log("${newEventController.eventModel.eventSiteEmployeeRequirement[index].toJson()}");
+                        }
                       },
                       onSelectedEmp: (value) {
-                        newEventController.eventModel!.eventSiteEmployeeRequirement[index].employeeType =
-                            value.id;
+                        if (newEventController.eventModel.eventSiteEmployeeRequirement.isEmpty) {
+                          newEventController.eventModel.eventSiteEmployeeRequirement.add(employeeReqModel!);
+                        } else {
+                          newEventController.eventModel.eventSiteEmployeeRequirement[index].employeeType =
+                              value.id;
+                          if (kDebugMode) {
+                            log("${newEventController.eventModel.eventSiteEmployeeRequirement[index].employeeType}");
+                          }
+                        }
                       },
                     ),
                   ),
@@ -97,14 +110,14 @@ class _ServiceBoysState extends State<ServiceBoys> {
                     fillColor: AppColors.transparent,
                     label: "Add +",
                     onTap: () {
-                      log("${serviceBoysCount.value}");
-                      log("${serviceItems.length}");
-                      // if (serviceBoysCount.value <= serviceItems.length) {
-                      // widget.onSelected(serviceItems);
+                      if (kDebugMode) {
+                        log("${serviceBoysCount.value}");
+                        log("${serviceItems.length}");
+                      }
+
                       if (serviceBoysCount.value < serviceItems.length) {
                         serviceBoysCount.value++;
-                        newEventController.eventModel!.eventSiteEmployeeRequirement.add(employeeReqModel);
-                        //  widget.onSelected();
+                        newEventController.eventModel.eventSiteEmployeeRequirement.add(employeeReqModel!);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Max Limit Reached')),

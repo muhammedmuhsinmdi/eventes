@@ -141,7 +141,9 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
                                   wageController.text =
                                       "${double.parse(employee.amount!).toDouble().round()}";
                                   _totalController.text = wageController.text;
-
+                                  /* if (widget.onSelected != null) {
+                                    widget.onSelectedEmp!(employee);
+                                  } */
                                   log("${employee.toJson()}");
                                 });
                           },
@@ -335,29 +337,11 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
                         highlightColor: AppColors.transparent,
                         splashColor: AppColors.transparent,
                         onTap: () {
-                          //
-                          if (newEventController.eventModel!.eventSiteEmployeeRequirement.isNotEmpty) {
-                            for (var item in newEventController.eventModel!.eventSiteEmployeeRequirement) {
-                              if (item.id != widget.items[index].id) {
-                                rootScaffoldMessengerKey.currentState!
-                                    .showSnackBar(snackBarWidget('Already Selected!', color: Colors.red));
-                                /*  EventSiteEmployeeReqModel temp = newEventController
-                                .eventModel!.eventSiteEmployeeRequirement
-                                .firstWhere((e) => e.id == widget.items[index].id); */
-                              } else {
-                                onSelected(widget.items[index]);
-                                Navigator.pop(context);
-                              }
-                            }
-
-                            /*   if (newEventController.eventModel!.eventSiteEmployeeRequirement.contains(temp)) {
-                              rootScaffoldMessengerKey.currentState!
-                                  .showSnackBar(snackBarWidget('Already Selected!', color: Colors.red));
-                            } else {
-                              onSelected(widget.items[index]);
-                              Navigator.pop(context);
-                            } */
+                          onSelected(widget.items[index]);
+                          if (widget.onSelectedEmp != null) {
+                            widget.onSelectedEmp!(widget.items[index]);
                           }
+                          Navigator.pop(context);
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),

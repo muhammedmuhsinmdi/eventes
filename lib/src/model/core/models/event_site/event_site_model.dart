@@ -92,7 +92,7 @@ class EventSiteEmployeeRequirement {
   int requirementCount;
   String charge;
   int eventSite;
-  int employeeType;
+  EventTypeModel employeeType;
 
   EventSiteEmployeeRequirement({
     required this.id,
@@ -111,7 +111,7 @@ class EventSiteEmployeeRequirement {
         requirementCount: json["requirement_count"],
         charge: json["charge"],
         eventSite: json["event_site"],
-        employeeType: json["employee_type"],
+        employeeType: EventTypeModel.fromJson(json["employee_type"]),
       );
 
   Map<String, dynamic> toJson() => {

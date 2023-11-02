@@ -111,21 +111,6 @@ class EventProvider extends EventApi {
 
   Future<dynamic> eventSiteAdd({required String token, required NewEventModel eventSite}) async {
     log("${eventSite.toJson()}");
-    var eventJson = {
-      "event_site_settings": List<dynamic>.from(eventSite.eventSiteSettings.map((x) => x.toJson())),
-      "event_site_employee_requirement":
-          List<dynamic>.from(eventSite.eventSiteEmployeeRequirement.map((x) => x.toJson())),
-      "event_type_id": eventSite.eventTypeId,
-      "venue_id": eventSite.venueId,
-      "code": eventSite.code,
-      "customer_name": eventSite.customerName,
-      "customer_address": eventSite.customerAddress,
-      "customer_phone": eventSite.customerPhone,
-      "notes": eventSite.notes,
-      "normal_hours": eventSite.normalHours,
-      "overtime_hourly_charge": eventSite.overtimeHourlyCharge,
-      "status": eventSite.status,
-    };
     Response response =
         await post('events/event-site/', headers: apiHeaders(token), data: eventSite.toJson());
     log("${response.statusCode}");

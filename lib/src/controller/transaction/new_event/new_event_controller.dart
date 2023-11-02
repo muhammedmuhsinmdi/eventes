@@ -6,6 +6,7 @@ import 'package:evantez/src/model/core/models/event/event_venue/event_venue_mode
 import 'package:evantez/src/model/core/models/event/new_event_model/new_event_model.dart';
 import 'package:evantez/src/providers/dashboard/events_provider.dart';
 import 'package:evantez/src/serializer/models/event_model.dart';
+import 'package:evantez/src/serializer/models/event_site_model.dart';
 import 'package:flutter/material.dart';
 
 class NewEventController extends ChangeNotifier {
@@ -105,10 +106,8 @@ class NewEventController extends ChangeNotifier {
     required String token,
   }) async {
     try {
-      eventModel!.eventSiteEmployeeRequirement = [];
-      eventModel!.eventSiteSettings = [];
-      log("${eventModel!.toJson()}");
-      final response = await EventProvider().eventSiteAdd(token: token, eventSite: eventModel!);
+      log("${eventModel.toJson()}");
+      final response = await EventProvider().eventSiteAdd(token: token, eventSite: eventModel);
       // log("${response.}");
     } catch (_) {}
   }
