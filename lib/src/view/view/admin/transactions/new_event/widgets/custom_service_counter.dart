@@ -1,10 +1,5 @@
 import 'dart:developer';
 
-import 'package:dropdown_search/dropdown_search.dart';
-import 'package:evantez/app/app.dart';
-import 'package:evantez/src/controller/transaction/new_event/new_event_controller.dart';
-import 'package:evantez/src/model/components/snackbar_widget.dart';
-import 'package:evantez/src/model/core/models/event/event_site_emp_requirement/event_site_emp_req_model.dart';
 import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
@@ -14,7 +9,6 @@ import 'package:evantez/src/view/core/constants/app_strings.dart';
 import 'package:evantez/src/view/core/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../../core/themes/typography.dart';
 
@@ -26,7 +20,7 @@ class CustomServiceCounter extends StatefulWidget {
   final String? intialValue;
   final bool? isEmployeeAssign;
   final Function()? onSelected;
-  final Function(int, int)? countCallBack;
+  final Function(int, num)? countCallBack;
   final Function(EmployeesTypesList)? onSelectedEmp;
   const CustomServiceCounter(
       {super.key,
@@ -45,8 +39,6 @@ class CustomServiceCounter extends StatefulWidget {
 }
 
 class _CustomServiceCounterState extends State<CustomServiceCounter> {
-  late NewEventController newEventController;
-
   final TextEditingController _totalController = TextEditingController();
 
   final TextEditingController employeeTypeController = TextEditingController();
@@ -61,7 +53,6 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
 
   @override
   Widget build(BuildContext context) {
-    newEventController = context.watch<NewEventController>();
     final kSize = MediaQuery.of(context).size;
     return Container(
       width: kSize.width,
@@ -193,7 +184,7 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
                                         _totalController.text = "${(wg * count.value).toInt()}";
                                         if (widget.countCallBack != null) {
                                           widget.countCallBack!(
-                                              count.value, int.parse(_totalController.text));
+                                              count.value, num.parse(_totalController.text));
                                         }
                                       }
                                     }
@@ -217,7 +208,7 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
                                       double wg = double.parse(wageController.text);
                                       _totalController.text = "${(wg * count.value).toInt()}";
                                       if (widget.countCallBack != null) {
-                                        widget.countCallBack!(count.value, int.parse(_totalController.text));
+                                        widget.countCallBack!(count.value, num.parse(_totalController.text));
                                       }
                                     }
                                   },
@@ -340,6 +331,7 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
                           onSelected(widget.items[index]);
                           if (widget.onSelectedEmp != null) {
                             widget.onSelectedEmp!(widget.items[index]);
+                            widget.countCallBack!(1, num.parse(widget.items[index].amount!));
                           }
                           Navigator.pop(context);
                         },

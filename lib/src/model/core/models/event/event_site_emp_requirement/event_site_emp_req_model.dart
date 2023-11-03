@@ -13,7 +13,7 @@ class EventSiteEmployeeReqModel {
   int? requirementCount;
   String? charge;
   int? employeeType;
-
+  double get total => requirementCount!  * double.parse(charge!);
   EventSiteEmployeeReqModel({
     this.requirementCount,
     this.charge,

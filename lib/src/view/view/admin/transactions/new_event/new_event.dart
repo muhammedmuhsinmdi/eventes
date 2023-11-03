@@ -54,7 +54,7 @@ class _NewEventViewState extends State<NewEventView> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-     /*  await employeeController.employeeTypesData(token: authcontroller.accesToken!);
+      /*  await employeeController.employeeTypesData(token: authcontroller.accesToken!);
       log(" employee types >>>> ${employeeController.employeeTypesList.length}"); */
       newEventController.initData();
       await newEventController.getEventTypes(authcontroller.accesToken!);
@@ -98,21 +98,27 @@ class _NewEventViewState extends State<NewEventView> {
                   SizedBox(
                     height: kSize.height * 0.032,
                   ),
-                  Divider(
-                    color: AppColors.secondaryColor.withOpacity(0.2),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: kSize.height * 0.032),
+                    child: Divider(
+                      color: AppColors.secondaryColor.withOpacity(0.2),
+                    ),
                   ),
                   SizedBox(
                     height: kSize.height * 0.024,
                   ),
-                  EventTypeDropDown(
-                    intialValue: newEventController.eventTypeString,
-                    eventTypes: newEventController.eventTypeList,
-                    onSelected: (eventType) {
-                      newEventController.eventModel.eventTypeId = eventType.id!;
-                      newEventController.eventTypeString = newEventController.eventTypeList
-                          .firstWhere((e) => e.id == newEventController.eventModel.eventTypeId)
-                          .name!;
-                    },
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: kSize.height * 0.024),
+                    child: EventTypeDropDown(
+                      intialValue: newEventController.eventTypeString,
+                      eventTypes: newEventController.eventTypeList,
+                      onSelected: (eventType) {
+                        newEventController.eventModel.eventTypeId = eventType.id!;
+                        newEventController.eventTypeString = newEventController.eventTypeList
+                            .firstWhere((e) => e.id == newEventController.eventModel.eventTypeId)
+                            .name!;
+                      },
+                    ),
                   ),
                   SizedBox(
                     height: kSize.height * 0.024,
@@ -262,13 +268,8 @@ class _NewEventViewState extends State<NewEventView> {
                     height: kSize.height * 0.018,
                   ),
                   ServiceBoys(
-                      employeesController: employeeController,
-                      items: employeeController.employeeTypesList,
-                      onSelected: (serviceBoysList) {
-                        //
-                        newEventController.eventModel.eventSiteEmployeeRequirement = serviceBoysList;
-                        log(" Service Boys List >>>>> ${serviceBoysList.length}");
-                      }),
+                    items: employeeController.employeeTypesList,
+                  ),
                   SizedBox(
                     height: kSize.height * 0.032,
                   ),

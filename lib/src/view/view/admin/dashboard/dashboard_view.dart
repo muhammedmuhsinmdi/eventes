@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:evantez/src/controller/events/add_event_controller.dart';
+import 'package:evantez/src/controller/events/events_controller.dart';
 import 'package:evantez/src/model/core/extensions/validation_extension.dart';
 import 'package:evantez/src/controller/auth/auth_controller.dart';
 import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
@@ -136,11 +138,14 @@ class _DashBoardViewState extends State<DashBoardView> {
                                                 Navigator.pushNamed(context, e.routeUrl!, arguments: e)
                                                     .then((value) {});
                                                 if (e.menuName == "Employees") {
-                                                  controller.filterMode =  EmployeeFilterInputModel()..limit = 100..offset = 0;
+                                                  controller.filterMode = EmployeeFilterInputModel()
+                                                    ..limit = 100
+                                                    ..offset = 0;
                                                   await controller.employeeList(token: auth.accesToken ?? '');
                                                 }
                                                 if (e.menuName == "Employee Types") {
-                                                  await controller.employeeTypesData(token: auth.accesToken ?? '');
+                                                  await controller.employeeTypesData(
+                                                      token: auth.accesToken ?? '');
                                                 }
                                                 if (e.menuName == "Settings Wage") {
                                                   await settingsController.settingsWageList(
@@ -149,6 +154,20 @@ class _DashBoardViewState extends State<DashBoardView> {
                                                 if (e.menuName == "Rental Items") {
                                                   await rentalItemsController.rentalItemList(
                                                       token: auth.accesToken ?? '');
+                                                }
+                                                if (e.menuName == "New Event") {
+                                                  if (context.mounted) {
+                                                    final addEventController =
+                                                        Provider.of<AddEventController>(context,
+                                                            listen: false);
+                                                    addEventController.clearData();
+                                                    addEventController.initFn();
+                                                    await controller.employeeTypesData(
+                                                        token: auth.accesToken ?? '');
+                                                    addEventController.getEventTypes(auth.accesToken!);
+                                                    addEventController.employeeTypes =
+                                                        controller.employeeTypesList;
+                                                  }
                                                 }
                                               }
                                             },

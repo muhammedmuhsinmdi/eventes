@@ -12,32 +12,32 @@ NewEventModel eventModelFromJson(String str) => NewEventModel.fromJson(json.deco
 String eventModelToJson(NewEventModel data) => json.encode(data.toJson());
 
 class NewEventModel {
-  List<EventSiteSettingsModel> eventSiteSettings;
-  List<EventSiteEmployeeReqModel> eventSiteEmployeeRequirement;
-  int eventTypeId;
-  int venueId;
-  String code;
-  String customerName;
-  String customerAddress;
-  String customerPhone;
-  String notes;
-  String normalHours;
-  String overtimeHourlyCharge;
-  String status;
+  List<EventSiteSettingsModel>? eventSiteSettings;
+  List<EventSiteEmployeeReqModel>? eventSiteEmployeeRequirement;
+  int? eventTypeId;
+  int? venueId;
+  String? code;
+  String? customerName;
+  String? customerAddress;
+  String? customerPhone;
+  String? notes;
+  String? normalHours;
+  String? overtimeHourlyCharge;
+  String? status;
 
   NewEventModel({
-    required this.eventSiteSettings,
-    required this.eventSiteEmployeeRequirement,
-    required this.eventTypeId,
-    required this.venueId,
-    required this.code,
-    required this.customerName,
-    required this.customerAddress,
-    required this.customerPhone,
-    required this.notes,
-    required this.normalHours,
-    required this.overtimeHourlyCharge,
-    required this.status,
+    this.eventSiteSettings,
+    this.eventSiteEmployeeRequirement,
+    this.eventTypeId,
+    this.venueId,
+    this.code,
+    this.customerName,
+    this.customerAddress,
+    this.customerPhone,
+    this.notes,
+    this.normalHours,
+    this.overtimeHourlyCharge,
+    this.status,
   });
 
   factory NewEventModel.fromJson(Map<String, dynamic> json) => NewEventModel(
@@ -58,9 +58,9 @@ class NewEventModel {
       );
 
   Map<String, dynamic> toJson() => {
-        "event_site_settings": List<dynamic>.from(eventSiteSettings.map((x) => x.toJson())),
+        "event_site_settings": List<dynamic>.from(eventSiteSettings!.map((x) => x.toJson())),
         "event_site_employee_requirement":
-            List<dynamic>.from(eventSiteEmployeeRequirement.map((x) => x.toJson())),
+            List<dynamic>.from(eventSiteEmployeeRequirement!.map((x) => x.toJson())),
         "event_type_id": eventTypeId,
         "venue_id": venueId,
         "code": code,
