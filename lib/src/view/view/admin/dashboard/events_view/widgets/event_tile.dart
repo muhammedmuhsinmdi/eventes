@@ -1,10 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:evantez/src/controller/events/events_controller.dart';
-import 'package:evantez/src/model/core/models/event/new_event_model/new_event_model.dart';
 import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
-import 'package:evantez/src/serializer/models/event_model.dart';
 import 'package:evantez/src/serializer/models/event_response.dart';
-import 'package:evantez/src/serializer/models/event_site_model.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';

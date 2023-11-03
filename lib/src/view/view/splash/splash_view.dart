@@ -38,7 +38,8 @@ class SplashView extends StatelessWidget {
       AuthController authController = Provider.of<AuthController>(context, listen: false);
 
       if (await authController.loadCurrentUser() != null) {
-        await eventController.events(authController.accesToken ?? '').then((value) async {
+        await eventController.events(authController.
+        accesToken ?? '').then((value) async {
           await eventController.getEventVenues(authController.accesToken ?? '');
         });
         navigator.popAndPushNamed(RouterConstants.dashboardRoute);

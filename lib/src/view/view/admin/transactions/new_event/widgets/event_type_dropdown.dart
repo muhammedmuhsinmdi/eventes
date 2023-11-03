@@ -88,7 +88,6 @@ class _EventTypeDropDownState extends State<EventTypeDropDown> {
                 dropDownValue = val ?? intialValue;
                 widget.onSelected(dropDownValue!);
               },
-
               value: dropDownValue,
               borderRadius: BorderRadius.circular(AppConstants.basePadding),
               padding: const EdgeInsets.symmetric(

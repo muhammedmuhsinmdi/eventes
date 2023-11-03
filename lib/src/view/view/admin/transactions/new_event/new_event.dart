@@ -53,10 +53,11 @@ class _NewEventViewState extends State<NewEventView> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      /*  await employeeController.employeeTypesData(token: authcontroller.accesToken!);
+      log(" employee types >>>> ${employeeController.employeeTypesList.length}"); */
       newEventController.initData();
-      newEventController.getEventTypes(authcontroller.accesToken!);
-      employeeController.employeeTypesData(token: authcontroller.accesToken!);
+      await newEventController.getEventTypes(authcontroller.accesToken!);
     });
     super.initState();
   }
@@ -97,21 +98,27 @@ class _NewEventViewState extends State<NewEventView> {
                   SizedBox(
                     height: kSize.height * 0.032,
                   ),
-                  Divider(
-                    color: AppColors.secondaryColor.withOpacity(0.2),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: kSize.height * 0.032),
+                    child: Divider(
+                      color: AppColors.secondaryColor.withOpacity(0.2),
+                    ),
                   ),
                   SizedBox(
                     height: kSize.height * 0.024,
                   ),
-                  EventTypeDropDown(
-                    intialValue: newEventController.eventTypeString,
-                    eventTypes: newEventController.eventTypeList,
-                    onSelected: (eventType) {
-                      newEventController.eventModel!.eventTypeId = eventType.id!;
-                      newEventController.eventTypeString = newEventController.eventTypeList
-                          .firstWhere((e) => e.id == newEventController.eventModel!.eventTypeId)
-                          .name!;
-                    },
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: kSize.height * 0.024),
+                    child: EventTypeDropDown(
+                      intialValue: newEventController.eventTypeString,
+                      eventTypes: newEventController.eventTypeList,
+                      onSelected: (eventType) {
+                        newEventController.eventModel.eventTypeId = eventType.id!;
+                        newEventController.eventTypeString = newEventController.eventTypeList
+                            .firstWhere((e) => e.id == newEventController.eventModel.eventTypeId)
+                            .name!;
+                      },
+                    ),
                   ),
                   SizedBox(
                     height: kSize.height * 0.024,
@@ -154,7 +161,7 @@ class _NewEventViewState extends State<NewEventView> {
                       return null;
                     },
                     onChanged: (name) {
-                      newEventController.eventModel!.customerName = name;
+                      newEventController.eventModel.customerName = name;
                     },
                   ),
                   SizedBox(
@@ -184,7 +191,7 @@ class _NewEventViewState extends State<NewEventView> {
                       return null;
                     },
                     onChanged: (phone) {
-                      newEventController.eventModel!.customerPhone = phone;
+                      newEventController.eventModel.customerPhone = phone;
                       // customerPhone.text = phone;
                     },
                   ),
@@ -216,7 +223,7 @@ class _NewEventViewState extends State<NewEventView> {
                     hintText: "Notes/Instructions",
                     controller: newEventController.additionalInfo,
                     onChanged: (notes) {
-                      newEventController.eventModel!.notes = notes;
+                      newEventController.eventModel.notes = notes;
                       // additionalnote.text = notes;
                     },
                   ),
@@ -261,12 +268,8 @@ class _NewEventViewState extends State<NewEventView> {
                     height: kSize.height * 0.018,
                   ),
                   ServiceBoys(
-                      items: employeeController.employeeTypesList,
-                      onSelected: (serviceBoysList) {
-                        //
-                        newEventController.eventModel!.eventSiteEmployeeRequirement = serviceBoysList;
-                        log(" Service Boys List >>>>> ${serviceBoysList.length}");
-                      }),
+                    items: employeeController.employeeTypesList,
+                  ),
                   SizedBox(
                     height: kSize.height * 0.032,
                   ),
@@ -310,22 +313,20 @@ class _NewEventViewState extends State<NewEventView> {
                                 'log': '72.772426',
                               });
 
-                              /* await newEventController
+                              await newEventController
                                   .addEventvenue(token: authcontroller.accesToken!, data: formData)
                                   .then((eventVenue) {
                                 if (eventVenue.id != 0) {
-                                  newEventController.eventModel!.venueId = eventVenue.id!;
-                                  // log("${newEventController.eventModel!.venueId}");
+                                  newEventController.eventModel.venueId = eventVenue.id!;
+                                  log("${newEventController.eventModel.venueId}");
                                 }
-                              }); */
+                              });
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(snackBarWidget(
                                   'Please select an Image',
                                   color: Colors.black26,
                                   duration: const Duration(seconds: 2)));
                             }
-                            // if (newEventController.eventModel!.venueId != 0) {
-                            newEventController.eventModel!.venueId = 6;
                             newEventController.eventModel!.status = 'Upcoming - Hold';
                             newEventController.addEventSite(token: authcontroller.accesToken!);
                             // }
@@ -594,6 +595,16 @@ class _NewEventViewState extends State<NewEventView> {
         ),
         Flexible(
           child: CustomTextField(
+            prefix: Padding(
+              padding: const EdgeInsets.only(right: 3.0),
+              child: Text(
+                "₹",
+                style: AppTypography.poppinsMedium.copyWith(
+                  color: AppColors.primaryColor,
+                  fontSize: 16,
+                ),
+              ),
+            ),
             keyboardType: TextInputType.number,
             text: '',
             controller: newEventController.overTimeRate,
