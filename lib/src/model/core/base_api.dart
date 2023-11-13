@@ -15,11 +15,9 @@ class BaseApi {
     try {
       Options options = Options(headers: headers);
 
-      Response response = await dio!
-          .get(url, queryParameters: queryParameters, options: options);
+      Response response = await dio!.get(url, queryParameters: queryParameters, options: options);
 
-      log('status code = ${response.statusCode}\nresponse == ${response.data.toString()}',
-          name: url);
+      log('status code = ${response.statusCode}\nresponse == ${response.data.toString()}', name: url);
 
       if (response.statusCode == 401) {
         await unAutherized();
@@ -27,8 +25,7 @@ class BaseApi {
         return response;
       }
     } on DioError catch (e) {
-      log('status code = ${e.response?.statusCode}\nresponse == ${e.response?.data.toString()}',
-          name: url);
+      log('status code = ${e.response?.statusCode}\nresponse == ${e.response?.data.toString()}', name: url);
       if (e.response?.statusCode == 401) {
         await unAutherized();
       }
@@ -40,8 +37,7 @@ class BaseApi {
     }
   }
 
-  Future post(url,
-      {queryParameters, data, Map<String, dynamic>? headers}) async {
+  Future post(url, {queryParameters, data, Map<String, dynamic>? headers}) async {
     try {
       headers ??= {};
       Options options = Options(
@@ -52,8 +48,7 @@ class BaseApi {
 
       Response response = await dio!.post(url, data: data, options: options);
 
-      log('status code = ${response.statusCode}\nresponse == ${response.data.toString()}',
-          name: url);
+      log('status code = ${response.statusCode}\nresponse == ${response.data.toString()}', name: url);
 
       if (response.statusCode == 401) {
         await unAutherized();
@@ -61,8 +56,7 @@ class BaseApi {
         return response;
       }
     } on DioError catch (e) {
-      log('status code = ${e.response?.statusCode}\nresponse == ${e.response?.data.toString()}',
-          name: url);
+      log('status code = ${e.response?.statusCode}\nresponse == ${e.response?.data.toString()}', name: url);
 
       if (e.response?.statusCode == 401) {
         await unAutherized();
@@ -85,16 +79,14 @@ class BaseApi {
       );
       Response response = await dio!.patch(url, data: data, options: options);
 
-      log('status code = ${response.statusCode}\nresponse == ${response.data.toString()}',
-          name: url);
+      log('status code = ${response.statusCode}\nresponse == ${response.data.toString()}', name: url);
       if (response.statusCode == 401) {
         await unAutherized();
       } else {
         return response;
       }
     } on DioError catch (e) {
-      log('status code = ${e.response?.statusCode}\nresponse == ${e.response?.data.toString()}',
-          name: url);
+      log('status code = ${e.response?.statusCode}\nresponse == ${e.response?.data.toString()}', name: url);
       if (e.response?.statusCode == 401) {
         await unAutherized();
       }
@@ -106,12 +98,10 @@ class BaseApi {
     }
   }
 
-  Future put(url,
-      {queryParameters, data, Map<String, dynamic>? headers}) async {
+  Future put(url, {queryParameters, data, Map<String, dynamic>? headers}) async {
     try {
       Options options = Options(headers: headers);
-      Response response = await dio!.put(url,
-          data: data, queryParameters: queryParameters, options: options);
+      Response response = await dio!.put(url, data: data, queryParameters: queryParameters, options: options);
       if (response.statusCode == 401) {
         await unAutherized();
       } else {
@@ -146,8 +136,8 @@ class BaseApi {
 
 //?========== Unautherized Access ==========
   Future<void> unAutherized() async {
-    rootScaffoldMessengerKey.currentState!.showSnackBar(
-        snackBarWidget('Unautherized access. Please login again'));
+    rootScaffoldMessengerKey.currentState!
+        .showSnackBar(snackBarWidget('Unautherized access. Please login again'));
     log('Response - Unautherized access');
 
     // await rootScaffoldMessengerKey.currentState!.context

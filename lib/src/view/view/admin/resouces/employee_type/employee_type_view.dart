@@ -141,7 +141,7 @@ class _EmployeeTypeViewState extends State<EmployeeTypeView> {
                 ),
               )
             : ListView.builder(
-                itemCount: controller.employeeTypesList.length,
+                itemCount: controller.employeeTypes.length,
                 padding: EdgeInsets.only(
                     bottom: kSize.height * 0.16,
                     left: AppConstants.baseBorderRadius,

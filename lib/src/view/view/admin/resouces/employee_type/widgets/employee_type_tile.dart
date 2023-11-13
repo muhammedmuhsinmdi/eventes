@@ -33,7 +33,7 @@ class EmployeeTypeTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                controller.employeeTypesList[index].name ?? '',
+                controller.employeeTypes[index].name ?? '',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: AppTypography.poppinsSemiBold.copyWith(
@@ -43,14 +43,14 @@ class EmployeeTypeTile extends StatelessWidget {
               ),
               RichText(
                 text: TextSpan(
-                    text: '${controller.employeeTypesList[index].code}',
+                    text: '${controller.employeeTypes[index].code}',
                     style: AppTypography.poppinsMedium.copyWith(
                         fontSize: 14,
                         color: AppColors.secondaryColor.withOpacity(0.5)),
                     children: [
                       TextSpan(
                           text:
-                              '  ${controller.employeeTypesList[index].amount}',
+                              '  ${controller.employeeTypes[index].amount}',
                           style: AppTypography.poppinsMedium.copyWith(
                             fontSize: 14,
                             color: AppColors.secondaryColor,
@@ -73,7 +73,7 @@ class EmployeeTypeTile extends StatelessWidget {
                 // empTypeState.codeEditingController.text = employeeType.code!;
                 // empTypeState.employeeType = employeeType;
                 controller.initStateLoading(
-                    data: controller.employeeTypesList[index]);
+                    data: controller.employeeTypes[index]);
                 AddEmployeeType(context, index).show();
                 // }
                 // });

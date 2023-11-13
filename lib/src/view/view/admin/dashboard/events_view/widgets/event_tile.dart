@@ -136,7 +136,7 @@ class _EventTileState extends State<EventTile> {
           color: AppColors.secondaryColor.withOpacity(0.4),
           borderRadius: BorderRadius.circular(AppConstants.basePadding)),
       child: Text(
-        "Closed",
+        "${widget.event.status}",
         style: AppTypography.poppinsRegular.copyWith(
           fontSize: 12,
         ),

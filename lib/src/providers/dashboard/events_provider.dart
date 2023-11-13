@@ -1,18 +1,14 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:evantez/src/model/core/base_api_utilities.dart';
-import 'package:evantez/src/model/core/models/event/event_site_emp_requirement/event_site_emp_req_model.dart';
 import 'package:evantez/src/model/core/models/event/event_type/event_type_model.dart';
 import 'package:evantez/src/model/core/models/event/new_event_model/new_event_model.dart';
 import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 import 'package:evantez/src/serializer/models/event_details.response.dart';
 import 'package:evantez/src/serializer/models/event_response.dart';
 import 'package:evantez/src/view/core/event_api.dart';
-
-import '../../serializer/models/event_site_model.dart';
 
 class EventProvider extends EventApi {
   //=-=-=-=-=-=-=-=-= Events =-=-=-=-=-=-=-=-=-=
@@ -71,14 +67,7 @@ class EventProvider extends EventApi {
             'Accept': 'application/json',
             'Content-Type': 'multipart/form-data'
           },
-          data: data
-          // {
-          //   // "name": name,
-          //   // "image": image,
-          //   // "lat": lat,
-          //   // "log": log
-          // }
-          );
+          data: data);
       log("${response.statusCode}");
       log("${response.data}");
       switch (response.statusCode) {
@@ -110,16 +99,37 @@ class EventProvider extends EventApi {
 // -=-=-=-=-=-=-= Event Site -=-=-=-=-=-=-=-=-=-=
 
   Future<dynamic> eventSiteAdd({required String token, required NewEventModel eventSite}) async {
-    log("${eventSite.toJson()}");
-    Response response =
-        await post('events/event-site/', headers: apiHeaders(token), data: eventSite.toJson());
+    var postData = json.encode(eventSite.toJson());
+    log(postData);
+    Response response = await post('events/event-site/', headers: apiHeaders(token), data: postData);
     log("${response.statusCode}");
     log('${response.data}');
     switch (response.statusCode) {
       case 201:
-        return response.data;
+        return true;
       default:
         throw Exception('Error');
+    }
+  }
+
+  // Update Event Site
+  Future<dynamic> updateEventSite(
+      {required String token, required int eventId, required NewEventModel eventSite}) async {
+    log("token >>>>  $token");
+    log('PUT METHOD');
+    try {
+      var postData = json.encode(eventSite.toJson());
+      log(postData);
+      Response response = await put("events/event-site/$eventId/",
+          queryParameters: {}, headers: apiHeaders(token), data: postData);
+      switch (response.statusCode) {
+        case 200:
+          return true;
+        default:
+          return false;
+      }
+    } catch (e) {
+      log("$e");
     }
   }
 
@@ -134,6 +144,17 @@ class EventProvider extends EventApi {
         default:
           throw Exception('Error');
       }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<EventSiteModel> getEventDetail(String token, int id) async {
+    try {
+      Response response = await get("events/event-site/$id/", headers: apiHeaders(token));
+      log("${response.statusCode}");
+      log("${response.data}");
+      return EventSiteModel.fromJson(response.data);
     } catch (e) {
       rethrow;
     }

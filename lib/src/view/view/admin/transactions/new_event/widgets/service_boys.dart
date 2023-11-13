@@ -3,12 +3,14 @@ import 'dart:developer';
 import 'package:evantez/src/controller/events/add_event_controller.dart';
 import 'package:evantez/src/model/core/models/event/event_service_boys/event_service_boys_model.dart';
 import 'package:evantez/src/model/core/models/event/event_site_emp_requirement/event_site_emp_req_model.dart';
+import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 
 import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
 import 'package:evantez/src/view/view/admin/transactions/new_event/widgets/custom_service_counter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../../model/core/models/event/event_type/event_type_model.dart';
 import '../../../../../core/themes/colors.dart';
 import '../../../../../core/widgets/footer_button.dart';
 
@@ -38,6 +40,7 @@ class _ServiceBoysState extends State<ServiceBoys> {
   void initState() {
     serviceItems.addAll(widget.items);
     serviceBoysCount.value = 1;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {});
     super.initState();
   }
 
@@ -54,10 +57,11 @@ class _ServiceBoysState extends State<ServiceBoys> {
               children: [
                 Column(
                   children: List.generate(
-                    serviceBoysCount.value,
+                    addEventController.event.eventSiteEmployeeRequirement!.length,
                     (index) => CustomServiceCounter(
                       label: "",
                       items: serviceItems,
+                      employeeRequirement: addEventController.event.eventSiteEmployeeRequirement![index],
                       countCallBack: (count, total) {
                         log("$count");
                         log("$total");
@@ -87,6 +91,8 @@ class _ServiceBoysState extends State<ServiceBoys> {
                           charge: '',
                           employeeType: 0,
                           requirementCount: 0,
+                          eventSite: 0,
+                          id: 0,
                         ));
                         log(" list count >>> ${addEventController.event.eventSiteEmployeeRequirement!.length}");
                         // newEventController.eventModel.eventSiteEmployeeRequirement!.add(employeeReqModel!);

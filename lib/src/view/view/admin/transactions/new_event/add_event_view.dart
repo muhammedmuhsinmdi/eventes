@@ -1,7 +1,10 @@
 import 'dart:developer';
 
+import 'package:evantez/app/app.dart';
+import 'package:evantez/src/controller/auth/auth_controller.dart';
 import 'package:evantez/src/controller/events/add_event_controller.dart';
 import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
+import 'package:evantez/src/model/components/snackbar_widget.dart';
 import 'package:evantez/src/view/core/constants/app_strings.dart';
 import 'package:evantez/src/view/core/constants/constants.dart';
 import 'package:evantez/src/view/core/themes/colors.dart';
@@ -16,6 +19,7 @@ import 'package:evantez/src/view/view/admin/transactions/new_event/widgets/event
 import 'package:evantez/src/view/view/admin/transactions/new_event/widgets/filter_boys_rating.dart';
 import 'package:evantez/src/view/view/admin/transactions/new_event/widgets/service_boys.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class AddEventView extends StatelessWidget {
@@ -24,6 +28,7 @@ class AddEventView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
+    final authController = context.watch<AuthController>();
     final employeeController = context.watch<EmployeesController>();
     final addEventContoller = context.watch<AddEventController>();
     return Scaffold(
@@ -44,14 +49,20 @@ class AddEventView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    eventID(addEventContoller.event.code!),
-                    EventImageUpload(onPicked: (pickedImage) {}),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: kSize.height * 0.032),
-                      child: Divider(
-                        color: AppColors.secondaryColor.withOpacity(0.2),
+                    eventID(addEventContoller.event.code ?? '', addEventContoller, kSize),
+                    if (addEventContoller.eventImagePath.isNotEmpty) ...{
+                      EventImageUpload(
+                        onPicked: (pickedImage) {
+                          addEventContoller.eventImage = pickedImage;
+                        },
                       ),
-                    ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: kSize.height * 0.032),
+                        child: Divider(
+                          color: AppColors.secondaryColor.withOpacity(0.2),
+                        ),
+                      )
+                    },
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: kSize.height * 0.024),
                       child: CommonDropdown(
@@ -69,7 +80,18 @@ class AddEventView extends StatelessWidget {
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: kSize.height * 0.024),
-                      child: CustomTextField(
+                      child: CommonDropdown(
+                          text: "Event Venue",
+                          label: "Event Venue",
+                          required: true,
+                          hintText: 'Select Event Venue',
+                          dropDownValue: addEventContoller.eventVenues,
+                          selecteItem: addEventContoller.selectedEventVenue,
+                          validator: addEventContoller.eventVenueValidator,
+                          onChanged: (DropDownValue value) {
+                            addEventContoller.selectedEventVenue = value;
+                            addEventContoller.event.venueId = value.id;
+                          }) /* CustomTextField(
                         text: "Event Venue",
                         hintText: 'Enter Venue',
                         controller: addEventContoller.eventVenue,
@@ -78,7 +100,8 @@ class AddEventView extends StatelessWidget {
                         onSave: (value) {
                           addEventContoller.event.venueId = 1;
                         },
-                      ),
+                      ) */
+                      ,
                     ),
                     dateTime(kSize: kSize, controller: addEventContoller),
                     Padding(
@@ -178,7 +201,7 @@ class AddEventView extends StatelessWidget {
                       height: kSize.height * 0.018,
                     ),
                     ServiceBoys(
-                      items: employeeController.employeeTypesList,
+                      items: employeeController.employeeTypes,
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: kSize.height * 0.032),
@@ -205,12 +228,47 @@ class AddEventView extends StatelessWidget {
                         top: kSize.height * 0.024,
                         bottom: kSize.height * 0.032,
                       ),
-                      child: FooterButton(
-                          label: AppStrings.saveText,
-                          onTap: () {
-                            // save event
-                            addEventContoller.saveEvent();
-                          }),
+                      child: addEventContoller.isLoading
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.primaryColor,
+                              ),
+                            )
+                          : FooterButton(
+                              label: AppStrings.saveText,
+                              onTap: () async {
+                                try {
+                                  // save event
+                                  if (addEventContoller.eventId != 0) {
+                                    bool response =
+                                        await addEventContoller.updateEvent(authController.accesToken!);
+                                    if (response) {
+                                      rootScaffoldMessengerKey.currentState!.showSnackBar(
+                                          snackBarWidget('Updated Successfully!', color: Colors.green));
+                                      if (context.mounted) {
+                                        addEventContoller.isLoading = false;
+                                        Navigator.pop(context);
+                                        addEventContoller.clearData();
+                                      }
+                                    }
+                                  } else {
+                                    bool response =
+                                        await addEventContoller.saveEvent(authController.accesToken);
+                                    if (response) {
+                                      rootScaffoldMessengerKey.currentState!.showSnackBar(
+                                          snackBarWidget('Succesfully Created!', color: Colors.green));
+                                      if (context.mounted) {
+                                        addEventContoller.isLoading = false;
+                                        Navigator.pop(context);
+                                      }
+                                    }
+                                  }
+                                } catch (e) {
+                                  rootScaffoldMessengerKey.currentState!
+                                      .showSnackBar(snackBarWidget('$e', color: Colors.red));
+                                  addEventContoller.isLoading = false;
+                                }
+                              }),
                     ),
                   ],
                 ),
@@ -220,19 +278,32 @@ class AddEventView extends StatelessWidget {
     );
   }
 
-  Widget eventID(String eventCode) {
-    return RichText(
+  Widget eventID(String? eventCode, AddEventController controller, Size kSize) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: kSize.height * 0.024),
+      child: CustomTextField(
+        text: 'Event Code',
+        required: true,
+        hintText: "Code",
+        validator: controller.eventCodeValidator,
+        controller: controller.eventCode,
+        onSave: (code) {
+          controller.event.code = code;
+        },
+      ),
+    );
+    /*  return RichText(
         text: TextSpan(
             text: AppStrings.eventCodeText,
             style: AppTypography.poppinsMedium.copyWith(fontSize: 16, color: AppColors.secondaryColor),
             children: [
           TextSpan(
-              text: "     $eventCode",
+              text: eventCode != null ? "     $eventCode" : '',
               style: AppTypography.poppinsRegular.copyWith(
                 fontSize: 16,
                 color: AppColors.secondaryColor.withOpacity(0.6),
               ))
-        ]));
+        ])); */
   }
 
   Widget dateTime({required Size kSize, required AddEventController controller}) {
@@ -247,8 +318,12 @@ class AddEventView extends StatelessWidget {
             controller: controller.scheduledDate,
             type: "Date",
             label: "Date",
+            getDate: (date) {
+              controller.eventDateTime = date;
+              log("${controller.eventDateTime}");
+            },
             onSaved: (value) {
-              // On Save Pending , Due variable not in API
+              // controller.event.scheduleDateTime = controller.eventDateTime;
             },
             onChanged: (value) {},
           ),
@@ -256,16 +331,48 @@ class AddEventView extends StatelessWidget {
               controller: controller.scheduledTime,
               type: 'Time',
               label: 'Time',
-              onSaved: (value) {
-                // On Save Pending , Due variable not in API
+              getTime: (startTime) {
+                controller.eventTime = startTime;
+                /* controller.event.scheduleDateTime = DateTime(
+                  controller.event.scheduleDateTime!.year,
+                  controller.event.scheduleDateTime!.month,
+                  controller.event.scheduleDateTime!.day,
+                  startTime.hour,
+                  startTime.minute,
+                ); */
               },
-              onChanged: (value) {})
+              onSaved: (value) {
+                controller.eventDateTime = DateTime(
+                    controller.eventDateTime!.year,
+                    controller.eventDateTime!.month,
+                    controller.eventDateTime!.day,
+                    controller.eventTime!.hour,
+                    controller.eventTime!.minute);
+                controller.event.scheduleDateTime =
+                    DateFormat('yyyy-MM-dd HH:mm:ss').format(controller.eventDateTime!);
+                log(controller.event.scheduleDateTime!);
+                /*  controller.event.scheduleDateTime = DateTime(
+                  controller.eventDateTime!.year,
+                  controller.eventDateTime!.month,
+                  controller.eventDateTime!.day,
+                  controller.eventTime!.hour,
+                  controller.eventTime!.minute,
+                ); */
+              },
+              onChanged: (value) {
+                log(value);
+                DateTime time = DateTime.parse(value);
+                log("time >> $time ");
+                String formatTime = DateFormat().format(time);
+                log("${DateFormat().format(DateTime.parse(value))}");
+              })
         ],
       ),
     );
   }
 
   AppBar appBar(BuildContext context, Size kSize) {
+    final addEventController = context.watch<AddEventController>();
     return AppBar(
       elevation: 0,
       leading: CustomBackButton(
@@ -276,7 +383,7 @@ class AddEventView extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       centerTitle: true,
       title: Text(
-        AppStrings.createEventText,
+        addEventController.eventId != 0 ? "Update Event Site" : AppStrings.createEventText,
         style: AppTypography.poppinsSemiBold.copyWith(
           color: AppColors.secondaryColor,
         ),
@@ -305,6 +412,7 @@ class AddEventView extends StatelessWidget {
         Flexible(
           child: CustomTextField(
             text: '',
+            maxLines: 1,
             controller: controller.normalHours,
             validator: controller.normalHoursValidator,
             keyboardType: TextInputType.number,
@@ -346,6 +454,7 @@ class AddEventView extends StatelessWidget {
         ),
         Flexible(
           child: CustomTextField(
+            maxLines: 1,
             prefix: Padding(
               padding: const EdgeInsets.only(right: 3.0),
               child: Text(

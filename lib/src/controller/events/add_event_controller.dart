@@ -1,35 +1,103 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:evantez/src/model/core/models/event/event_site_emp_requirement/event_site_emp_req_model.dart';
 import 'package:evantez/src/model/core/models/event/event_type/event_type_model.dart';
 import 'package:evantez/src/model/core/models/event/new_event_model/new_event_model.dart';
+import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 import 'package:evantez/src/providers/dashboard/events_provider.dart';
 import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
 import 'package:evantez/src/view/core/widgets/drop_down_value.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AddEventController extends ChangeNotifier {
   final GlobalKey<FormState> eventForm = GlobalKey<FormState>();
 
+  int eventId = 0;
+
   Future<void> initFn() async {
     selectedEventType = null;
+    selectedEventVenue = null;
     event = NewEventModel()
-      ..code = 'EV2010'
+      // ..scheduleDateTime = DateTime.now()
+      ..code = ''
       ..eventTypeId = null
       ..eventSiteSettings = []
+      ..status = 'open'
+      ..venueId = 0
       ..eventSiteEmployeeRequirement = [
         EventSiteEmployeeReqModel(
           charge: '',
           employeeType: 0,
+          eventSite: 0,
+          id: 0,
           requirementCount: 0,
         )
       ];
+  }
+
+  getEventDetail(String token, int eventid) async {
+    final response = await EventProvider().getEventDetail(token, eventid);
+    eventId = response.id!;
+    customerAddress.text = response.customerAddress!;
+    customerName.text = response.customerName!;
+    additionalInfo.text = response.notes!;
+    selectedEventVenue = DropDownValue(id: response.venue!.id, value: response.venue!.name);
+    // eventVenue.text = response.venue!.name!;
+    normalHours.text = response.normalHours!;
+    overTimeRate.text = response.overtimeHourlyCharge!;
+    customerPhone.text = response.customerPhone!;
+    if (response.scheduledDate != null) {
+      scheduledDate.text = DateFormat('dd MMM, yyyy').format(response.scheduledDate!);
+      scheduledTime.text = DateFormat('hh:mm a').format(response.scheduledDate!);
+    }
+    List<EventSiteEmployeeReqModel> empList = [];
+    for (var empType in response.eventSiteEmployeeRequirement!) {
+      empList.add(EventSiteEmployeeReqModel(
+        charge: empType.charge,
+        eventSite: empType.eventSite,
+        id: empType.id,
+        employeeType: empType.employeeType!.id,
+        requirementCount: empType.requirementCount,
+      ));
+    }
+    event = NewEventModel(
+      code: response.code,
+      scheduleDateTime: response.scheduledDate != null
+          ? DateFormat('yyyy-MM-dd HH:mm:ss').format(response.scheduledDate!)
+          : "",
+      customerAddress: response.customerAddress,
+      customerName: response.customerName,
+      customerPhone: response.customerPhone,
+      eventSiteEmployeeRequirement: empList,
+      eventSiteSettings: response.eventSiteSettings,
+      eventTypeId: response.eventType!.id,
+      normalHours: response.normalHours,
+      notes: response.notes,
+      overtimeHourlyCharge: response.overtimeHourlyCharge,
+      status: response.status,
+      venueId: response.venue!.id,
+    );
+    selectedEventType = DropDownValue(id: response.eventType!.id, value: response.eventType!.name);
+    eventImagePath = response.venue!.image!;
+    log("${event.toJson()}");
   }
 
   File? _eventImage;
   File get eventImage => _eventImage!;
   set eventImage(File val) {
     _eventImage = val;
+    notifyListeners();
+  }
+
+  DateTime? eventDateTime;
+  TimeOfDay? eventTime;
+
+  String? _eventImagePath;
+  String get eventImagePath => _eventImagePath ?? '';
+  set eventImagePath(String val) {
+    _eventImagePath = val;
     notifyListeners();
   }
 
@@ -62,7 +130,7 @@ class AddEventController extends ChangeNotifier {
   }
 
   /// TextEditing Contoller
-  TextEditingController eventVenue = TextEditingController();
+  TextEditingController eventCode = TextEditingController();
   TextEditingController customerName = TextEditingController();
   TextEditingController customerPhone = TextEditingController();
   TextEditingController customerAddress = TextEditingController();
@@ -82,10 +150,10 @@ class AddEventController extends ChangeNotifier {
     }
   }
 
-//event Venue validators
-  String? eventVenueValidator(String? value) {
+  // Event Code
+  String? eventCodeValidator(String? value) {
     if (value!.isEmpty) {
-      return "Event Venue Required..";
+      return "Event Code Required..";
     } else {
       return null;
     }
@@ -129,11 +197,24 @@ class AddEventController extends ChangeNotifier {
     }
   }
 
-  Future saveEvent() async {
+  Future saveEvent(String? token) async {
     if (eventForm.currentState!.validate()) {
+      isLoading = true;
       eventForm.currentState!.save();
-      print(event.code);
-      //
+      // var data = json.encode(event.toJson());
+      // log(data);
+      return await EventProvider().eventSiteAdd(token: token!, eventSite: event);
+    }
+  }
+
+  Future updateEvent(String? token) async {
+    if (eventForm.currentState!.validate()) {
+      isLoading = true;
+      eventForm.currentState!.save();
+      log("Event ID >>> $eventId");
+      // var data = json.encode(event.toJson());
+      // log(data);
+      return await EventProvider().updateEventSite(token: token!, eventSite: event, eventId: eventId);
     }
   }
 
@@ -152,6 +233,20 @@ class AddEventController extends ChangeNotifier {
     }
   }
 
+  List<DropDownValue> eventVenues = [];
+  DropDownValue? selectedEventVenue;
+  Future getEventVenues(String token) async {
+    try {
+      final response = await EventProvider().loadEventVenue(token);
+      if (response.results!.isNotEmpty) {
+        eventVenues = response.results!.map((e) => DropDownValue(id: e.id, value: e.name)).toList();
+        notifyListeners();
+      }
+    } catch (e) {
+      eventTypes = [];
+    }
+  }
+
   // event type validator
   String? eventTypeValidator(DropDownValue? value) {
     if (value == null) {
@@ -160,9 +255,20 @@ class AddEventController extends ChangeNotifier {
     return null;
   }
 
+  // event venue validator
+  String? eventVenueValidator(DropDownValue? value) {
+    if (value == null) {
+      return 'Please select an option';
+    }
+    return null;
+  }
+
   clearData() {
+    eventId = 0;
     event = NewEventModel();
-    eventVenue.clear();
+    selectedEventType = null;
+    selectedEventVenue = null;
+    eventImagePath = '';
     customerName.clear();
     customerPhone.clear();
     customerAddress.clear();
@@ -171,5 +277,6 @@ class AddEventController extends ChangeNotifier {
     overTimeRate.clear();
     scheduledDate.clear();
     scheduledTime.clear();
+    eventCode.clear();
   }
 }

@@ -18,6 +18,7 @@ class EventSiteModel {
   String? customerPhone;
   String? notes;
   String? normalHours;
+  DateTime? scheduledDate;
   String? overtimeHourlyCharge;
   String? status;
 
@@ -38,30 +39,31 @@ class EventSiteModel {
     this.notes,
     this.normalHours,
     this.overtimeHourlyCharge,
+    this.scheduledDate,
     this.status,
   });
 
   factory EventSiteModel.fromJson(Map<String, dynamic> json) => EventSiteModel(
-        id: json["id"],
-        eventSiteSettings: List<EventSiteSettingsModel>.from(
-            json["event_site_settings"].map((x) => EventSiteSettingsModel.fromJson(x))),
-        eventSiteEmployeeRequirement: List<EventSiteEmployeeRequirement>.from(
-            json["event_site_employee_requirement"].map((x) => EventSiteEmployeeRequirement.fromJson(x))),
-        eventType: EventTypeModel.fromJson(json["event_type"]),
-        venue: EventVenue.fromJson(json["venue"]),
-        // availableSlots: json["available_slots"] ?? '' ,
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-        code: json["code"],
-        scheduledDatetime: DateTime.parse(json["scheduled_datetime"]),
-        customerName: json["customer_name"],
-        customerAddress: json["customer_address"],
-        customerPhone: json["customer_phone"],
-        notes: json["notes"],
-        normalHours: json["normal_hours"],
-        overtimeHourlyCharge: json["overtime_hourly_charge"],
-        status: json["status"],
-      );
+      id: json["id"],
+      eventSiteSettings: List<EventSiteSettingsModel>.from(
+          json["event_site_settings"].map((x) => EventSiteSettingsModel.fromJson(x))),
+      eventSiteEmployeeRequirement: List<EventSiteEmployeeRequirement>.from(
+          json["event_site_employee_requirement"].map((x) => EventSiteEmployeeRequirement.fromJson(x))),
+      eventType: EventTypeModel.fromJson(json["event_type"]),
+      venue: EventVenue.fromJson(json["venue"]),
+      // availableSlots: json["available_slots"] ?? '' ,
+      createdAt: DateTime.parse(json["created_at"]),
+      updatedAt: DateTime.parse(json["updated_at"]),
+      code: json["code"],
+      scheduledDatetime: DateTime.parse(json["scheduled_datetime"]),
+      customerName: json["customer_name"],
+      customerAddress: json["customer_address"],
+      customerPhone: json["customer_phone"],
+      notes: json["notes"],
+      normalHours: json["normal_hours"],
+      overtimeHourlyCharge: json["overtime_hourly_charge"],
+      status: json["status"],
+      scheduledDate: json["scheduled_date"]);
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -86,28 +88,22 @@ class EventSiteModel {
 }
 
 class EventSiteEmployeeRequirement {
-  int id;
-  DateTime createdAt;
-  DateTime updatedAt;
-  int requirementCount;
-  String charge;
-  int eventSite;
-  EventTypeModel employeeType;
+  int? id;
+  int? requirementCount;
+  String? charge;
+  int? eventSite;
+  EventTypeModel? employeeType;
 
   EventSiteEmployeeRequirement({
-    required this.id,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.requirementCount,
-    required this.charge,
-    required this.eventSite,
-    required this.employeeType,
+    this.id,
+    this.requirementCount,
+    this.charge,
+    this.eventSite,
+    this.employeeType,
   });
 
   factory EventSiteEmployeeRequirement.fromJson(Map<String, dynamic> json) => EventSiteEmployeeRequirement(
         id: json["id"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
         requirementCount: json["requirement_count"],
         charge: json["charge"],
         eventSite: json["event_site"],
@@ -116,8 +112,6 @@ class EventSiteEmployeeRequirement {
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
         "requirement_count": requirementCount,
         "charge": charge,
         "event_site": eventSite,

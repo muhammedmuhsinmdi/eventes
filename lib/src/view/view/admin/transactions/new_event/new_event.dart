@@ -268,7 +268,7 @@ class _NewEventViewState extends State<NewEventView> {
                     height: kSize.height * 0.018,
                   ),
                   ServiceBoys(
-                    items: employeeController.employeeTypesList,
+                    items: employeeController.employeeTypes,
                   ),
                   SizedBox(
                     height: kSize.height * 0.032,

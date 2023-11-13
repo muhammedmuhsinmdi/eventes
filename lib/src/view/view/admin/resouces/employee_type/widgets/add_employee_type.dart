@@ -137,7 +137,7 @@ class AddEmployeeType {
                                 controller.editEmployeeType(
                                     token: auth.accesToken ?? '',
                                     context: context,
-                                    id: controller.employeeTypesList[index].id ?? 0);
+                                    id: controller.employeeTypes[index].id ?? 0);
                                 log('test1');
                               } else {
                                 log('test2');

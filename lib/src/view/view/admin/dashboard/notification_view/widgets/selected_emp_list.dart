@@ -25,7 +25,7 @@ class _SelectEmpListState extends State<SelectEmpList> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       // log("${AppPrefs.token}");
       employeesController.employeeTypesData(token: authController.accesToken!);
-      log("${employeesController.employeeTypesList}");
+      log("${employeesController.employeeTypes}");
     });
     super.initState();
   }
@@ -41,7 +41,7 @@ class _SelectEmpListState extends State<SelectEmpList> {
       spacing: 8,
       runSpacing: 8,
       children: List.generate(
-          employeesController.employeeTypesList.length,
+          employeesController.employeeTypes.length,
           (index) => InkWell(
                 highlightColor: AppColors.transparent,
                 splashColor: AppColors.transparent,
@@ -51,13 +51,13 @@ class _SelectEmpListState extends State<SelectEmpList> {
                   // } else {
                   //   selectedEmp.add(employeesController.employeeTypesList[index]);
                   // }
-                  employeesController.filterMode.employeeType = employeesController.employeeTypesList[index].id;
+                  employeesController.filterMode.employeeType = employeesController.employeeTypes[index].id;
                   
                 },
                 child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                      color: employeesController.employeeTypesList[index].id ==  employeesController.filterMode.employeeType
+                      color: employeesController.employeeTypes[index].id ==  employeesController.filterMode.employeeType
                           ? AppColors.primaryColor
                           : AppColors.transparent,
                       border: Border.all(
@@ -65,7 +65,7 @@ class _SelectEmpListState extends State<SelectEmpList> {
                       )),
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   child: Text(
-                    employeesController.employeeTypesList[index].name!,
+                    employeesController.employeeTypes[index].name!,
                     style:
                         AppTypography.poppinsRegular.copyWith(color: AppColors.secondaryColor, fontSize: 12),
                   ),

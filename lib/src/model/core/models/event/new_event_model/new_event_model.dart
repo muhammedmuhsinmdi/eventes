@@ -6,6 +6,7 @@ import 'dart:convert';
 
 import 'package:evantez/src/model/core/models/event/event_site_emp_requirement/event_site_emp_req_model.dart';
 import 'package:evantez/src/model/core/models/event/event_site_settings/event_site_settings_model.dart';
+import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 
 NewEventModel eventModelFromJson(String str) => NewEventModel.fromJson(json.decode(str));
 
@@ -22,6 +23,7 @@ class NewEventModel {
   String? customerPhone;
   String? notes;
   String? normalHours;
+  String? scheduleDateTime;
   String? overtimeHourlyCharge;
   String? status;
 
@@ -38,24 +40,25 @@ class NewEventModel {
     this.normalHours,
     this.overtimeHourlyCharge,
     this.status,
+    this.scheduleDateTime,
   });
 
   factory NewEventModel.fromJson(Map<String, dynamic> json) => NewEventModel(
-        eventSiteSettings: List<EventSiteSettingsModel>.from(
-            json["event_site_settings"].map((x) => EventSiteSettingsModel.fromJson(x))),
-        eventSiteEmployeeRequirement: List<EventSiteEmployeeReqModel>.from(
-            json["event_site_employee_requirement"].map((x) => EventSiteEmployeeReqModel.fromJson(x))),
-        eventTypeId: json["event_type_id"] ?? 0,
-        venueId: json["venue_id"] ?? 0,
-        code: json["code"],
-        customerName: json["customer_name"],
-        customerAddress: json["customer_address"],
-        customerPhone: json["customer_phone"],
-        notes: json["notes"],
-        normalHours: json["normal_hours"],
-        overtimeHourlyCharge: json["overtime_hourly_charge"],
-        status: json["status"],
-      );
+      eventSiteSettings: List<EventSiteSettingsModel>.from(
+          json["event_site_settings"].map((x) => EventSiteSettingsModel.fromJson(x))),
+      eventSiteEmployeeRequirement: List<EventSiteEmployeeReqModel>.from(
+          json["event_site_employee_requirement"].map((x) => EventSiteEmployeeRequirement.fromJson(x))),
+      eventTypeId: json["event_type_id"] ?? 0,
+      venueId: json["venue_id"] ?? 0,
+      code: json["code"],
+      customerName: json["customer_name"],
+      customerAddress: json["customer_address"],
+      customerPhone: json["customer_phone"],
+      notes: json["notes"],
+      normalHours: json["normal_hours"],
+      overtimeHourlyCharge: json["overtime_hourly_charge"],
+      status: json["status"],
+      scheduleDateTime: json['scheduled_datetime']);
 
   Map<String, dynamic> toJson() => {
         "event_site_settings": List<dynamic>.from(eventSiteSettings!.map((x) => x.toJson())),
@@ -71,5 +74,6 @@ class NewEventModel {
         "normal_hours": normalHours,
         "overtime_hourly_charge": overtimeHourlyCharge,
         "status": status,
+        "scheduled_datetime": scheduleDateTime,
       };
 }

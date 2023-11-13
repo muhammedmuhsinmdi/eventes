@@ -1,7 +1,9 @@
+import 'dart:convert';
+
 class EventSite {
   int? eventTypeId;
   int? venueId;
-  String? scheduledDatetime;
+  DateTime? scheduledDatetime;
   String? customerName;
   String? customerPhone;
   String? customerAddress;
@@ -13,25 +15,26 @@ class EventSite {
   String? code;
   String? status;
 
-  EventSite(
-      {this.eventTypeId,
-      this.venueId,
-      this.scheduledDatetime,
-      this.customerName,
-      this.customerPhone,
-      this.customerAddress,
-      this.notes,
-      this.normalHours,
-      this.overtimeHourlyCharge,
-      this.eventSiteSettings,
-      this.eventSiteEmployeeRequirement,
-      this.code,
-      this.status});
+  EventSite({
+    this.eventTypeId,
+    this.venueId,
+    this.scheduledDatetime,
+    this.customerName,
+    this.customerPhone,
+    this.customerAddress,
+    this.notes,
+    this.normalHours,
+    this.overtimeHourlyCharge,
+    this.eventSiteSettings,
+    this.eventSiteEmployeeRequirement,
+    this.code,
+    this.status,
+  });
 
   EventSite.fromJson(Map<String, dynamic> json) {
     eventTypeId = json['event_type_id'];
     venueId = json['venue_id'];
-    scheduledDatetime = json['scheduled_datetime'];
+    scheduledDatetime = DateTime.parse(json['scheduled_datetime']);
     customerName = json['customer_name'];
     customerPhone = json['customer_phone'];
     customerAddress = json['customer_address'];
@@ -41,59 +44,68 @@ class EventSite {
     if (json['event_site_settings'] != null) {
       eventSiteSettings = <EventSiteSettings>[];
       json['event_site_settings'].forEach((v) {
-        eventSiteSettings!.add(new EventSiteSettings.fromJson(v));
+        eventSiteSettings!.add(EventSiteSettings.fromJson(v));
       });
     }
     if (json['event_site_employee_requirement'] != null) {
       eventSiteEmployeeRequirement = <EventSiteEmployeeRequirement>[];
       json['event_site_employee_requirement'].forEach((v) {
-        eventSiteEmployeeRequirement!
-            .add(new EventSiteEmployeeRequirement.fromJson(v));
+        eventSiteEmployeeRequirement!.add(EventSiteEmployeeRequirement.fromJson(v));
       });
     }
     code = json['code'];
     status = json['status'];
   }
 
-   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['event_type_id'] = this.eventTypeId;
-    data['venue_id'] = this.venueId;
-    data['scheduled_datetime'] = this.scheduledDatetime;
-    data['customer_name'] = this.customerName;
-    data['customer_phone'] = this.customerPhone;
-    data['customer_address'] = this.customerAddress;
-    data['notes'] = this.notes;
-    data['normal_hours'] = this.normalHours;
-    data['overtime_hourly_charge'] = this.overtimeHourlyCharge;
-    if (this.eventSiteSettings != null) {
-      data['event_site_settings'] =
-          this.eventSiteSettings!.map((v) => v.toJson()).toList();
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['event_type_id'] = eventTypeId;
+    data['venue_id'] = venueId;
+    data['scheduled_datetime'] = scheduledDatetime!.toIso8601String();
+    data['customer_name'] = customerName;
+    data['customer_phone'] = customerPhone;
+    data['customer_address'] = customerAddress;
+    data['notes'] = notes;
+    data['normal_hours'] = normalHours;
+    data['overtime_hourly_charge'] = overtimeHourlyCharge;
+    if (eventSiteSettings != null) {
+      data['event_site_settings'] = eventSiteSettings!.map((v) => v.toJson()).toList();
     }
-    if (this.eventSiteEmployeeRequirement != null) {
-      data['event_site_employee_requirement'] =
-          this.eventSiteEmployeeRequirement!.map((v) => v.toJson()).toList();
+    if (eventSiteEmployeeRequirement != null) {
+      data['event_site_employee_requirement'] = eventSiteEmployeeRequirement!.map((v) => v.toJson()).toList();
     }
-    data['code'] = this.code;
-    data['status'] = this.status;
+    data['code'] = code;
+    data['status'] = status;
     return data;
   }
 }
 
+EventSiteSettings eventSiteSettingsFromJson(String str) => EventSiteSettings.fromJson(json.decode(str));
+
+String eventSiteSettingsToJson(EventSiteSettings data) => json.encode(data.toJson());
+
 class EventSiteSettings {
-  int? service;
+  int id;
+  int eventSite;
+  int service;
 
-  EventSiteSettings({this.service});
+  EventSiteSettings({
+    required this.id,
+    required this.eventSite,
+    required this.service,
+  });
 
-  EventSiteSettings.fromJson(Map<String, dynamic> json) {
-    service = json['service'];
-  }
+  factory EventSiteSettings.fromJson(Map<String, dynamic> json) => EventSiteSettings(
+        id: json["id"],
+        eventSite: json["event_site"],
+        service: json["service"],
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['service'] = this.service;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "event_site": eventSite,
+        "service": service,
+      };
 }
 
 class EventSiteEmployeeRequirement {
@@ -101,8 +113,7 @@ class EventSiteEmployeeRequirement {
   String? charge;
   int? employeeType;
 
-  EventSiteEmployeeRequirement(
-      {this.requirementCount, this.charge, this.employeeType});
+  EventSiteEmployeeRequirement({this.requirementCount, this.charge, this.employeeType});
 
   EventSiteEmployeeRequirement.fromJson(Map<String, dynamic> json) {
     requirementCount = json['requirement_count'];
@@ -111,10 +122,10 @@ class EventSiteEmployeeRequirement {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['requirement_count'] = this.requirementCount;
-    data['charge'] = this.charge;
-    data['employee_type'] = this.employeeType;
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['requirement_count'] = requirementCount;
+    data['charge'] = charge;
+    data['employee_type'] = employeeType;
     return data;
   }
 }

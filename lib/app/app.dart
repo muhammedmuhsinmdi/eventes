@@ -3,12 +3,12 @@ import 'package:evantez/app/router/router_constant.dart';
 import 'package:evantez/src/controller/events/add_event_controller.dart';
 import 'package:evantez/src/controller/events/events_controller.dart';
 import 'package:evantez/src/controller/catering/food_items_repository.dart';
+import 'package:evantez/src/controller/events/new_event_venue_controller.dart';
 import 'package:evantez/src/controller/resources/employee/add_employee_controller.dart';
 import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
 import 'package:evantez/src/controller/resources/rentalitem_controller.dart';
 import 'package:evantez/src/controller/resources/settingswages_controller.dart';
 import 'package:evantez/src/controller/auth/auth_controller.dart';
-import 'package:evantez/src/controller/transaction/new_event/new_event_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -34,6 +34,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => RentalItemsController()),
         ChangeNotifierProvider(create: (_) => FoodItemsController()),
         ChangeNotifierProvider(create: (_) => AddEventController()),
+        ChangeNotifierProvider(create: (_) => EventVenueController()),
       ],
       child: MaterialApp(
         scaffoldMessengerKey: rootScaffoldMessengerKey,

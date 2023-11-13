@@ -2,7 +2,11 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:evantez/app/router/router_constant.dart';
+import 'package:evantez/src/controller/auth/auth_controller.dart';
+import 'package:evantez/src/controller/events/add_event_controller.dart';
+import 'package:evantez/src/controller/events/add_event_controller.dart';
 import 'package:evantez/src/controller/events/events_controller.dart';
+import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
 import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//widgets/custom_back_btn.dart';
@@ -18,6 +22,7 @@ import 'package:evantez/src/view/view/admin/dashboard/event_detail_view/widgets/
 import 'package:evantez/src/view/view/admin/dashboard/event_detail_view/widgets/event_settlement_slot.dart';
 import 'package:evantez/src/view/view/admin/dashboard/event_detail_view/widgets/urgent_emp_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/app_images.dart';
@@ -477,7 +482,10 @@ class _EventDetailViewState extends State<EventDetailView> {
   }
 
   AppBar appBar(BuildContext context, Size kSize) {
+    final employeeController = context.watch<EmployeesController>();
     final controller = context.watch<EventController>();
+    final auth = context.watch<AuthController>();
+    final addEventController = context.watch<AddEventController>();
     return AppBar(
       elevation: 0,
       leading: const CustomBackButton(),
@@ -488,15 +496,23 @@ class _EventDetailViewState extends State<EventDetailView> {
         style: AppTypography.poppinsSemiBold.copyWith(),
       ),
       actions: [
-        // IconButton(
-        //     onPressed: () {},
-        //     icon: SvgPicture.asset(
-        //       AppImages.edit,
-        //       colorFilter: const ColorFilter.mode(
-        //         AppColors.primaryColor,
-        //         BlendMode.srcIn,
-        //       ),
-        //     ))
+        IconButton(
+            onPressed: () async {
+              await employeeController.employeeTypesData(token: auth.accesToken ?? '');
+              addEventController.employeeTypes = employeeController.employeeTypes;
+              await addEventController.getEventTypes(auth.accesToken!);
+              await addEventController.getEventDetail(auth.accesToken!, widget.eventModel.id!);
+              if (context.mounted) {
+                Navigator.pushNamed(context, RouterConstants.newEventRoute);
+              }
+            },
+            icon: SvgPicture.asset(
+              AppImages.edit,
+              colorFilter: const ColorFilter.mode(
+                AppColors.primaryColor,
+                BlendMode.srcIn,
+              ),
+            ))
       ],
     );
   }

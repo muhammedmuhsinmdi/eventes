@@ -31,7 +31,8 @@ class RouterConstants {
   static const String addFoodItemRoute = '/addFoodItemRoute';
   static const String foodQuotesRoute = '/foodQuotesRoute';
   static const String newFoodQuotesRoute = '/newFoodQuotesRoutes';
-
+  static const String eventVenueListingRoute = '/eventVenuelistingRoute';
+  static const String newEventVenueRoute = '/newEventVenue';
   // Success Route
   static const String boysSettleRoute = '/boySettleRoute';
   static const String boyExitRecordRoute = '/boyExitRecordRoute';

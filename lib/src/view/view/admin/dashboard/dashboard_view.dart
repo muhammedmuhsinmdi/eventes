@@ -1,13 +1,9 @@
-import 'dart:developer';
-
 import 'package:evantez/src/controller/events/add_event_controller.dart';
-import 'package:evantez/src/controller/events/events_controller.dart';
-import 'package:evantez/src/model/core/extensions/validation_extension.dart';
 import 'package:evantez/src/controller/auth/auth_controller.dart';
+import 'package:evantez/src/controller/events/new_event_venue_controller.dart';
 import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
 import 'package:evantez/src/controller/resources/rentalitem_controller.dart';
 import 'package:evantez/src/controller/resources/settingswages_controller.dart';
-import 'package:evantez/src/serializer/models/common/paged_input_model.dart';
 import 'package:evantez/src/serializer/models/employee/employee_filter_model.dart';
 import 'package:evantez/src/view/view/admin/dashboard/widgets/bottom_nav_bar.dart';
 import 'package:evantez/src/view/view/admin/dashboard/events_view/events_view.dart';
@@ -135,8 +131,7 @@ class _DashBoardViewState extends State<DashBoardView> {
                                             onTap: () async {
                                               if (e.routeUrl != null && e.routeUrl!.isNotEmpty) {
                                                 _key.currentState!.closeDrawer();
-                                                Navigator.pushNamed(context, e.routeUrl!, arguments: e)
-                                                    .then((value) {});
+
                                                 if (e.menuName == "Employees") {
                                                   controller.filterMode = EmployeeFilterInputModel()
                                                     ..limit = 100
@@ -160,15 +155,31 @@ class _DashBoardViewState extends State<DashBoardView> {
                                                     final addEventController =
                                                         Provider.of<AddEventController>(context,
                                                             listen: false);
-                                                    addEventController.clearData();
-                                                    addEventController.initFn();
+                                                    await addEventController.clearData();
+                                                    await addEventController.initFn();
+                                                    await addEventController
+                                                        .getEventVenues(auth.accesToken ?? "");
                                                     await controller.employeeTypesData(
                                                         token: auth.accesToken ?? '');
-                                                    addEventController.getEventTypes(auth.accesToken!);
                                                     addEventController.employeeTypes =
-                                                        controller.employeeTypesList;
+                                                        controller.employeeTypes;
+                                                    await addEventController.getEventTypes(auth.accesToken!);
                                                   }
                                                 }
+                                                if (e.menuName == "Event Venues") {
+                                                  if (context.mounted) {
+                                                    final eventVenuController =
+                                                        Provider.of<EventVenueController>(context,
+                                                            listen: false);
+                                                    eventVenuController.intiLoading();
+                                                    await eventVenuController.getEventVenueList(
+                                                        token: auth.accesToken!);
+                                                  }
+                                                }
+                                              }
+                                              if (context.mounted) {
+                                                Navigator.pushNamed(context, e.routeUrl!, arguments: e)
+                                                    .then((value) {});
                                               }
                                             },
                                             child: Padding(

@@ -21,7 +21,7 @@ import '../../../../../core/widgets/custom_textfield.dart';
 import '../employee_list_view/widgets/emp_history_filter.dart';
 
 class EmployeeDetailView extends StatefulWidget {
-  EmployeeDetailView({super.key, required this.id});
+  const EmployeeDetailView({super.key, required this.id});
   final int id;
   @override
   State<EmployeeDetailView> createState() => _EmployeeDetailViewState();
@@ -32,13 +32,10 @@ class _EmployeeDetailViewState extends State<EmployeeDetailView> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final EmployeesController controller =
-          context.read<EmployeesController>();
+      final EmployeesController controller = context.read<EmployeesController>();
       final AuthController authController = context.read<AuthController>();
-      controller.employeeDetails(
-          token: authController.accesToken ?? "", id: widget.id);
-      controller.employeeRatingHistory(
-          token: authController.accesToken ?? "", category: '');
+      controller.employeeDetails(token: authController.accesToken ?? "", id: widget.id);
+      controller.employeeRatingHistory(token: authController.accesToken ?? "", category: '');
     });
     super.initState();
   }
@@ -52,8 +49,8 @@ class _EmployeeDetailViewState extends State<EmployeeDetailView> {
         height: kSize.height,
         width: kSize.width,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(AppConstants.baseBorderRadius,
-              AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, 0),
+          padding: const EdgeInsets.fromLTRB(
+              AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, AppConstants.baseBorderRadius, 0),
           child: Column(
             children: [
               empProPicDetail(kSize: kSize, context: context),
@@ -76,9 +73,7 @@ class _EmployeeDetailViewState extends State<EmployeeDetailView> {
               ValueListenableBuilder<int>(
                   valueListenable: selectedTab,
                   builder: (context, value, child) {
-                    return value == 0
-                        ? basicInfo(context, kSize)
-                        : historySection(context, kSize);
+                    return value == 0 ? basicInfo(context, kSize) : historySection(context, kSize);
                   })
             ],
           ),
@@ -126,10 +121,8 @@ class _EmployeeDetailViewState extends State<EmployeeDetailView> {
                 ),
                 IconButton(
                     onPressed: () {
-                      Navigator.pushNamed(
-                          context, RouterConstants.addEmployeeViewRoute);
-                      addEmployeeController.employeeInitStateLoading(
-                          data: controller.employeeData);
+                      Navigator.pushNamed(context, RouterConstants.addEmployeeViewRoute);
+                      addEmployeeController.employeeInitStateLoading(data: controller.employeeData);
                       //
                       // List<String> positions = [
                       //   "Supervisor",
@@ -220,8 +213,7 @@ class _EmployeeDetailViewState extends State<EmployeeDetailView> {
               SizedBox(
                 height: kSize.height * 0.016,
               ),
-              proInfo(AppStrings.bloodGroup,
-                  '${controller.employeeData?.bloodGroup}'),
+              proInfo(AppStrings.bloodGroup, '${controller.employeeData?.bloodGroup}'),
               SizedBox(
                 height: kSize.height * 0.024,
               ),
@@ -229,8 +221,7 @@ class _EmployeeDetailViewState extends State<EmployeeDetailView> {
               SizedBox(
                 height: kSize.height * 0.024,
               ),
-              proInfo(AppStrings.homeContactText,
-                  '${controller.employeeData?.homeContact}'),
+              proInfo(AppStrings.homeContactText, '${controller.employeeData?.homeContact}'),
               SizedBox(
                 height: kSize.height * 0.032,
               ),
@@ -454,12 +445,10 @@ class _EmployeeDetailViewState extends State<EmployeeDetailView> {
             text: '',
             hintText: AppStrings.searchText,
             suffixIcon: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
               child: SvgPicture.asset(
                 AppImages.search,
-                colorFilter: const ColorFilter.mode(
-                    AppColors.primaryColor, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
               ),
             ),
           ),
@@ -472,8 +461,7 @@ class _EmployeeDetailViewState extends State<EmployeeDetailView> {
           child: TextButton(
               style: TextButton.styleFrom(
                 backgroundColor: AppColors.transparent,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
               ),
               onPressed: () {
                 // history filter
@@ -481,8 +469,7 @@ class _EmployeeDetailViewState extends State<EmployeeDetailView> {
               },
               child: SvgPicture.asset(
                 AppImages.filter,
-                colorFilter: const ColorFilter.mode(
-                    AppColors.primaryColor, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
               )),
         )
       ],

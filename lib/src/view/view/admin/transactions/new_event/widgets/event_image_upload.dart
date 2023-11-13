@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:evantez/src/controller/events/add_event_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../core/constants/app_images.dart';
 import '../../../../../core/constants/constants.dart';
@@ -24,6 +27,7 @@ class _EventImageUploadState extends State<EventImageUpload> {
 
   @override
   Widget build(BuildContext context) {
+    final addEventController = context.watch<AddEventController>();
     final kSize = MediaQuery.of(context).size;
     return InkWell(
       highlightColor: AppColors.transparent,
@@ -41,64 +45,69 @@ class _EventImageUploadState extends State<EventImageUpload> {
             )),
         height: kSize.height * 0.2,
         width: kSize.width,
-        child: pickedImage != null
-            ? Stack(
-                children: [
-                  SizedBox(
-                    height: kSize.height * 0.2,
-                    width: kSize.width,
-                    child: Image.file(
-                      pickedImage!,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: TextButton(
-                      style: IconButton.styleFrom(
-                          padding: const EdgeInsets.all(6.0),
-                          backgroundColor: AppColors.accentDark,
-                          shape: const CircleBorder()),
-                      onPressed: () {
-                        selectMode(context: context);
-                      },
-                      child: Icon(
-                        Icons.edit,
-                        color: AppColors.greyColor,
-                        size: kSize.height * 0.022,
-                      ),
-                    ),
-                  )
-                ],
+        child: addEventController.eventImagePath.isNotEmpty
+            ? CachedNetworkImage(
+                fit: BoxFit.cover,
+                imageUrl: addEventController.eventImagePath,
+                errorWidget: (context, url, error) {
+                  return const SizedBox();
+                },
               )
-            : Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    AppImages.uploadImg,
-                    height: kSize.height * 0.085,
-                    width: kSize.height * 0.085,
-                    colorFilter: const ColorFilter.mode(
-                        AppColors.darkGreyColor, BlendMode.srcIn),
+            : pickedImage != null
+                ? Stack(
+                    children: [
+                      SizedBox(
+                        height: kSize.height * 0.2,
+                        width: kSize.width,
+                        child: Image.file(
+                          pickedImage!,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: TextButton(
+                          style: IconButton.styleFrom(
+                              padding: const EdgeInsets.all(6.0),
+                              backgroundColor: AppColors.accentDark,
+                              shape: const CircleBorder()),
+                          onPressed: () {
+                            selectMode(context: context);
+                          },
+                          child: Icon(
+                            Icons.edit,
+                            color: AppColors.greyColor,
+                            size: kSize.height * 0.022,
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        AppImages.uploadImg,
+                        height: kSize.height * 0.085,
+                        width: kSize.height * 0.085,
+                        colorFilter: const ColorFilter.mode(AppColors.darkGreyColor, BlendMode.srcIn),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: kSize.height * 0.012),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(AppConstants.baseBorderRadius),
+                          color: AppColors.blackColor.withOpacity(0.6),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: kSize.width * 0.032, vertical: kSize.height * 0.003),
+                        child: Text(
+                          "Upload Image",
+                          style: AppTypography.poppinsMedium.copyWith(fontSize: 14),
+                        ),
+                      ),
+                    ],
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: kSize.height * 0.012),
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.circular(AppConstants.baseBorderRadius),
-                      color: AppColors.blackColor.withOpacity(0.6),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: kSize.width * 0.032,
-                        vertical: kSize.height * 0.003),
-                    child: Text(
-                      "Upload Image",
-                      style: AppTypography.poppinsMedium.copyWith(fontSize: 14),
-                    ),
-                  ),
-                ],
-              ),
       ),
     );
   }
@@ -116,14 +125,12 @@ class _EventImageUploadState extends State<EventImageUpload> {
         builder: (context) {
           return Padding(
             padding: const EdgeInsets.symmetric(
-                vertical: AppConstants.largePadding,
-                horizontal: AppConstants.largePadding),
+                vertical: AppConstants.largePadding, horizontal: AppConstants.largePadding),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(
-                      bottom: AppConstants.baseBorderRadius),
+                  padding: const EdgeInsets.only(bottom: AppConstants.baseBorderRadius),
                   child: Text(
                     "Select Image",
                     style: AppTypography.poppinsRegular.copyWith(fontSize: 18),
@@ -136,8 +143,7 @@ class _EventImageUploadState extends State<EventImageUpload> {
                       highlightColor: AppColors.transparent,
                       splashColor: AppColors.transparent,
                       onTap: () {
-                        pickImage(
-                            source: ImageSource.gallery, context: context);
+                        pickImage(source: ImageSource.gallery, context: context);
                       },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -147,12 +153,10 @@ class _EventImageUploadState extends State<EventImageUpload> {
                             size: kSize.height * 0.032,
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(
-                                top: AppConstants.marginSpace),
+                            padding: const EdgeInsets.only(top: AppConstants.marginSpace),
                             child: Text(
                               "Gallery",
-                              style: AppTypography.poppinsRegular
-                                  .copyWith(fontSize: 14),
+                              style: AppTypography.poppinsRegular.copyWith(fontSize: 14),
                             ),
                           )
                         ],
@@ -175,12 +179,10 @@ class _EventImageUploadState extends State<EventImageUpload> {
                             size: kSize.height * 0.032,
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(
-                                top: AppConstants.marginSpace),
+                            padding: const EdgeInsets.only(top: AppConstants.marginSpace),
                             child: Text(
                               "Camera",
-                              style: AppTypography.poppinsRegular
-                                  .copyWith(fontSize: 14),
+                              style: AppTypography.poppinsRegular.copyWith(fontSize: 14),
                             ),
                           )
                         ],
@@ -200,8 +202,7 @@ class _EventImageUploadState extends State<EventImageUpload> {
   }) async {
     final imagePicker = ImagePicker();
     try {
-      XFile? imagePicked =
-          await imagePicker.pickImage(source: source, imageQuality: 70);
+      XFile? imagePicked = await imagePicker.pickImage(source: source, imageQuality: 70);
       if (imagePicked != null) {
         pickedImage = File(imagePicked.path);
         setState(() {});
@@ -211,8 +212,8 @@ class _EventImageUploadState extends State<EventImageUpload> {
         }
         if (pickedImage != null) {
           widget.onPicked(pickedImage!);
+          return pickedImage!;
         }
-        return pickedImage!;
       }
     } catch (_) {}
     return pickedImage!;

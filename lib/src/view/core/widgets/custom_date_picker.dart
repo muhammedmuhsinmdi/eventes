@@ -15,6 +15,8 @@ class CustomDatePicker extends StatefulWidget {
   final Color? fillColor;
   final String? hintText;
   final Function(String) onChanged;
+  final Function(TimeOfDay)? getTime;
+  final Function(DateTime)? getDate;
   final TextEditingController? controller;
   final Function()? onTap;
   final Function(String?)? onSaved;
@@ -34,6 +36,8 @@ class CustomDatePicker extends StatefulWidget {
     this.type,
     this.fillColor,
     this.readOnly,
+    this.getTime,
+    this.getDate,
   });
 
   @override
@@ -42,6 +46,8 @@ class CustomDatePicker extends StatefulWidget {
 
 class _CustomDatePickerState extends State<CustomDatePicker> {
   final ValueNotifier<String> valueCheck = ValueNotifier<String>('');
+
+  DateTime timeDate = DateTime.now();
 
   @override
   void initState() {
@@ -101,6 +107,9 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                                 firstDate: DateTime(1960),
                                 lastDate: DateTime(2050));
                             if (date != null) {
+                              if (widget.getDate != null) {
+                                widget.getDate!(date);
+                              }
                               if (widget.controller != null) {
                                 widget.controller!.text = DateFormat("dd MMM, yyyy").format(date);
                                 valueCheck.value = widget.controller!.text;
@@ -109,26 +118,29 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                             }
                           } else if (widget.type == "Time") {
                             String st = '';
-                            String et = '';
+                            // String et = '';
                             TimeOfDay? startTime;
-                            TimeOfDay? endTime;
+                            // TimeOfDay? endTime;
                             if (context.mounted) {
                               startTime = await showTimePicker(
                                   helpText: "Start Time", context: context, initialTime: TimeOfDay.now());
 
-                              if (context.mounted) {
+                              /* if (context.mounted) {
                                 endTime = await showTimePicker(
                                     helpText: "End Time", context: context, initialTime: TimeOfDay.now());
-                              }
+                              } */
 
                               if (context.mounted) {
                                 st = startTime != null ? startTime.format(context) : '--:--';
-                                et = endTime != null ? endTime.format(context) : '--:--';
+                                // widget.onChanged("${startTime}");
+                                if (startTime != null && widget.getTime != null) {
+                                  widget.getTime!(startTime);
+                                }
+                                // et = endTime != null ? endTime.format(context) : '--:--';
                               }
                               if (widget.controller != null) {
-                                widget.controller!.text = "$st - $et";
+                                widget.controller!.text = st;
                                 valueCheck.value = widget.controller!.text;
-                                widget.onChanged(widget.controller!.text);
                               }
                             }
                           }

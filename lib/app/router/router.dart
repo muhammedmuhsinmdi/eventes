@@ -4,6 +4,8 @@ import 'package:evantez/src/model/core/models/menu/menu_model.dart';
 import 'package:evantez/src/model/core/models/signin/pm_signin.dart';
 import 'package:evantez/src/view/view/admin/catering/food_items/widgets/food_item_filter.dart';
 import 'package:evantez/src/view/view/admin/resouces/employee/add_employee_view/add_employee_view.dart';
+import 'package:evantez/src/view/view/admin/resouces/event_venues/event_venue_listing.dart';
+import 'package:evantez/src/view/view/admin/resouces/event_venues/new_event_venue.dart';
 import 'package:evantez/src/view/view/admin/transactions/new_event/add_event_view.dart';
 import 'package:evantez/src/view/view/auth/login/login_view.dart';
 import 'package:evantez/src/view/view/auth/otp_view/otp_view.dart';
@@ -107,6 +109,15 @@ class AppRouter {
             menu: ags,
           ),
         );
+      case RouterConstants.eventVenueListingRoute:
+        return MaterialPageRoute<EventVenueListingView>(
+          builder: (_) => const EventVenueListingView(),
+        );
+      case RouterConstants.newEventVenueRoute:
+        return MaterialPageRoute<NewEventVenue>(
+          builder: (_) => const NewEventVenue(),
+        );
+
       case RouterConstants.settingsWageRoute:
         final args = settings.arguments as MenuData;
         return MaterialPageRoute<SettingsWageView>(

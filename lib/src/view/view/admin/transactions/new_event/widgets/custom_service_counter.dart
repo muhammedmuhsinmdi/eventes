@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:evantez/src/model/core/models/event/event_site_emp_requirement/event_site_emp_req_model.dart';
 import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
@@ -17,7 +18,7 @@ class CustomServiceCounter extends StatefulWidget {
   final bool? required;
   final Color? labelTextColor;
   final List<EmployeesTypesList> items;
-  final String? intialValue;
+  final EventSiteEmployeeReqModel? employeeRequirement;
   final bool? isEmployeeAssign;
   final Function()? onSelected;
   final Function(int, num)? countCallBack;
@@ -26,13 +27,13 @@ class CustomServiceCounter extends StatefulWidget {
       {super.key,
       required this.label,
       required this.items,
-      this.intialValue,
       this.isEmployeeAssign,
       this.onSelectedEmp,
       this.required,
       this.labelTextColor,
       this.onSelected,
-      this.countCallBack});
+      this.countCallBack,
+      this.employeeRequirement});
 
   @override
   State<CustomServiceCounter> createState() => _CustomServiceCounterState();
@@ -50,6 +51,23 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
   final ValueNotifier<int> count = ValueNotifier<int>(1);
 
   final ValueNotifier<List<String>> selectedEmpList = ValueNotifier<List<String>>([]);
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (widget.employeeRequirement!.employeeType != 0) {
+        _totalController.text = widget.employeeRequirement!.charge!;
+        wageController.text =
+            widget.items.firstWhere((e) => e.id == widget.employeeRequirement!.employeeType).amount!;
+        employeeTypeController.text =
+            widget.items.firstWhere((e) => e.id == widget.employeeRequirement!.employeeType).name!;
+      }
+      log(employeeTypeController.text);
+      log(wageController.text);
+      log(_totalController.text);
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -203,7 +221,7 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
                               ),
                               IconButton(
                                   onPressed: () {
-                                    if (wageController.text.isNotEmpty) {
+                                    if (_totalController.text.length <= 3 && wageController.text.isNotEmpty) {
                                       count.value++;
                                       double wg = double.parse(wageController.text);
                                       _totalController.text = "${(wg * count.value).toInt()}";
