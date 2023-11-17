@@ -63,6 +63,17 @@ List<MenuData> menus = [
     menuType: MenuType.resources,
     routeUrl: RouterConstants.eventVenueListingRoute,
   ),
+   MenuData(
+    menuName: "Event Venues",
+    menuOrder: 5,
+    menuType: MenuType.resources,
+    routeUrl: RouterConstants.eventVenueListingRoute,
+  ), MenuData(
+    menuName: "Event Types",
+    menuOrder: 5,
+    menuType: MenuType.resources,
+    routeUrl: RouterConstants.eventTypeListingRoute,
+  ),
   // Reports
   MenuData(
       menuName: "Event Profit",

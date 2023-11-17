@@ -1,5 +1,6 @@
 import 'package:evantez/src/controller/events/add_event_controller.dart';
 import 'package:evantez/src/controller/auth/auth_controller.dart';
+import 'package:evantez/src/controller/events/event_type_controller.dart';
 import 'package:evantez/src/controller/events/new_event_venue_controller.dart';
 import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
 import 'package:evantez/src/controller/resources/rentalitem_controller.dart';
@@ -175,6 +176,17 @@ class _DashBoardViewState extends State<DashBoardView> {
                                                     await eventVenuController.getEventVenueList(
                                                         token: auth.accesToken!);
                                                   }
+                                                }
+                                                if(e.menuName == "Event Types"){
+                                                  if(context.mounted){
+                                                      final eventTypeController =
+                                                        Provider.of<EventTypeController>(context,
+                                                            listen: false);
+                                                    eventTypeController.intiLoading();
+                                                    await eventTypeController.getEventTypeList(
+                                                        token: auth.accesToken!);
+                                                  }
+                                                  
                                                 }
                                               }
                                               if (context.mounted) {

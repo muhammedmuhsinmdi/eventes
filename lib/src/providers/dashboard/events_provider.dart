@@ -55,6 +55,19 @@ class EventProvider extends EventApi {
     }
   }
 
+  Future updateEventType({required String token, required EventTypeModel eventType}) async {
+    Response response =
+        await patch('events/event-type/${eventType.id}/', headers: apiHeaders(token), data: eventType.toJson());
+    switch (response.statusCode) {
+      case 200:
+        return response.data;
+      case 201:
+        return response.data;
+      default:
+        throw Exception('Error');
+    }
+  }
+
 //-=-=-=-=-=-=--== Event Venue -=-=-=-=-==-===-=
   Future<dynamic> addEventVenue({
     required String token,
@@ -175,6 +188,30 @@ class EventProvider extends EventApi {
       Response response = await delete("events/event-venue/$id/", headers: apiHeaders(token));
       log("${response.statusCode}");
       return response.statusCode;
+    } catch (e) {
+      rethrow;
+    }
+  }
+  Future deleteEventType(String token, int id) async {
+     try {
+      Response response = await delete("events/event-type/$id/", headers: apiHeaders(token));
+      log("${response.statusCode}");
+      return response.statusCode;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<EventTypeModel> getEventTypeById(String token, int id) async {
+    try {
+      Response response = await get('events/event-type/$id/', headers: apiHeaders(token));
+      switch (response.statusCode) {
+        case 200:
+          return EventTypeModel.fromJson(response.data);
+
+        default:
+          throw Exception('Error');
+      }
     } catch (e) {
       rethrow;
     }

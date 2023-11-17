@@ -33,6 +33,8 @@ class RouterConstants {
   static const String newFoodQuotesRoute = '/newFoodQuotesRoutes';
   static const String eventVenueListingRoute = '/eventVenuelistingRoute';
   static const String newEventVenueRoute = '/newEventVenue';
+  static const String eventTypeListingRoute = '/eventTypelistingRoute';
+  static const String newEventTypeRoute = '/newEventType';
   // Success Route
   static const String boysSettleRoute = '/boySettleRoute';
   static const String boyExitRecordRoute = '/boyExitRecordRoute';
