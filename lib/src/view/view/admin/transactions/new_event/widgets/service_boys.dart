@@ -24,9 +24,9 @@ class ServiceBoys extends StatefulWidget {
 }
 
 class _ServiceBoysState extends State<ServiceBoys> {
-  List<EventSiteEmployeeReqModel> empReqlist = [];
+  List<InputEventSiteEmployeeReqModel> empReqlist = [];
 
-  EventSiteEmployeeReqModel? employeeReqModel = EventSiteEmployeeReqModel(
+  InputEventSiteEmployeeReqModel? employeeReqModel = InputEventSiteEmployeeReqModel(
     charge: '',
     requirementCount: 0,
   );
@@ -87,11 +87,12 @@ class _ServiceBoysState extends State<ServiceBoys> {
                     onTap: () {
                       if (serviceBoysCount.value < serviceItems.length) {
                         serviceBoysCount.value++;
-                        addEventController.event.eventSiteEmployeeRequirement!.add(EventSiteEmployeeReqModel(
+                        addEventController.event.eventSiteEmployeeRequirement!
+                            .add(InputEventSiteEmployeeReqModel(
                           charge: '',
                           employeeType: 0,
                           requirementCount: 0,
-                          eventSite: 0,
+                          eventSite: addEventController.eventId != 0 ? addEventController.eventId : 0,
                           id: 0,
                         ));
                         log(" list count >>> ${addEventController.event.eventSiteEmployeeRequirement!.length}");

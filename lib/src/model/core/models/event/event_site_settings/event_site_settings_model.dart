@@ -1,34 +1,30 @@
 import 'dart:convert';
 
-EventSiteSettingsModel eventSiteSettingsModelFromJson(String str) =>
-    EventSiteSettingsModel.fromJson(json.decode(str));
+InputEventSiteSettingsModel eventSiteSettingsModelFromJson(String str) =>
+    InputEventSiteSettingsModel.fromJson(json.decode(str));
 
-String eventSiteSettingsModelToJson(EventSiteSettingsModel data) => json.encode(data.toJson());
+String eventSiteSettingsModelToJson(InputEventSiteSettingsModel data) => json.encode(data.toJson());
 
-class EventSiteSettingsModel {
+class InputEventSiteSettingsModel {
   int? id;
-  DateTime? createdAt;
-  DateTime? updatedAt;
   int? service;
   int? eventSite;
 
-  EventSiteSettingsModel({
+  InputEventSiteSettingsModel({
     this.id,
-    this.createdAt,
-    this.updatedAt,
     this.service,
     this.eventSite,
   });
 
-  factory EventSiteSettingsModel.fromJson(Map<String, dynamic> json) => EventSiteSettingsModel(
+  factory InputEventSiteSettingsModel.fromJson(Map<String, dynamic> json) => InputEventSiteSettingsModel(
         id: json["id"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
         service: json["service"],
         eventSite: json["event_site"],
       );
 
   Map<String, dynamic> toJson() => {
+        "id": id,
         "service": service,
+        "event_site": eventSite,
       };
 }

@@ -120,8 +120,8 @@ class EventProvider extends EventApi {
     try {
       var postData = json.encode(eventSite.toJson());
       log(postData);
-      Response response = await put("events/event-site/$eventId/",
-          queryParameters: {}, headers: apiHeaders(token), data: postData);
+      Response response =
+          await patch("events/event-site/$eventId/", headers: apiHeaders(token), data: postData);
       switch (response.statusCode) {
         case 200:
           return true;
@@ -155,6 +155,26 @@ class EventProvider extends EventApi {
       log("${response.statusCode}");
       log("${response.data}");
       return EventSiteModel.fromJson(response.data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future deleteEvent(String token, int id) async {
+    try {
+      Response response = await delete("events/event-site/$id/", headers: apiHeaders(token));
+      log("${response.statusCode}");
+      return response.statusCode;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future deleteEventVenue(String token, int id) async {
+    try {
+      Response response = await delete("events/event-venue/$id/", headers: apiHeaders(token));
+      log("${response.statusCode}");
+      return response.statusCode;
     } catch (e) {
       rethrow;
     }

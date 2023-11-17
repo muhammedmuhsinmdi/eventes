@@ -6,15 +6,14 @@ import 'dart:convert';
 
 import 'package:evantez/src/model/core/models/event/event_site_emp_requirement/event_site_emp_req_model.dart';
 import 'package:evantez/src/model/core/models/event/event_site_settings/event_site_settings_model.dart';
-import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 
 NewEventModel eventModelFromJson(String str) => NewEventModel.fromJson(json.decode(str));
 
 String eventModelToJson(NewEventModel data) => json.encode(data.toJson());
 
 class NewEventModel {
-  List<EventSiteSettingsModel>? eventSiteSettings;
-  List<EventSiteEmployeeReqModel>? eventSiteEmployeeRequirement;
+  List<InputEventSiteSettingsModel>? eventSiteSettings;
+  List<InputEventSiteEmployeeReqModel>? eventSiteEmployeeRequirement;
   int? eventTypeId;
   int? venueId;
   String? code;
@@ -44,10 +43,10 @@ class NewEventModel {
   });
 
   factory NewEventModel.fromJson(Map<String, dynamic> json) => NewEventModel(
-      eventSiteSettings: List<EventSiteSettingsModel>.from(
-          json["event_site_settings"].map((x) => EventSiteSettingsModel.fromJson(x))),
-      eventSiteEmployeeRequirement: List<EventSiteEmployeeReqModel>.from(
-          json["event_site_employee_requirement"].map((x) => EventSiteEmployeeRequirement.fromJson(x))),
+      eventSiteSettings: List<InputEventSiteSettingsModel>.from(
+          json["event_site_settings"].map((x) => InputEventSiteSettingsModel.fromJson(x))),
+      eventSiteEmployeeRequirement: List<InputEventSiteEmployeeReqModel>.from(
+          json["event_site_employee_requirement"].map((x) => InputEventSiteEmployeeReqModel.fromJson(x))),
       eventTypeId: json["event_type_id"] ?? 0,
       venueId: json["venue_id"] ?? 0,
       code: json["code"],
@@ -61,7 +60,8 @@ class NewEventModel {
       scheduleDateTime: json['scheduled_datetime']);
 
   Map<String, dynamic> toJson() => {
-        "event_site_settings": List<dynamic>.from(eventSiteSettings!.map((x) => x.toJson())),
+        "event_site_settings":
+            eventSiteSettings != null ? List<dynamic>.from(eventSiteSettings!.map((x) => x.toJson())) : [],
         "event_site_employee_requirement":
             List<dynamic>.from(eventSiteEmployeeRequirement!.map((x) => x.toJson())),
         "event_type_id": eventTypeId,

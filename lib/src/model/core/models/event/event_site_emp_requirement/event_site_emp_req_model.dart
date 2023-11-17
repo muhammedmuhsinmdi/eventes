@@ -4,19 +4,19 @@
 
 import 'dart:convert';
 
-EventSiteEmployeeReqModel eventSiteEmployeeRequreFromJson(String str) =>
-    EventSiteEmployeeReqModel.fromJson(json.decode(str));
+InputEventSiteEmployeeReqModel eventSiteEmployeeRequreFromJson(String str) =>
+    InputEventSiteEmployeeReqModel.fromJson(json.decode(str));
 
-String eventSiteEmployeeRequreToJson(EventSiteEmployeeReqModel data) => json.encode(data.toJson());
+String eventSiteEmployeeRequreToJson(InputEventSiteEmployeeReqModel data) => json.encode(data.toJson());
 
-class EventSiteEmployeeReqModel {
+class InputEventSiteEmployeeReqModel {
   int? requirementCount;
   int? id;
   String? charge;
   int? eventSite;
   int? employeeType;
   double get total => requirementCount! * double.parse(charge!);
-  EventSiteEmployeeReqModel({
+  InputEventSiteEmployeeReqModel({
     this.requirementCount,
     this.charge,
     this.employeeType,
@@ -24,12 +24,13 @@ class EventSiteEmployeeReqModel {
     this.id,
   });
 
-  factory EventSiteEmployeeReqModel.fromJson(Map<String, dynamic> json) => EventSiteEmployeeReqModel(
-      requirementCount: json["requirement_count"],
-      charge: json["charge"],
-      employeeType: json["employee_type"],
-      eventSite: json["event_site"],
-      id: json["id"]);
+  factory InputEventSiteEmployeeReqModel.fromJson(Map<String, dynamic> json) =>
+      InputEventSiteEmployeeReqModel(
+          requirementCount: json["requirement_count"],
+          charge: json["charge"],
+          employeeType: json["employee_type"],
+          eventSite: json["event_site"],
+          id: json["id"]);
 
   Map<String, dynamic> toJson() => {
         "requirement_count": requirementCount,

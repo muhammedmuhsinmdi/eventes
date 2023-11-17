@@ -116,7 +116,8 @@ class _EventDetailViewState extends State<EventDetailView> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             CustomDatePicker(
-                              controller: TextEditingController(text: "03 Nov, 2023"),
+                              controller:
+                                  controller.scheduledDate, //  TextEditingController(text: "03 Nov, 2023"),
                               label: "Date",
                               type: 'Date',
                               onChanged: (value) {
@@ -124,7 +125,8 @@ class _EventDetailViewState extends State<EventDetailView> {
                               },
                             ),
                             CustomDatePicker(
-                              controller: TextEditingController(text: '02:30PM-11:30 PM'),
+                              controller:
+                                  controller.scheduledTime, //TextEditingController(text: '02:30PM-11:30 PM'),
                               label: "Time",
                               type: 'Time',
                               onChanged: (value) {
@@ -215,21 +217,24 @@ class _EventDetailViewState extends State<EventDetailView> {
                           ),
                           SizedBox(height: kSize.height * 0.024),
                         },
-                        Text(
-                          AppStrings.additionalInfoText,
-                          style: AppTypography.poppinsSemiBold.copyWith(
-                            fontSize: 18,
-                            color: AppColors.secondaryColor,
+                        if (widget.eventModel.notes!.isNotEmpty) ...{
+                          Text(
+                            AppStrings.additionalInfoText,
+                            style: AppTypography.poppinsSemiBold.copyWith(
+                              fontSize: 18,
+                              color: AppColors.secondaryColor,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: kSize.height * 0.01),
-                        Text(
-                          "The conference is open to boys of all ages who are interested in event management as a career or hobby.",
-                          style: AppTypography.poppinsRegular.copyWith(
-                            fontSize: 16,
-                            color: AppColors.secondaryColor.withOpacity(0.6),
-                          ),
-                        ),
+                          SizedBox(height: kSize.height * 0.01),
+                          Text(
+                            widget.eventModel
+                                .notes!, //"The conference is open to boys of all ages who are interested in event management as a career or hobby.",
+                            style: AppTypography.poppinsRegular.copyWith(
+                              fontSize: 16,
+                              color: AppColors.secondaryColor.withOpacity(0.6),
+                            ),
+                          )
+                        },
                         SizedBox(height: kSize.height * 0.024),
                         Text(
                           AppStrings.locationText,

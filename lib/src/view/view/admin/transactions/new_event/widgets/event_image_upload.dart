@@ -196,7 +196,7 @@ class _EventImageUploadState extends State<EventImageUpload> {
         });
   }
 
-  Future<File> pickImage({
+  Future<File?> pickImage({
     required ImageSource source,
     required BuildContext context,
   }) async {
@@ -214,9 +214,13 @@ class _EventImageUploadState extends State<EventImageUpload> {
           widget.onPicked(pickedImage!);
           return pickedImage!;
         }
+      } else {
+        return null;
       }
-    } catch (_) {}
-    return pickedImage!;
+      // return pickedImage!;
+    } catch (_) {
+      return null;
+    }
   }
 
   // If you need the image as base64 , you can use function call

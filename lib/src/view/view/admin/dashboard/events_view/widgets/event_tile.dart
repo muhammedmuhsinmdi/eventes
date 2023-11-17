@@ -1,12 +1,19 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:evantez/app/app.dart';
+import 'package:evantez/src/controller/auth/auth_controller.dart';
 import 'package:evantez/src/controller/events/events_controller.dart';
+import 'package:evantez/src/model/components/snackbar_widget.dart';
 import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 import 'package:evantez/src/serializer/models/event_response.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
+import 'package:evantez/src/view/core/widgets/custom_dialogbox.dart';
 import 'package:evantez/src/view/core/widgets/time.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class EventTile extends StatefulWidget {
@@ -34,6 +41,7 @@ class _EventTileState extends State<EventTile> {
 
   @override
   Widget build(BuildContext context) {
+    final authController = context.watch<AuthController>();
     eventController = context.watch<EventController>();
     final kSize = MediaQuery.of(context).size;
     return SizedBox(
@@ -43,7 +51,7 @@ class _EventTileState extends State<EventTile> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
                 clipBehavior: Clip.antiAlias,
@@ -74,7 +82,7 @@ class _EventTileState extends State<EventTile> {
                       height: kSize.height * 0.003,
                     ),
                     Text(
-                      apiFormat.format(/* eventList[i].createdAt ?? */ DateTime.now()),
+                      apiFormat.format(widget.event.scheduledDatetime!),
                       style: AppTypography.poppinsRegular.copyWith(
                         color: AppColors.secondaryColor,
                         fontSize: 12,
@@ -83,18 +91,78 @@ class _EventTileState extends State<EventTile> {
                     SizedBox(
                       height: kSize.height * 0.003,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '09:30 AM - 05:30 PM',
-                          style: AppTypography.poppinsRegular.copyWith(
-                            color: AppColors.secondaryColor,
-                          ),
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                      Text(
+                        DateFormat("hh:mm a").format(widget.event.scheduledDatetime!),
+                        style: AppTypography.poppinsRegular.copyWith(
+                          color: AppColors.secondaryColor,
                         ),
-                        eventStatus(),
-                      ],
-                    )
+                      ),
+                      eventStatus(),
+                    ])
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: kSize.width * 0.1,
+                child: PopupMenuButton<String>(
+                  initialValue: 'delete',
+                  // Callback that sets the selected popup menu item.
+                  onSelected: (item) {
+                    if (item == 'delete') {
+                      log("delete");
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return CustomDialog(
+                                title: "Are you sure you want this Event?",
+                                onConfirmTxt: "Delete",
+                                onConfirm: () {
+                                  // confirm
+                                  if (context.mounted) {
+                                    Navigator.pop(context);
+                                  }
+                                  eventController
+                                      .deleteEvent(
+                                          token: authController.accesToken!, eventId: widget.event.id!)
+                                      .then((value) async {
+                                    if (value) {
+                                      await eventController.events(authController.accesToken!);
+                                      rootScaffoldMessengerKey.currentState!.showSnackBar(
+                                          snackBarWidget('Successfully deleted!', color: Colors.green));
+                                      await Future.delayed(const Duration(seconds: 2));
+                                    } else {
+                                      rootScaffoldMessengerKey.currentState!
+                                          .showSnackBar(snackBarWidget('Delete failed!', color: Colors.red));
+                                      await Future.delayed(const Duration(seconds: 2));
+                                    }
+                                  });
+                                });
+                          });
+                    }
+                  },
+                  clipBehavior: Clip.antiAlias,
+                  padding: EdgeInsets.symmetric(horizontal: kSize.height * 0.024),
+                  shape: RoundedRectangleBorder(
+                      side: const BorderSide(
+                        color: AppColors.accentColor,
+                      ),
+                      borderRadius: BorderRadius.circular(
+                        AppConstants.basePadding,
+                      )),
+
+                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                    PopupMenuItem<String>(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: kSize.width * 0.05,
+                      ),
+                      value: "delete",
+                      child: Text(
+                        'Delete',
+                        textAlign: TextAlign.start,
+                        style: AppTypography.poppinsMedium.copyWith(),
+                      ),
+                    ),
                   ],
                 ),
               ),

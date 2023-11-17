@@ -49,7 +49,7 @@ class AddEventView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    eventID(addEventContoller.event.code ?? '', addEventContoller, kSize),
+                    // eventID(addEventContoller.event.code ?? '', addEventContoller, kSize),
                     if (addEventContoller.eventImagePath.isNotEmpty) ...{
                       EventImageUpload(
                         onPicked: (pickedImage) {
@@ -240,7 +240,7 @@ class AddEventView extends StatelessWidget {
                                 try {
                                   // save event
                                   if (addEventContoller.eventId != 0) {
-                                    bool response =
+                                    final response =
                                         await addEventContoller.updateEvent(authController.accesToken!);
                                     if (response) {
                                       rootScaffoldMessengerKey.currentState!.showSnackBar(

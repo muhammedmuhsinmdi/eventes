@@ -22,6 +22,9 @@ class EventController extends ChangeNotifier {
     notifyListeners();
   }
 
+  TextEditingController scheduledDate = TextEditingController();
+  TextEditingController scheduledTime = TextEditingController();
+
 //=-=-=-==-=-=-=-=-=-= Events =-=-=-=-=-=-=-=-=-=-=
   List<EventSiteModel> eventList = [];
   Future<void> events(String token) async {
@@ -124,6 +127,19 @@ class EventController extends ChangeNotifier {
       return EventSite.fromJson(response);
     } catch (e) {
       return EventSite();
+    }
+  }
+
+  Future deleteEvent({required String token, required int eventId}) async {
+    try {
+      final response = await EventProvider().deleteEvent(token, eventId);
+      if (response == 204) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (_) {
+      return false;
     }
   }
 }

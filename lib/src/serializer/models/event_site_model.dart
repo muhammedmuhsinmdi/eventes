@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:evantez/src/model/core/models/event/output_model/event_emp_req_model.dart';
+
 class EventSite {
   int? eventTypeId;
   int? venueId;
@@ -87,7 +89,7 @@ String eventSiteSettingsToJson(EventSiteSettings data) => json.encode(data.toJso
 class EventSiteSettings {
   int id;
   int eventSite;
-  int service;
+  ServiceModel service;
 
   EventSiteSettings({
     required this.id,
@@ -98,7 +100,7 @@ class EventSiteSettings {
   factory EventSiteSettings.fromJson(Map<String, dynamic> json) => EventSiteSettings(
         id: json["id"],
         eventSite: json["event_site"],
-        service: json["service"],
+        service: ServiceModel.fromJson(json["service"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -108,6 +110,45 @@ class EventSiteSettings {
       };
 }
 
+// To parse this JSON data, do
+//
+//     final serviceModel = serviceModelFromJson(jsonString);
+
+ServiceModel serviceModelFromJson(String str) => ServiceModel.fromJson(json.decode(str));
+
+String serviceModelToJson(ServiceModel data) => json.encode(data.toJson());
+
+class ServiceModel {
+  int id;
+  String name;
+  String rate;
+  String code;
+
+  ServiceModel({
+    required this.id,
+    required this.name,
+    required this.rate,
+    required this.code,
+  });
+
+  factory ServiceModel.fromJson(Map<String, dynamic> json) => ServiceModel(
+        id: json["id"],
+        name: json["name"],
+        rate: json["rate"],
+        code: json["code"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+        "rate": rate,
+        "code": code,
+      };
+}
+
+
+
+/* 
 class EventSiteEmployeeRequirement {
   int? requirementCount;
   String? charge;
@@ -129,3 +170,4 @@ class EventSiteEmployeeRequirement {
     return data;
   }
 }
+ */

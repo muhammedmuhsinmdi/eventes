@@ -18,7 +18,7 @@ class CustomServiceCounter extends StatefulWidget {
   final bool? required;
   final Color? labelTextColor;
   final List<EmployeesTypesList> items;
-  final EventSiteEmployeeReqModel? employeeRequirement;
+  final InputEventSiteEmployeeReqModel? employeeRequirement;
   final bool? isEmployeeAssign;
   final Function()? onSelected;
   final Function(int, num)? countCallBack;

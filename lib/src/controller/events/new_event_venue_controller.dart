@@ -66,4 +66,17 @@ class EventVenueController extends ChangeNotifier {
       return EventVenue();
     }
   }
+
+  Future deleteEventVenue({required String token, required int venueId}) async {
+    try {
+      final response = await EventProvider().deleteEventVenue(token, venueId);
+      if (response == 204) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (_) {
+      return false;
+    }
+  }
 }

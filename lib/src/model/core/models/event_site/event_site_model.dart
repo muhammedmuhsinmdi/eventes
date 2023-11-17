@@ -1,10 +1,12 @@
 import 'package:evantez/src/model/core/models/event/event_site_settings/event_site_settings_model.dart';
 import 'package:evantez/src/model/core/models/event/event_type/event_type_model.dart';
+import 'package:evantez/src/model/core/models/event/output_model/event_emp_req_model.dart';
 import 'package:evantez/src/serializer/models/event_model.dart';
+import 'package:evantez/src/serializer/models/event_site_model.dart';
 
 class EventSiteModel {
   int? id;
-  List<EventSiteSettingsModel>? eventSiteSettings;
+  List<EventSiteSettings>? eventSiteSettings;
   List<EventSiteEmployeeRequirement>? eventSiteEmployeeRequirement;
   EventTypeModel? eventType;
   EventVenue? venue;
@@ -45,8 +47,8 @@ class EventSiteModel {
 
   factory EventSiteModel.fromJson(Map<String, dynamic> json) => EventSiteModel(
       id: json["id"],
-      eventSiteSettings: List<EventSiteSettingsModel>.from(
-          json["event_site_settings"].map((x) => EventSiteSettingsModel.fromJson(x))),
+      eventSiteSettings:
+          List<EventSiteSettings>.from(json["event_site_settings"].map((x) => EventSiteSettings.fromJson(x))),
       eventSiteEmployeeRequirement: List<EventSiteEmployeeRequirement>.from(
           json["event_site_employee_requirement"].map((x) => EventSiteEmployeeRequirement.fromJson(x))),
       eventType: EventTypeModel.fromJson(json["event_type"]),
@@ -87,37 +89,6 @@ class EventSiteModel {
       };
 }
 
-class EventSiteEmployeeRequirement {
-  int? id;
-  int? requirementCount;
-  String? charge;
-  int? eventSite;
-  EventTypeModel? employeeType;
-
-  EventSiteEmployeeRequirement({
-    this.id,
-    this.requirementCount,
-    this.charge,
-    this.eventSite,
-    this.employeeType,
-  });
-
-  factory EventSiteEmployeeRequirement.fromJson(Map<String, dynamic> json) => EventSiteEmployeeRequirement(
-        id: json["id"],
-        requirementCount: json["requirement_count"],
-        charge: json["charge"],
-        eventSite: json["event_site"],
-        employeeType: EventTypeModel.fromJson(json["employee_type"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "requirement_count": requirementCount,
-        "charge": charge,
-        "event_site": eventSite,
-        "employee_type": employeeType,
-      };
-}
 /* 
 class EventSiteSetting {
     int id;

@@ -11,6 +11,8 @@ import 'package:evantez/src/view/core/widgets/drop_down_value.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../model/core/models/event/event_site_settings/event_site_settings_model.dart';
+
 class AddEventController extends ChangeNotifier {
   final GlobalKey<FormState> eventForm = GlobalKey<FormState>();
 
@@ -24,10 +26,10 @@ class AddEventController extends ChangeNotifier {
       ..code = ''
       ..eventTypeId = null
       ..eventSiteSettings = []
-      ..status = 'open'
+      ..status = 'Upcoming - Hold'
       ..venueId = 0
       ..eventSiteEmployeeRequirement = [
-        EventSiteEmployeeReqModel(
+        InputEventSiteEmployeeReqModel(
           charge: '',
           employeeType: 0,
           eventSite: 0,
@@ -52,16 +54,27 @@ class AddEventController extends ChangeNotifier {
       scheduledDate.text = DateFormat('dd MMM, yyyy').format(response.scheduledDate!);
       scheduledTime.text = DateFormat('hh:mm a').format(response.scheduledDate!);
     }
-    List<EventSiteEmployeeReqModel> empList = [];
-    for (var empType in response.eventSiteEmployeeRequirement!) {
-      empList.add(EventSiteEmployeeReqModel(
-        charge: empType.charge,
-        eventSite: empType.eventSite,
-        id: empType.id,
-        employeeType: empType.employeeType!.id,
-        requirementCount: empType.requirementCount,
+    List<InputEventSiteEmployeeReqModel> empList = [];
+    if (response.eventSiteEmployeeRequirement!.isNotEmpty) {
+      for (var empType in response.eventSiteEmployeeRequirement!) {
+        empList.add(InputEventSiteEmployeeReqModel(
+          charge: empType.charge,
+          eventSite: empType.eventSite,
+          id: empType.id,
+          employeeType: empType.employeeType!.id,
+          requirementCount: empType.requirementCount,
+        ));
+      }
+    } else {
+      empList.add(InputEventSiteEmployeeReqModel(
+        charge: '',
+        employeeType: 0,
+        eventSite: response.id,
+        id: 0,
+        requirementCount: 0,
       ));
     }
+
     event = NewEventModel(
       code: response.code,
       scheduleDateTime: response.scheduledDate != null
@@ -71,7 +84,8 @@ class AddEventController extends ChangeNotifier {
       customerName: response.customerName,
       customerPhone: response.customerPhone,
       eventSiteEmployeeRequirement: empList,
-      eventSiteSettings: response.eventSiteSettings,
+      // eventSiteSettings: List<InputEventSiteSettingsModel>.from(
+      //     response.eventSiteSettings!.map((x) => InputEventSiteSettingsModel.fromJson(x.toJson()))),
       eventTypeId: response.eventType!.id,
       normalHours: response.normalHours,
       notes: response.notes,
@@ -79,6 +93,15 @@ class AddEventController extends ChangeNotifier {
       status: response.status,
       venueId: response.venue!.id,
     );
+    if (response.eventSiteSettings!.isNotEmpty) {
+      for (var settings in response.eventSiteSettings!) {
+        event.eventSiteSettings!.add(InputEventSiteSettingsModel(
+          eventSite: settings.eventSite,
+          id: settings.id,
+          service: settings.service.id,
+        ));
+      }
+    }
     selectedEventType = DropDownValue(id: response.eventType!.id, value: response.eventType!.name);
     eventImagePath = response.venue!.image!;
     log("${event.toJson()}");
