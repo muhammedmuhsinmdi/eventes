@@ -14,6 +14,7 @@ class CustomDropdownSearch extends StatelessWidget {
   final String? hintText;
   final bool? textAlignCenter;
   final List<String>? items;
+  final String? selectedItem;
   final bool? bottomSheet;
   final String? Function(String?)? validator;
   final Function(String?)? onSave;
@@ -29,7 +30,8 @@ class CustomDropdownSearch extends StatelessWidget {
       this.labelTextColor,
       this.onChanged,
       this.textAlignCenter,
-      this.bottomSheet});
+      this.bottomSheet,
+      this.selectedItem});
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +68,7 @@ class CustomDropdownSearch extends StatelessWidget {
             decoration: const BoxDecoration(
                 border: Border(bottom: BorderSide(width: 2, color: AppColors.primaryColor))),
             child: DropdownSearch<String>(
+                selectedItem: selectedItem,
                 dropdownButtonProps: DropdownButtonProps(
                   hoverColor: Colors.transparent,
                   icon: SvgPicture.asset(

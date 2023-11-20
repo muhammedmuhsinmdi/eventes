@@ -1,9 +1,11 @@
 import 'package:evantez/app/router/router_constant.dart';
+import 'package:evantez/src/controller/events/events_controller.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../core/constants/app_images.dart';
 
@@ -16,6 +18,7 @@ class EventFilledSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final eventController = context.watch<EventController>();
     final kSize = MediaQuery.of(context).size;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Row(
@@ -44,7 +47,7 @@ class EventFilledSlot extends StatelessWidget {
       ),
       Column(
         children: List.generate(
-            2,
+            eventController.eventModel!.eventSiteEmployeeRequirement!.length,
             (index) => Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -52,14 +55,16 @@ class EventFilledSlot extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'A Boy',
+                          eventController
+                              .eventModel!.eventSiteEmployeeRequirement![index].employeeType!.name!,
+                          // 'A Boy',
                           style: AppTypography.poppinsMedium.copyWith(
                             color: AppColors.secondaryColor,
                             fontSize: 14,
                           ),
                         ),
                         Text(
-                          '3/5',
+                          '3/${eventController.eventModel!.eventSiteEmployeeRequirement![index].requirementCount}',
                           style: AppTypography.poppinsRegular.copyWith(
                             color: AppColors.secondaryColor.withOpacity(0.6),
                             fontSize: 16,

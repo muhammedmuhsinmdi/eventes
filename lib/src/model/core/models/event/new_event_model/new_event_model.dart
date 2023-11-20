@@ -22,7 +22,7 @@ class NewEventModel {
   String? customerPhone;
   String? notes;
   String? normalHours;
-  String? scheduleDateTime;
+  // String? scheduleDateTime;
   String? overtimeHourlyCharge;
   String? status;
 
@@ -39,25 +39,26 @@ class NewEventModel {
     this.normalHours,
     this.overtimeHourlyCharge,
     this.status,
-    this.scheduleDateTime,
+    // this.scheduleDateTime,
   });
 
   factory NewEventModel.fromJson(Map<String, dynamic> json) => NewEventModel(
-      eventSiteSettings: List<InputEventSiteSettingsModel>.from(
-          json["event_site_settings"].map((x) => InputEventSiteSettingsModel.fromJson(x))),
-      eventSiteEmployeeRequirement: List<InputEventSiteEmployeeReqModel>.from(
-          json["event_site_employee_requirement"].map((x) => InputEventSiteEmployeeReqModel.fromJson(x))),
-      eventTypeId: json["event_type_id"] ?? 0,
-      venueId: json["venue_id"] ?? 0,
-      code: json["code"],
-      customerName: json["customer_name"],
-      customerAddress: json["customer_address"],
-      customerPhone: json["customer_phone"],
-      notes: json["notes"],
-      normalHours: json["normal_hours"],
-      overtimeHourlyCharge: json["overtime_hourly_charge"],
-      status: json["status"],
-      scheduleDateTime: json['scheduled_datetime']);
+        eventSiteSettings: List<InputEventSiteSettingsModel>.from(
+            json["event_site_settings"].map((x) => InputEventSiteSettingsModel.fromJson(x))),
+        eventSiteEmployeeRequirement: List<InputEventSiteEmployeeReqModel>.from(
+            json["event_site_employee_requirement"].map((x) => InputEventSiteEmployeeReqModel.fromJson(x))),
+        eventTypeId: json["event_type_id"] ?? 0,
+        venueId: json["venue_id"] ?? 0,
+        code: json["code"],
+        customerName: json["customer_name"],
+        customerAddress: json["customer_address"],
+        customerPhone: json["customer_phone"],
+        notes: json["notes"],
+        normalHours: json["normal_hours"],
+        overtimeHourlyCharge: json["overtime_hourly_charge"],
+        status: json["status"],
+        // scheduleDateTime: json['scheduled_datetime'],
+      );
 
   Map<String, dynamic> toJson() => {
         "event_site_settings":
@@ -74,6 +75,6 @@ class NewEventModel {
         "normal_hours": normalHours,
         "overtime_hourly_charge": overtimeHourlyCharge,
         "status": status,
-        "scheduled_datetime": scheduleDateTime,
+        // "scheduled_datetime": scheduleDateTime,
       };
 }

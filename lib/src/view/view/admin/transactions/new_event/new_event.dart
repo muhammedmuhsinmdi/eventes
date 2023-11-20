@@ -300,7 +300,7 @@ class _NewEventViewState extends State<NewEventView> {
                       label: "Save",
                       onTap: () async {
                         if (_formKey.currentState!.validate()) {
-                          newEventController.eventModel!.code = "EV006";
+                          // newEventController.eventModel!.code = "EV006";
                           if (newEventController.eventVenue.text.isNotEmpty) {
                             if (imagefile != null) {
                               FormData formData = FormData.fromMap({

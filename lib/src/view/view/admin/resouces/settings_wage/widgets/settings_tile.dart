@@ -1,6 +1,9 @@
 import 'dart:developer';
 
+import 'package:evantez/app/app.dart';
+import 'package:evantez/src/controller/auth/auth_controller.dart';
 import 'package:evantez/src/controller/resources/settingswages_controller.dart';
+import 'package:evantez/src/model/components/snackbar_widget.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
@@ -14,6 +17,7 @@ class AddSettingsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
+    final authController = context.watch<AuthController>();
     final controller = context.watch<SettingsWageController>();
     return Container(
       width: kSize.width,
@@ -32,8 +36,7 @@ class AddSettingsTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                /*   'Chair Cover Dressing' */ controller
-                    .settingsWageLists[index].name,
+                /*   'Chair Cover Dressing' */ controller.settingsWageLists[index].name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: AppTypography.poppinsSemiBold.copyWith(
@@ -44,9 +47,8 @@ class AddSettingsTile extends StatelessWidget {
               RichText(
                 text: TextSpan(
                     text: 'Price Range ',
-                    style: AppTypography.poppinsMedium.copyWith(
-                        fontSize: 14,
-                        color: AppColors.secondaryColor.withOpacity(0.5)),
+                    style: AppTypography.poppinsMedium
+                        .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.5)),
                     children: [
                       TextSpan(
                           text: controller.settingsWageLists[index].rate,
@@ -66,10 +68,20 @@ class AddSettingsTile extends StatelessWidget {
               // Callback that sets the selected popup menu item.
               onSelected: (item) {
                 // setState(() {
-                controller.initStateLoading(
-                    data: controller.settingsWageLists[index]);
-                AddSettingWageBottomSheet(context, index).show();
-                log(item);
+                if (item == 'edit') {
+                  controller.initStateLoading(data: controller.settingsWageLists[index]);
+                  AddSettingWageBottomSheet(context, index).show();
+                  log(item);
+                }
+                if (item == 'delete') {
+                  deleteSettingsWage(
+                    authController: authController,
+                    controller: controller,
+                    token: authController.accesToken!,
+                    wageId: controller.settingsWageLists[index].id,
+                  );
+                }
+
                 // });
               },
               clipBehavior: Clip.antiAlias,
@@ -94,11 +106,43 @@ class AddSettingsTile extends StatelessWidget {
                     style: AppTypography.poppinsMedium.copyWith(),
                   ),
                 ),
+                PopupMenuItem<String>(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: kSize.width * 0.05,
+                  ),
+                  value: "delete",
+                  child: Text(
+                    'Delete',
+                    textAlign: TextAlign.start,
+                    style: AppTypography.poppinsMedium.copyWith(),
+                  ),
+                ),
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  Future deleteSettingsWage(
+      {required String token,
+      required int wageId,
+      required SettingsWageController controller,
+      required AuthController authController}) async {
+    try {
+      await controller.deleteSettingWage(token, wageId).then((value) async {
+        if (value) {
+          await controller.settingsWageList(token: authController.accesToken!);
+          rootScaffoldMessengerKey.currentState!
+              .showSnackBar(snackBarWidget('Successfully deleted!', color: Colors.green));
+          await Future.delayed(const Duration(seconds: 2));
+        } else {
+          rootScaffoldMessengerKey.currentState!
+              .showSnackBar(snackBarWidget('Delete failed!', color: Colors.red));
+          await Future.delayed(const Duration(seconds: 2));
+        }
+      });
+    } catch (_) {}
   }
 }

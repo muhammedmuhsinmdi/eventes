@@ -23,11 +23,15 @@ class EventTypeController extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool isEdit = false;
   Future getEventTypeById({required String token, required int typeId}) async {
     try {
       final response = await EventProvider().getEventTypeById(token, typeId);
       eventType = response;
       eventTypeTxt.text = eventType!.name!;
+      if (eventTypeTxt.text.isNotEmpty) {
+        isEdit = true;
+      }
       notifyListeners();
     } catch (_) {}
   }
@@ -41,6 +45,7 @@ class EventTypeController extends ChangeNotifier {
   }
 
   Future intiLoading() async {
+    isEdit = false;
     eventType = EventTypeModel(id: 0);
     eventTypeTxt.clear();
   }
@@ -74,10 +79,8 @@ class EventTypeController extends ChangeNotifier {
     try {
       isLoading = true;
       final response = (data.id! > 0)
-          ? await await EventProvider()
-              .updateEventType(token: token, eventType: data)
-          : await EventProvider()
-              .addEventType(token: token, eventadd: data.name!);
+          ? await await EventProvider().updateEventType(token: token, eventType: data)
+          : await EventProvider().addEventType(token: token, eventadd: data.name!);
       isLoading = false;
       notifyListeners();
       return EventTypeModel.fromJson(response);

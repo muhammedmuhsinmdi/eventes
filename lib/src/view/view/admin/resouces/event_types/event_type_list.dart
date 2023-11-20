@@ -12,6 +12,7 @@ import 'package:evantez/src/view/core/themes/typography.dart';
 import 'package:evantez/src/view/core/widgets/custom_back_btn.dart';
 import 'package:evantez/src/view/core/widgets/custom_dialogbox.dart';
 import 'package:evantez/src/view/core/widgets/custom_textfield.dart';
+import 'package:evantez/src/view/view/admin/resouces/event_types/new_event_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -36,106 +37,119 @@ class EventTypeListView extends StatelessWidget {
                 child: searchField(context, kSize),
               ),
               Expanded(
-                child: ListView.separated(
-              padding: EdgeInsets.only(
-                  right: AppConstants.basePadding,
-                  bottom: kSize.height * 0.1,
-                  left: AppConstants.basePadding),
-              itemCount: eventTypeController.eventTypes.length,
-              separatorBuilder: (context, index) {
-                return SizedBox(
-                  height: kSize.height * 0.016,
-                );
-              },
-              itemBuilder: (context, index) {
-                var eventType = eventTypeController.eventTypes[index];
-                return ListTile(
-                  minLeadingWidth: kSize.height * 0.1,
-                  trailing: SizedBox(
-                    width: kSize.width * 0.1,
-                    child: PopupMenuButton<String>(
-                      initialValue: 'delete',
-                      // Callback that sets the selected popup menu item.
-                      onSelected: (item) async {
-                        if(item == "edit"){
-                          await eventTypeController.intiLoading();            
-                            await eventTypeController.getEventTypeById(token: authController.accesToken!, typeId: eventType.id!);
-                            if(context.mounted){
-                              Navigator.pushNamed(context, RouterConstants.newEventTypeRoute);
+                  child: ListView.separated(
+                padding: EdgeInsets.only(
+                    right: AppConstants.basePadding,
+                    bottom: kSize.height * 0.1,
+                    left: AppConstants.basePadding),
+                itemCount: eventTypeController.eventTypes.length,
+                separatorBuilder: (context, index) {
+                  return SizedBox(
+                    height: kSize.height * 0.016,
+                  );
+                },
+                itemBuilder: (context, index) {
+                  var eventType = eventTypeController.eventTypes[index];
+                  return ListTile(
+                    minLeadingWidth: kSize.height * 0.1,
+                    trailing: SizedBox(
+                      width: kSize.width * 0.1,
+                      child: PopupMenuButton<String>(
+                        initialValue: 'delete',
+                        // Callback that sets the selected popup menu item.
+                        onSelected: (item) async {
+                          if (item == "edit") {
+                            await eventTypeController.intiLoading();
+                            await eventTypeController.getEventTypeById(
+                                token: authController.accesToken!, typeId: eventType.id!);
+                            if (context.mounted) {
+                              showModalBottomSheet(
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(24), topRight: Radius.circular(24))),
+                                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                                  context: context,
+                                  builder: (context) {
+                                    return const NewEventType();
+                                  });
                             }
 
-                        } else if (item == 'delete') {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return CustomDialog(
-                                    title: "Are you sure you want this Event Type?",
-                                    onConfirmTxt: "Delete",
-                                    onConfirm: () {
-                                      // confirm
-                                      if (context.mounted) {
-                                        Navigator.pop(context);
-                                      }
-                                      eventTypeController
-                                          .deleteEventType(
-                                              token: authController.accesToken!, typeId: eventType.id!)
-                                          .then((value) async {
-                                        if (value) {
-                                          await eventTypeController.getEventTypeList(
-                                              token: authController.accesToken!);
-                                          rootScaffoldMessengerKey.currentState!.showSnackBar(
-                                              snackBarWidget('Successfully deleted!', color: Colors.green));
-                                          await Future.delayed(const Duration(seconds: 2));
-                                        } else {
-                                          rootScaffoldMessengerKey.currentState!.showSnackBar(
-                                              snackBarWidget('Delete failed!', color: Colors.red));
-                                          await Future.delayed(const Duration(seconds: 2));
+                            /*  if(context.mounted){
+                              Navigator.pushNamed(context, RouterConstants.newEventTypeRoute);
+                            } */
+                          } else if (item == 'delete') {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return CustomDialog(
+                                      title: "Are you sure you want this Event Type?",
+                                      onConfirmTxt: "Delete",
+                                      onConfirm: () {
+                                        // confirm
+                                        if (context.mounted) {
+                                          Navigator.pop(context);
                                         }
+                                        eventTypeController
+                                            .deleteEventType(
+                                                token: authController.accesToken!, typeId: eventType.id!)
+                                            .then((value) async {
+                                          if (value) {
+                                            await eventTypeController.getEventTypeList(
+                                                token: authController.accesToken!);
+                                            rootScaffoldMessengerKey.currentState!.showSnackBar(
+                                                snackBarWidget('Successfully deleted!', color: Colors.green));
+                                            await Future.delayed(const Duration(seconds: 2));
+                                          } else {
+                                            rootScaffoldMessengerKey.currentState!.showSnackBar(
+                                                snackBarWidget('Delete failed!', color: Colors.red));
+                                            await Future.delayed(const Duration(seconds: 2));
+                                          }
+                                        });
                                       });
-                                    });
-                              });
-                        }
-                      },
-                      clipBehavior: Clip.antiAlias,
-                      padding: EdgeInsets.symmetric(horizontal: kSize.height * 0.024),
-                      shape: RoundedRectangleBorder(
-                          side: const BorderSide(
-                            color: AppColors.accentColor,
-                          ),
-                          borderRadius: BorderRadius.circular(
-                            AppConstants.basePadding,
-                          )),
+                                });
+                          }
+                        },
+                        clipBehavior: Clip.antiAlias,
+                        padding: EdgeInsets.symmetric(horizontal: kSize.height * 0.024),
+                        shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                              color: AppColors.accentColor,
+                            ),
+                            borderRadius: BorderRadius.circular(
+                              AppConstants.basePadding,
+                            )),
 
-                      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                        PopupMenuItem<String>(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: kSize.width * 0.05,
+                        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                          PopupMenuItem<String>(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: kSize.width * 0.05,
+                            ),
+                            value: "edit",
+                            child: Text(
+                              'Edit',
+                              textAlign: TextAlign.start,
+                              style: AppTypography.poppinsMedium.copyWith(),
+                            ),
                           ),
-                          value: "edit",
-                          child: Text(
-                            'Edit',
-                            textAlign: TextAlign.start,
-                            style: AppTypography.poppinsMedium.copyWith(),
+                          PopupMenuItem<String>(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: kSize.width * 0.05,
+                            ),
+                            value: "delete",
+                            child: Text(
+                              'Delete',
+                              textAlign: TextAlign.start,
+                              style: AppTypography.poppinsMedium.copyWith(),
+                            ),
                           ),
-                        ),
-                        PopupMenuItem<String>(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: kSize.width * 0.05,
-                          ),
-                          value: "delete",
-                          child: Text(
-                            'Delete',
-                            textAlign: TextAlign.start,
-                            style: AppTypography.poppinsMedium.copyWith(),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  title: Text('${eventType.name}', style: AppTypography.poppinsMedium.copyWith(fontSize: 16)),
-                );
-              },
-            )),
+                    title:
+                        Text('${eventType.name}', style: AppTypography.poppinsMedium.copyWith(fontSize: 16)),
+                  );
+                },
+              )),
             ],
           ),
         ));
@@ -171,8 +185,8 @@ Widget searchField(BuildContext context, Size kSize) {
     ),
   );
 }
-AppBar appBar(
-    BuildContext context, Size kSize, EventTypeController controller) {
+
+AppBar appBar(BuildContext context, Size kSize, EventTypeController controller) {
   return AppBar(
     elevation: 0,
     leading: const CustomBackButton(),
@@ -186,7 +200,18 @@ AppBar appBar(
       IconButton(
           onPressed: () async {
             controller.intiLoading();
-            Navigator.pushNamed(context, RouterConstants.newEventTypeRoute);
+            if (context.mounted) {
+              showModalBottomSheet(
+                  shape: const RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24))),
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  context: context,
+                  builder: (context) {
+                    return const NewEventType();
+                  });
+            }
+            // Navigator.pushNamed(context, RouterConstants.newEventTypeRoute);
           },
           icon: SvgPicture.asset(
             AppImages.addCircle,

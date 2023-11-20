@@ -7,15 +7,11 @@ import '../../../serializer/models/settings_wage_response.dart';
 import '../../../view/core/event_api.dart';
 
 class SettingsWageProvider extends EventApi {
-  Future<List<SettingsWageListResponse>> loadEventSettings(
-      {required String token}) async {
-    Response response =
-        await get('inventories/event-setting/', headers: apiHeaders(token));
+  Future<List<SettingsWageListResponse>> loadEventSettings({required String token}) async {
+    Response response = await get('inventories/event-setting/', headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
-        return (response.data['results'] as List)
-            .map((e) => SettingsWageListResponse.fromJson(e))
-            .toList();
+        return (response.data['results'] as List).map((e) => SettingsWageListResponse.fromJson(e)).toList();
       default:
         throw Exception('Response Error');
     }
@@ -25,8 +21,8 @@ class SettingsWageProvider extends EventApi {
 
   Future<SettingsWageDetails> addSettingWork(
       {required String token, required SettingsWageRequest data}) async {
-    Response response = await post('inventories/event-setting/',
-        data: data.toJson(), headers: apiHeaders(token));
+    Response response =
+        await post('inventories/event-setting/', data: data.toJson(), headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
       case 201:
@@ -39,15 +35,25 @@ class SettingsWageProvider extends EventApi {
   //-------------Edit SettingsWage------------
 
   Future<SettingsWageListResponse> editSettingWork(
-      {required String token,
-      required SettingsWageRequest data,
-      required int id}) async {
-    Response response = await patch('inventories/event-setting/$id/',
-        data: data.toJson(), headers: apiHeaders(token));
+      {required String token, required SettingsWageRequest data, required int id}) async {
+    Response response =
+        await patch('inventories/event-setting/$id/', data: data.toJson(), headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
       case 201:
         return SettingsWageListResponse.fromJson(response.data);
+      default:
+        throw Exception('Response Error');
+    }
+  }
+
+  // Delete Setting Wage
+  Future deleteSettingWage({required String token, required int id}) async {
+    Response response = await delete('inventories/event-setting/$id/', headers: apiHeaders(token));
+    switch (response.statusCode) {
+      case 200:
+      case 204:
+        return response.statusCode;
       default:
         throw Exception('Response Error');
     }

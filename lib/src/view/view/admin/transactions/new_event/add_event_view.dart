@@ -52,6 +52,7 @@ class AddEventView extends StatelessWidget {
                     // eventID(addEventContoller.event.code ?? '', addEventContoller, kSize),
                     if (addEventContoller.eventImagePath.isNotEmpty) ...{
                       EventImageUpload(
+                        imgUrl: addEventContoller.eventImagePath,
                         onPicked: (pickedImage) {
                           addEventContoller.eventImage = pickedImage;
                         },
@@ -103,9 +104,9 @@ class AddEventView extends StatelessWidget {
                       ) */
                       ,
                     ),
-                    dateTime(kSize: kSize, controller: addEventContoller),
+                    // dateTime(kSize: kSize, controller: addEventContoller),
                     Padding(
-                      padding: EdgeInsets.only(bottom: kSize.height * 0.024),
+                      padding: EdgeInsets.only(top: kSize.height * 0.024, bottom: kSize.height * 0.024),
                       child: CustomTextField(
                         text: AppStrings.customerName,
                         required: true,
@@ -248,7 +249,8 @@ class AddEventView extends StatelessWidget {
                                       if (context.mounted) {
                                         addEventContoller.isLoading = false;
                                         Navigator.pop(context);
-                                        addEventContoller.clearData();
+                                        // Future.delayed(const Duration(seconds: 1));
+                                        // addEventContoller.clearData();
                                       }
                                     }
                                   } else {
@@ -288,7 +290,7 @@ class AddEventView extends StatelessWidget {
         validator: controller.eventCodeValidator,
         controller: controller.eventCode,
         onSave: (code) {
-          controller.event.code = code;
+          // controller.event.code = code;
         },
       ),
     );
@@ -348,9 +350,10 @@ class AddEventView extends StatelessWidget {
                     controller.eventDateTime!.day,
                     controller.eventTime!.hour,
                     controller.eventTime!.minute);
-                controller.event.scheduleDateTime =
-                    DateFormat('yyyy-MM-dd HH:mm:ss').format(controller.eventDateTime!);
-                log(controller.event.scheduleDateTime!);
+                // controller.event.scheduleDateTime = controller.eventDateTime!.toIso8601String();
+                log(controller.eventDateTime!.toIso8601String());
+                // DateFormat('yyyy-MM-dd HH:mm:ss').format(controller.eventDateTime!);
+                // log(controller.event.scheduleDateTime!);
                 /*  controller.event.scheduleDateTime = DateTime(
                   controller.eventDateTime!.year,
                   controller.eventDateTime!.month,

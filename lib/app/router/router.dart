@@ -1,11 +1,10 @@
 import 'package:evantez/app/router/router_constant.dart';
-import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 import 'package:evantez/src/model/core/models/menu/menu_model.dart';
 import 'package:evantez/src/model/core/models/signin/pm_signin.dart';
 import 'package:evantez/src/view/view/admin/catering/food_items/widgets/food_item_filter.dart';
+import 'package:evantez/src/view/view/admin/dashboard/profile_view/admin_profile_edit/admin_profile_edit_view.dart';
 import 'package:evantez/src/view/view/admin/resouces/employee/add_employee_view/add_employee_view.dart';
 import 'package:evantez/src/view/view/admin/resouces/event_types/event_type_list.dart';
-import 'package:evantez/src/view/view/admin/resouces/event_types/new_event_type.dart';
 import 'package:evantez/src/view/view/admin/resouces/event_venues/event_venue_listing.dart';
 import 'package:evantez/src/view/view/admin/resouces/event_venues/new_event_venue.dart';
 import 'package:evantez/src/view/view/admin/transactions/new_event/add_event_view.dart';
@@ -123,9 +122,9 @@ class AppRouter {
         return MaterialPageRoute<EventTypeListView>(
           builder: (_) => const EventTypeListView(),
         );
-      case RouterConstants.newEventTypeRoute:
-        return MaterialPageRoute<NewEventType>(
-          builder: (_) => const NewEventType(),
+      case RouterConstants.adminProfileRoute:
+        return MaterialPageRoute<AdminEditProfileView>(
+          builder: (_) => const AdminEditProfileView(),
         );
       case RouterConstants.settingsWageRoute:
         final args = settings.arguments as MenuData;
@@ -138,11 +137,8 @@ class AppRouter {
           builder: (_) => RentalItemsView(menu: args),
         );
       case RouterConstants.eventDetailRoute:
-        final args = settings.arguments as EventSiteModel;
         return MaterialPageRoute<EventDetailView>(
-          builder: (_) => EventDetailView(
-            eventModel: args,
-          ),
+          builder: (_) => const EventDetailView(),
         );
       case RouterConstants.invoiceRoute:
         final args = settings.arguments as MenuData;

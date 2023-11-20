@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:evantez/src/controller/auth/auth_controller.dart';
 import 'package:evantez/src/controller/events/new_event_venue_controller.dart';
 import 'package:evantez/src/model/components/snackbar_widget.dart';
+import 'package:evantez/src/serializer/models/event_model.dart';
 import 'package:evantez/src/view/core/constants/constants.dart';
 import 'package:evantez/src/view/core/themes/colors.dart';
 import 'package:evantez/src/view/core/themes/typography.dart';
@@ -31,7 +32,9 @@ class NewEventVenue extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
             child: Column(
               children: [
-                EventImageUpload(onPicked: (pickedImage) {
+                EventImageUpload(
+                  imgUrl: newEventVenueController.eventVenue.text ,
+                  onPicked: (pickedImage) {
                   newEventVenueController.eventImage = pickedImage;
                 }),
                 Padding(

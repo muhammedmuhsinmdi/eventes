@@ -52,6 +52,14 @@ class EventVenueController extends ChangeNotifier {
     } catch (_) {}
   }
 
+  /* Future getVenueDetail(String token, int venueId) async {
+    try {
+      final response = await EventProvider().
+    } catch (_) {
+      
+    }
+  } */
+
   Future<EventVenue> addEventvenue({
     required String token,
     required FormData data,

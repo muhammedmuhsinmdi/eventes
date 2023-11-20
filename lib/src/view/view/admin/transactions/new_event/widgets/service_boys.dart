@@ -40,7 +40,6 @@ class _ServiceBoysState extends State<ServiceBoys> {
   void initState() {
     serviceItems.addAll(widget.items);
     serviceBoysCount.value = 1;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {});
     super.initState();
   }
 

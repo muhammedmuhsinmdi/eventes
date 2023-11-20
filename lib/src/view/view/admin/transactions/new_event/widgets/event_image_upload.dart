@@ -2,11 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:evantez/src/controller/events/add_event_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../../core/constants/app_images.dart';
 import '../../../../../core/constants/constants.dart';
@@ -15,8 +13,8 @@ import '../../../../../core/themes/typography.dart';
 
 class EventImageUpload extends StatefulWidget {
   final Function(File) onPicked;
-
-  const EventImageUpload({super.key, required this.onPicked});
+  final String? imgUrl;
+  const EventImageUpload({super.key, required this.onPicked, this.imgUrl});
 
   @override
   State<EventImageUpload> createState() => _EventImageUploadState();
@@ -27,7 +25,7 @@ class _EventImageUploadState extends State<EventImageUpload> {
 
   @override
   Widget build(BuildContext context) {
-    final addEventController = context.watch<AddEventController>();
+    // final addEventController = context.watch<AddEventController>();
     final kSize = MediaQuery.of(context).size;
     return InkWell(
       highlightColor: AppColors.transparent,
@@ -45,10 +43,11 @@ class _EventImageUploadState extends State<EventImageUpload> {
             )),
         height: kSize.height * 0.2,
         width: kSize.width,
-        child: addEventController.eventImagePath.isNotEmpty
+        child: widget.imgUrl != null &&
+                widget.imgUrl!.isNotEmpty /* addEventController.eventImagePath.isNotEmpty ||  */
             ? CachedNetworkImage(
                 fit: BoxFit.cover,
-                imageUrl: addEventController.eventImagePath,
+                imageUrl: widget.imgUrl!,
                 errorWidget: (context, url, error) {
                   return const SizedBox();
                 },

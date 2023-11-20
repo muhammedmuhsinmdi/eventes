@@ -1,3 +1,6 @@
+import 'package:evantez/src/controller/auth/auth_controller.dart';
+import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
+import 'package:evantez/src/serializer/models/employee/employee_list_response.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
@@ -5,6 +8,7 @@ import 'package:evantez/src/view/core//themes/typography.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/widgets/custom_textfield.dart';
@@ -36,23 +40,17 @@ class AddingEmployeeSheet extends StatefulWidget {
 }
 
 class _AddingEmployeeSheetState extends State<AddingEmployeeSheet> {
-  List<String> empList = <String>[
-    'Olive Yew',
-    'Aida Bugg',
-    "Roshan",
-    "Suhail",
-    "Muhsin",
-    "Sameer"
-  ];
-  final ValueNotifier<List<String>> selectedEmpList =
-      ValueNotifier<List<String>>([]);
+  List<String> empList = <String>['Olive Yew', 'Aida Bugg', "Roshan", "Suhail", "Muhsin", "Sameer"];
+  final ValueNotifier<List<String>> selectedEmpList = ValueNotifier<List<String>>([]);
 
   @override
   Widget build(BuildContext context) {
+    final authContorller = context.watch<AuthController>();
+    final employeeController = context.watch<EmployeesController>();
     final kSize = MediaQuery.of(context).size;
     return Padding(
-        padding: EdgeInsets.fromLTRB(AppConstants.baseBorderRadius,
-            kSize.height * 0.032, AppConstants.baseBorderRadius, 0),
+        padding: EdgeInsets.fromLTRB(
+            AppConstants.baseBorderRadius, kSize.height * 0.032, AppConstants.baseBorderRadius, 0),
         child: ValueListenableBuilder(
           valueListenable: selectedEmpList,
           builder: (context, value, child) {
@@ -96,47 +94,49 @@ class _AddingEmployeeSheetState extends State<AddingEmployeeSheet> {
                     crossAxisAlignment: WrapCrossAlignment.start,
                     children: List.generate(
                       selectedEmpList.value.length,
-                      (index) => selecteEmployeeTile(
-                          kSize, selectedEmpList.value[index]),
+                      (index) => selecteEmployeeTile(kSize, selectedEmpList.value[index]),
                     ),
                   ),
                 ),
                 SizedBox(
                   height: kSize.height * 0.024,
                 ),
-                SizedBox(
-                  height: kSize.height * 0.5,
-                  child: Scrollbar(
-                    interactive: true,
-                    thumbVisibility: true,
-                    trackVisibility: true,
-                    child: ListView.builder(
-                        itemCount: empList.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                              highlightColor: AppColors.transparent,
-                              splashColor: AppColors.transparent,
-                              onTap: () {
-                                setState(() {
-                                  if (selectedEmpList.value
-                                      .contains(empList[index])) {
-                                    selectedEmpList.value
-                                        .remove(empList[index]);
-                                    if (kDebugMode) {
-                                      print(selectedEmpList.value.length);
-                                    }
-                                  } else {
-                                    selectedEmpList.value.add(empList[index]);
-                                    if (kDebugMode) {
-                                      print(selectedEmpList.value.length);
-                                    }
-                                  }
-                                });
-                              },
-                              child: employeeTile(kSize, empList[index]));
-                        }),
-                  ),
-                ),
+                FutureBuilder(
+                    future: employeeController.employeeList(token: authContorller.accesToken!),
+                    initialData: [],
+                    builder: (context, snapshot) {
+                      return SizedBox(
+                        height: kSize.height * 0.5,
+                        child: Scrollbar(
+                          interactive: true,
+                          thumbVisibility: true,
+                          trackVisibility: true,
+                          child: ListView.builder(
+                              itemCount: employeeController.employeeLists.length,
+                              itemBuilder: (context, index) {
+                                return InkWell(
+                                    highlightColor: AppColors.transparent,
+                                    splashColor: AppColors.transparent,
+                                    onTap: () {
+                                      setState(() {
+                                        if (selectedEmpList.value.contains(empList[index])) {
+                                          selectedEmpList.value.remove(empList[index]);
+                                          if (kDebugMode) {
+                                            print(selectedEmpList.value.length);
+                                          }
+                                        } else {
+                                          selectedEmpList.value.add(empList[index]);
+                                          if (kDebugMode) {
+                                            print(selectedEmpList.value.length);
+                                          }
+                                        }
+                                      });
+                                    },
+                                    child: employeeTile(kSize, employeeController.employeeLists[index]));
+                              }),
+                        ),
+                      );
+                    }),
               ],
             );
           },
@@ -144,16 +144,15 @@ class _AddingEmployeeSheetState extends State<AddingEmployeeSheet> {
   }
 }
 
-Widget employeeTile(Size kSize, String emp) {
+Widget employeeTile(Size kSize, EmployeeListResponse emp) {
   return Container(
     margin: const EdgeInsets.only(bottom: 8, right: AppConstants.marginSpace),
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
     decoration: BoxDecoration(
-        color: AppColors.secondaryColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(6)),
+        color: AppColors.secondaryColor.withOpacity(0.1), borderRadius: BorderRadius.circular(6)),
     child: RichText(
         text: TextSpan(
-            text: "$emp  ",
+            text: "${emp.employeeName}  ",
             style: AppTypography.poppinsRegular.copyWith(
               fontSize: 16,
               color: AppColors.secondaryColor,
@@ -210,8 +209,7 @@ Widget searchField(BuildContext context, Size kSize) {
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
       child: SvgPicture.asset(
         AppImages.search,
-        colorFilter:
-            const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+        colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
       ),
     ),
   );
