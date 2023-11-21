@@ -1,8 +1,10 @@
+import 'package:evantez/src/controller/events/events_controller.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 class EventOpenSlot extends StatelessWidget {
   final String eventStatus;
@@ -10,7 +12,7 @@ class EventOpenSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int itemCount = 50;
+    final eventController = context.watch<EventController>();
     final kSize = MediaQuery.of(context).size;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,13 +45,16 @@ class EventOpenSlot extends StatelessWidget {
           height: kSize.height * 0.016,
         ),
         Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: List.generate(
-              2,
+              eventController.eventModel!.eventSiteEmployeeRequirement!.length,
               (index) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'A Boy',
+                        //'A Boy',
+                        eventController.eventModel!.eventSiteEmployeeRequirement![index].employeeType!.name ??
+                            '',
                         style: AppTypography.poppinsMedium.copyWith(
                           color: AppColors.secondaryColor,
                           fontSize: 14,
@@ -59,16 +64,21 @@ class EventOpenSlot extends StatelessWidget {
                         height: kSize.height * 0.008,
                       ),
                       Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.start,
+                        alignment: WrapAlignment.start,
                         runSpacing: 8,
                         spacing: 8,
                         children: List.generate(
-                            itemCount,
-                            (index) => IntrinsicWidth(
+                            eventController
+                                .eventModel!.eventSiteEmployeeRequirement![index].requirementCount!,
+                            (empIndex) => IntrinsicWidth(
                                     child: Container(
                                   height: kSize.height * 0.005,
-                                  width: getCountWidth(itemCount),
+                                  width: getCountWidth(eventController
+                                      .eventModel!.eventSiteEmployeeRequirement![index].requirementCount!),
                                   decoration: BoxDecoration(
-                                    color: index < 3 ? AppColors.statusSuccess : AppColors.statusCritical,
+                                    color: /* index < 3 ? AppColors.statusSuccess : */
+                                        AppColors.statusCritical,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                 ))),
@@ -77,7 +87,7 @@ class EventOpenSlot extends StatelessWidget {
                         height: kSize.height * 0.016,
                       ),
                       Text(
-                        '3/$itemCount',
+                        '3/${eventController.eventModel!.eventSiteEmployeeRequirement![index].requirementCount!}',
                         style: AppTypography.poppinsRegular.copyWith(
                           color: AppColors.secondaryColor.withOpacity(0.6),
                           fontSize: 16,

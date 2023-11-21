@@ -112,7 +112,7 @@ class EmployeesController extends ChangeNotifier {
     token = token;
     try {
       isloading = true;
-      notifyListeners();
+      // notifyListeners();
       final response = await EmployeeProvider().loadEmployee(token: token, filterMode: filterMode);
       if (response != null) {
         employeeLists = response;
@@ -183,6 +183,19 @@ class EmployeesController extends ChangeNotifier {
     } catch (e) {
       log('message');
       isloading = false;
+    }
+  }
+
+  // Delete Employee Type
+  Future deleteEmployeeTyoe({required String token, required int employeeTyoeId}) async {
+    try {
+      final response = await EmployeeProvider().deleteEmployeeType(token: token, id: employeeTyoeId);
+      if (response) {
+        return true;
+      }
+      return false;
+    } catch (_) {
+      return false;
     }
   }
 

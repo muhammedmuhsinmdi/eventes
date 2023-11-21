@@ -23,8 +23,7 @@ class ProfileView extends StatelessWidget {
           appBar(context, kSize),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppConstants.baseBorderRadius),
+              padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,8 +43,8 @@ class ProfileView extends StatelessWidget {
                     ),
                     Text(
                       'Personal Information',
-                      style: AppTypography.poppinsSemiBold.copyWith(
-                          color: AppColors.secondaryColor, fontSize: 24),
+                      style: AppTypography.poppinsSemiBold
+                          .copyWith(color: AppColors.secondaryColor, fontSize: 24),
                     ),
                     SizedBox(
                       height: kSize.height * 0.016,
@@ -108,10 +107,10 @@ class ProfileView extends StatelessWidget {
         ),
       ),
       actions: [
-        IconButton(
+        /* IconButton(
           onPressed: () {
             //
-            Navigator.pushNamed(context, RouterConstants.newPaymentRoute);
+            Navigator.pushNamed(context, RouterConstants.adminProfileRoute);
           },
           icon: SvgPicture.asset(
             AppImages.edit,
@@ -120,7 +119,7 @@ class ProfileView extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
-        )
+        ) */
       ],
     );
   }
@@ -141,8 +140,7 @@ class ProfileView extends StatelessWidget {
           children: [
             Text(
               'Rasheed',
-              style: AppTypography.poppinsMedium
-                  .copyWith(color: AppColors.primaryColor, fontSize: 24),
+              style: AppTypography.poppinsMedium.copyWith(color: AppColors.primaryColor, fontSize: 24),
             ),
             SizedBox(
               height: kSize.height * 0.005,
@@ -166,8 +164,7 @@ class ProfileView extends StatelessWidget {
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Text(
           label,
-          style: AppTypography.poppinsMedium
-              .copyWith(color: AppColors.secondaryColor, fontSize: 14),
+          style: AppTypography.poppinsMedium.copyWith(color: AppColors.secondaryColor, fontSize: 14),
         ),
         Text(value,
             style: AppTypography.poppinsMedium.copyWith(

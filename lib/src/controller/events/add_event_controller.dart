@@ -26,8 +26,9 @@ class AddEventController extends ChangeNotifier {
       ..code = ''
       ..eventTypeId = null
       ..eventSiteSettings = []
-      ..status = 'Upcoming - Hold'
+      ..status = 'hold'
       ..venueId = 0
+      ..eventSiteSettings = []
       ..eventSiteEmployeeRequirement = [
         InputEventSiteEmployeeReqModel(
           charge: '',
@@ -77,13 +78,14 @@ class AddEventController extends ChangeNotifier {
 
     event = NewEventModel(
       code: response.code,
-      scheduleDateTime: response.scheduledDate != null
+      /*  scheduleDateTime: response.scheduledDate != null
           ? DateFormat('yyyy-MM-dd HH:mm:ss').format(response.scheduledDate!)
-          : "",
+          : "", */
       customerAddress: response.customerAddress,
       customerName: response.customerName,
       customerPhone: response.customerPhone,
       eventSiteEmployeeRequirement: empList,
+      eventSiteSettings: [],
       // eventSiteSettings: List<InputEventSiteSettingsModel>.from(
       //     response.eventSiteSettings!.map((x) => InputEventSiteSettingsModel.fromJson(x.toJson()))),
       eventTypeId: response.eventType!.id,

@@ -53,7 +53,7 @@ class EventSiteModel {
           json["event_site_employee_requirement"].map((x) => EventSiteEmployeeRequirement.fromJson(x))),
       eventType: EventTypeModel.fromJson(json["event_type"]),
       venue: EventVenue.fromJson(json["venue"]),
-      // availableSlots: json["available_slots"] ?? '' ,
+      // availableSlots: json["available_slots"] ?? "",
       createdAt: DateTime.parse(json["created_at"]),
       updatedAt: DateTime.parse(json["updated_at"]),
       code: json["code"],

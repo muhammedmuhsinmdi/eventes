@@ -58,8 +58,6 @@ class SettingsWageController extends ChangeNotifier {
 
   //=-=-=-=-=-=-= Edit SettingsWages=-=-=-=-==-=-=-=
 
-
-
   Future<void> editEmployeeType(
       {required String token, required BuildContext context, required int id}) async {
     try {
@@ -86,6 +84,19 @@ class SettingsWageController extends ChangeNotifier {
     } catch (e, s) {
       log('message', stackTrace: s);
       isloading = false;
+    }
+  }
+
+  // Delete Setting Wage
+  Future deleteSettingWage(String token, int settingWageId) async {
+    try {
+      final response = await SettingsWageProvider().deleteSettingWage(token: token, id: settingWageId);
+      if (response == 204) {
+        return true;
+      }
+      return false;
+    } catch (_) {
+      return false;
     }
   }
 

@@ -56,8 +56,8 @@ class EventProvider extends EventApi {
   }
 
   Future updateEventType({required String token, required EventTypeModel eventType}) async {
-    Response response =
-        await patch('events/event-type/${eventType.id}/', headers: apiHeaders(token), data: eventType.toJson());
+    Response response = await patch('events/event-type/${eventType.id}/',
+        headers: apiHeaders(token), data: eventType.toJson());
     switch (response.statusCode) {
       case 200:
         return response.data;
@@ -192,8 +192,9 @@ class EventProvider extends EventApi {
       rethrow;
     }
   }
+
   Future deleteEventType(String token, int id) async {
-     try {
+    try {
       Response response = await delete("events/event-type/$id/", headers: apiHeaders(token));
       log("${response.statusCode}");
       return response.statusCode;
@@ -214,6 +215,23 @@ class EventProvider extends EventApi {
       }
     } catch (e) {
       rethrow;
+    }
+  }
+
+  // Change Event Status
+  Future changeStatus(String token, NewEventModel eventSite, int eventId) async {
+    try {
+      var postData = json.encode(eventSite.toJson());
+      log(postData);
+
+      Response response =
+          await patch("events/event-site/$eventId/", data: postData, headers: apiHeaders(token));
+      if (response.statusCode == 200) {
+        return response;
+      }
+      return false;
+    } catch (_) {
+      return false;
     }
   }
 }

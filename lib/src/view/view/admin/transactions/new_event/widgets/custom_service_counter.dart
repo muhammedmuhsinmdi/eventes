@@ -57,6 +57,7 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (widget.employeeRequirement!.employeeType != 0) {
         _totalController.text = widget.employeeRequirement!.charge!;
+        count.value = widget.employeeRequirement!.requirementCount!;
         wageController.text =
             widget.items.firstWhere((e) => e.id == widget.employeeRequirement!.employeeType).amount!;
         employeeTypeController.text =
@@ -221,13 +222,11 @@ class _CustomServiceCounterState extends State<CustomServiceCounter> {
                               ),
                               IconButton(
                                   onPressed: () {
-                                    if (_totalController.text.length <= 3 && wageController.text.isNotEmpty) {
-                                      count.value++;
-                                      double wg = double.parse(wageController.text);
-                                      _totalController.text = "${(wg * count.value).toInt()}";
-                                      if (widget.countCallBack != null) {
-                                        widget.countCallBack!(count.value, num.parse(_totalController.text));
-                                      }
+                                    count.value++;
+                                    double wg = double.parse(wageController.text);
+                                    _totalController.text = "${(wg * count.value).toInt()}";
+                                    if (widget.countCallBack != null) {
+                                      widget.countCallBack!(count.value, num.parse(_totalController.text));
                                     }
                                   },
                                   icon: SvgPicture.asset(

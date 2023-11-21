@@ -32,25 +32,25 @@ import '../../../../core/themes/typography.dart';
 import '../../../../core/widgets/custom_textfield.dart';
 
 class EventDetailView extends StatefulWidget {
-  final EventSiteModel eventModel;
-  const EventDetailView({super.key, required this.eventModel});
+  const EventDetailView({
+    super.key,
+  });
 
   @override
   State<EventDetailView> createState() => _EventDetailViewState();
 }
 
 class _EventDetailViewState extends State<EventDetailView> {
-  final ValueNotifier<String> selectedeventStatus = ValueNotifier<String>('');
-
-  @override
+  /* @override
   void initState() {
-    selectedeventStatus.value = widget.eventModel.status!;
+    controller.selectedeventStatus.value = widget.eventModel.status!;
     log("${widget.eventModel.toJson()}");
     super.initState();
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
+    final authController = context.watch<AuthController>();
     final controller = context.watch<EventController>();
     final kSize = MediaQuery.of(context).size;
     return Scaffold(
@@ -62,17 +62,21 @@ class _EventDetailViewState extends State<EventDetailView> {
             padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
             child: SingleChildScrollView(
               child: ValueListenableBuilder(
-                  valueListenable: selectedeventStatus,
+                  valueListenable: controller.selectedeventStatus,
                   builder: (context, value, child) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: kSize.height * 0.016),
-                        eventImage(kSize, context, selectedeventStatus.value,
-                            widget.eventModel.venue!.image! /* controller.eventsDetail?.image ?? "" */),
+                        eventImage(
+                            kSize,
+                            context,
+                            controller.selectedeventStatus.value,
+                            controller.eventModel!.venue!.image ??
+                                '' /* controller.eventsDetail?.image ?? "" */),
                         SizedBox(height: kSize.height * 0.024),
                         Text(
-                          widget.eventModel.venue!.name!,
+                          controller.eventModel!.venue!.name ?? '',
                           // controller.eventsDetail?.name ?? '',
                           style: AppTypography.poppinsMedium.copyWith(
                             fontSize: 24,
@@ -83,7 +87,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                           height: kSize.height * 0.01,
                         ),
                         Text(
-                          widget.eventModel.eventType!.name!,
+                          controller.eventModel!.eventType!.name!,
                           // "Marriage Function",
                           style: AppTypography.poppinsRegular.copyWith(
                             fontSize: 16,
@@ -98,6 +102,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                         CustomDropdownSearch(
                           label: AppStrings.changeEventStatusTo,
                           textAlignCenter: true,
+                          selectedItem: controller.selectedeventStatus.value,
                           hintText: 'Select Event Status',
                           items: const [
                             "Upcoming - Hold",
@@ -107,8 +112,19 @@ class _EventDetailViewState extends State<EventDetailView> {
                             "Settlement",
                             "Completed",
                           ],
-                          onChanged: (value) {
-                            selectedeventStatus.value = value ?? '';
+                          onChanged: (dropdownValue) async {
+                            // controller.selectedeventStatus.value = value ?? '';
+                            controller.eventModel!.status = controller.getEventStatus(dropdownValue!);
+                            log(controller.eventModel!.status!);
+                            await controller
+                                .updateEvent(
+                                    id: controller.eventModel!.id!,
+                                    eventSite: controller.eventModel!,
+                                    token: authController.accesToken!)
+                                .then((value) {
+                              controller.selectedeventStatus.value = dropdownValue;
+                              ;
+                            });
                           },
                         ),
                         SizedBox(height: kSize.height * 0.024),
@@ -135,7 +151,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                             ),
                           ],
                         ),
-                        if (selectedeventStatus.value == "Completed") ...{
+                        if (controller.selectedeventStatus.value == "Completed") ...{
                           SizedBox(
                             height: kSize.height * 0.024,
                           ),
@@ -154,14 +170,14 @@ class _EventDetailViewState extends State<EventDetailView> {
                           color: AppColors.secondaryColor.withOpacity(0.2),
                         ),
                         SizedBox(height: kSize.height * 0.024),
-                        if (selectedeventStatus.value.isNotEmpty) ...{
-                          selectSlotByStatus(selectedeventStatus.value),
-                          // EventOpenSlot(eventStatus: selectedeventStatus.value),
+                        if (controller.eventModel!.status!.isNotEmpty) ...{
+                          selectSlotByStatus(controller.eventModel!.status!, controller),
+                          // EventOpenSlot(eventStatus: controller.selectedeventStatus.value),
                           SizedBox(height: kSize.height * 0.024),
                         },
-                        if (selectedeventStatus.value == "Upcoming - Hold" ||
-                            selectedeventStatus.value == "Upcoming - Open" ||
-                            selectedeventStatus.value == "Upcoming - Filled") ...{
+                        if (controller.selectedeventStatus.value == "Upcoming - Hold" ||
+                            controller.selectedeventStatus.value == "Upcoming - Open" ||
+                            controller.selectedeventStatus.value == "Upcoming - Filled") ...{
                           FooterButton(
                             fillColor: AppColors.transparent,
                             label: AppStrings.addEmployeeText,
@@ -176,7 +192,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                           ),
                           SizedBox(height: kSize.height * 0.024),
                         },
-                        if (selectedeventStatus.value == "Ongoing") ...{
+                        if (controller.selectedeventStatus.value == "Ongoing") ...{
                           MultiSelectionDropDown(
                             isEmployeeAssign: true,
                             label: 'Setting Work',
@@ -198,9 +214,9 @@ class _EventDetailViewState extends State<EventDetailView> {
                           SizedBox(height: kSize.height * 0.024),
                           //
                         },
-                        if (selectedeventStatus.value == "Ongoing" ||
-                            selectedeventStatus.value == 'Settlement' ||
-                            selectedeventStatus.value == 'Completed') ...{
+                        if (controller.selectedeventStatus.value == "Ongoing" ||
+                            controller.selectedeventStatus.value == 'Settlement' ||
+                            controller.selectedeventStatus.value == 'Completed') ...{
                           Text(
                             AppStrings.overTimeText,
                             style: AppTypography.poppinsSemiBold.copyWith(
@@ -210,14 +226,14 @@ class _EventDetailViewState extends State<EventDetailView> {
                           SizedBox(
                             height: kSize.height * 0.016,
                           ),
-                          overTimeDetail(kSize),
+                          overTimeDetail(kSize, controller),
                           SizedBox(height: kSize.height * 0.024),
                           Divider(
                             color: AppColors.secondaryColor.withOpacity(0.2),
                           ),
                           SizedBox(height: kSize.height * 0.024),
                         },
-                        if (widget.eventModel.notes!.isNotEmpty) ...{
+                        if (controller.eventModel!.notes!.isNotEmpty) ...{
                           Text(
                             AppStrings.additionalInfoText,
                             style: AppTypography.poppinsSemiBold.copyWith(
@@ -227,7 +243,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                           ),
                           SizedBox(height: kSize.height * 0.01),
                           Text(
-                            widget.eventModel
+                            controller.eventModel!
                                 .notes!, //"The conference is open to boys of all ages who are interested in event management as a career or hobby.",
                             style: AppTypography.poppinsRegular.copyWith(
                               fontSize: 16,
@@ -249,12 +265,12 @@ class _EventDetailViewState extends State<EventDetailView> {
                         Divider(
                           color: AppColors.secondaryColor.withOpacity(0.2),
                         ),
-                        if (selectedeventStatus.value == "Ongoing") ...{
+                        if (controller.selectedeventStatus.value == "Ongoing") ...{
                           SizedBox(height: kSize.height * 0.024),
                           urgentEmpNeed(context),
                           SizedBox(height: kSize.height * 0.1),
                         },
-                        if (selectedeventStatus.value == "Upcoming - Open")
+                        if (controller.selectedeventStatus.value == "Upcoming - Open")
                           InkWell(
                             onTap: () {
                               Navigator.pushNamed(context, RouterConstants.applystatus);
@@ -278,7 +294,7 @@ class _EventDetailViewState extends State<EventDetailView> {
         ));
   }
 
-  Widget overTimeDetail(Size kSize) {
+  Widget overTimeDetail(Size kSize, EventController controller) {
     return Row(
       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -298,7 +314,8 @@ class _EventDetailViewState extends State<EventDetailView> {
           // width: kSize.width * 0.2,
           child: CustomTextField(
             text: '',
-            readOnly: selectedeventStatus.value == "Settlement" || selectedeventStatus.value == "Completed"
+            readOnly: controller.selectedeventStatus.value == "Settlement" ||
+                    controller.selectedeventStatus.value == "Completed"
                 ? true
                 : false,
             keyboardType: TextInputType.number,
@@ -337,7 +354,8 @@ class _EventDetailViewState extends State<EventDetailView> {
         ),
         Flexible(
           child: CustomTextField(
-            readOnly: selectedeventStatus.value == "Settlement" || selectedeventStatus.value == "Completed"
+            readOnly: controller.selectedeventStatus.value == "Settlement" ||
+                    controller.selectedeventStatus.value == "Completed"
                 ? true
                 : false,
             keyboardType: TextInputType.number,
@@ -369,20 +387,20 @@ class _EventDetailViewState extends State<EventDetailView> {
         });
   }
 
-  Widget selectSlotByStatus(String status) {
-    switch (status) {
+  Widget selectSlotByStatus(String status, EventController controller) {
+    switch (controller.selectedeventStatus.value) {
       case "Upcoming - Hold":
         return const SizedBox();
       case "Upcoming - Open":
-        return EventOpenSlot(eventStatus: status);
+        return EventOpenSlot(eventStatus: controller.selectedeventStatus.value);
       case "Upcoming - Filled":
-        return EventFilledSlot(eventStatus: status);
+        return EventFilledSlot(eventStatus: controller.selectedeventStatus.value);
       case "Ongoing":
-        return EventOngoingSlot(eventStatus: status);
+        return EventOngoingSlot(eventStatus: controller.selectedeventStatus.value);
       case "Settlement":
-        return EventSettleMentSlot(eventStatus: status);
+        return EventSettleMentSlot(eventStatus: controller.selectedeventStatus.value);
       case "Completed":
-        return EventCompletedSlot(eventStatus: status);
+        return EventCompletedSlot(eventStatus: controller.selectedeventStatus.value);
       default:
         return const SizedBox();
       // return AppColors.transparent;
@@ -497,18 +515,21 @@ class _EventDetailViewState extends State<EventDetailView> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       centerTitle: true,
       title: Text(
-        controller.eventsDetail?.name ?? '',
+        controller.eventModel!.code ?? '',
         style: AppTypography.poppinsSemiBold.copyWith(),
       ),
       actions: [
         IconButton(
             onPressed: () async {
+              addEventController.clearData();
               await employeeController.employeeTypesData(token: auth.accesToken ?? '');
               addEventController.employeeTypes = employeeController.employeeTypes;
               await addEventController.getEventTypes(auth.accesToken!);
-              await addEventController.getEventDetail(auth.accesToken!, widget.eventModel.id!);
+              await addEventController.getEventDetail(auth.accesToken!, controller.eventModel!.id!);
               if (context.mounted) {
-                Navigator.pushNamed(context, RouterConstants.newEventRoute);
+                Navigator.pushNamed(context, RouterConstants.newEventRoute).then((value) {
+                  controller.getEventDetail(token: auth.accesToken!, eventId: controller.eventModel!.id!);
+                });
               }
             },
             icon: SvgPicture.asset(

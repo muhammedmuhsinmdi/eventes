@@ -16,18 +16,15 @@ import '../../../serializer/models/employee/employee_proof_response.dart';
 
 class EmployeeProvider extends EventApi {
   Future<List<EmployeeListResponse>> loadEmployee(
-      {required String token , EmployeeFilterInputModel? filterMode}) async {
-       ///?${filterMode!.toQueryParam()}
-       filterMode!.limit = 50;
-       filterMode.offset = 0;
-      var queryParam = filterMode.toQueryParam();
-    Response response =
-        await get('users/employee/?$queryParam', headers: apiHeaders(token));
+      {required String token, EmployeeFilterInputModel? filterMode}) async {
+    ///?${filterMode!.toQueryParam()}
+    filterMode!.limit = 50;
+    filterMode.offset = 0;
+    var queryParam = filterMode.toQueryParam();
+    Response response = await get('users/employee/?$queryParam', headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
-        return (response.data['results'] as List)
-            .map((e) => EmployeeListResponse.fromJson(e))
-            .toList();
+        return (response.data['results'] as List).map((e) => EmployeeListResponse.fromJson(e)).toList();
 
       default:
         throw Exception('Response Error');
@@ -35,10 +32,8 @@ class EmployeeProvider extends EventApi {
   }
 
   //=-=-=-=-=-=-= Employee Details =-=-=-=-=-=-=
-  Future<EmployeeDetailResponse> loadEmployeeDetails(
-      {required String token, required int id}) async {
-    Response response =
-        await get('users/employee/$id/', headers: apiHeaders(token));
+  Future<EmployeeDetailResponse> loadEmployeeDetails({required String token, required int id}) async {
+    Response response = await get('users/employee/$id/', headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
         return EmployeeDetailResponse.fromJson(response.data);
@@ -48,15 +43,11 @@ class EmployeeProvider extends EventApi {
   }
 
   //=-=-=-=-=-=-=-= Employees Types =-=-=-=-=-=-=
-  Future<List<EmployeesTypesList>> loadEmployeesTypes(
-      {required String token}) async {
-    Response response =
-        await get('users/employee-type/', headers: apiHeaders(token));
+  Future<List<EmployeesTypesList>> loadEmployeesTypes({required String token}) async {
+    Response response = await get('users/employee-type/', headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
-        return (response.data['results'] as List)
-            .map((e) => EmployeesTypesList.fromJson(e))
-            .toList();
+        return (response.data['results'] as List).map((e) => EmployeesTypesList.fromJson(e)).toList();
 
       default:
         throw Exception('Response Error');
@@ -64,10 +55,8 @@ class EmployeeProvider extends EventApi {
   }
 
   //=-=-=-=-=-=-= Employee Details =-=-=-=-=-=-=
-  Future<EmployeeBank> employeePayment(
-      {required String token, required int id}) async {
-    Response response = await get('users/employee-payment-detail/$id',
-        headers: apiHeaders(token));
+  Future<EmployeeBank> employeePayment({required String token, required int id}) async {
+    Response response = await get('users/employee-payment-detail/$id', headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
         return EmployeeBank.fromJson(response.data);
@@ -77,12 +66,11 @@ class EmployeeProvider extends EventApi {
   }
 
   //=-=-=-=-=-=-= Employee ADdd =-=-=-=-=-=-=
-  Future<EmployeeDetails> addEmployee(
-      {required String token, required EmployeeModel data}) async {
+  Future<EmployeeDetails> addEmployee({required String token, required EmployeeModel data}) async {
     var jsonData = data.toAddJson();
     var dd = json.encode(jsonData);
-    Response response = await post('users/employee/',
-        data: json.encode(jsonData), headers: apiHeaders(token));
+    Response response =
+        await post('users/employee/', data: json.encode(jsonData), headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
       case 201:
@@ -95,13 +83,10 @@ class EmployeeProvider extends EventApi {
   //=-=-=-=-=-=-=-= Employee ID =-=-=-=-=-=-=
 
   Future<List<EmployeeIdList>> employeeId({required String token}) async {
-    Response response =
-        await get('users/employee-id-proof-type/', headers: apiHeaders(token));
+    Response response = await get('users/employee-id-proof-type/', headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
-        return (response.data['results'] as List)
-            .map((e) => EmployeeIdList.fromJson(e))
-            .toList();
+        return (response.data['results'] as List).map((e) => EmployeeIdList.fromJson(e)).toList();
 
       default:
         throw Exception('Response Error');
@@ -111,13 +96,9 @@ class EmployeeProvider extends EventApi {
   //=-=-=-=-=-=-= Add Employee Type =-=-=-=-=-=-=
 
   Future<dynamic> addEmployeeType(
-      {required String token,
-      required String name,
-      required String code,
-      required int amount}) async {
+      {required String token, required String name, required String code, required int amount}) async {
     Response response = await post('users/employee-type/',
-        data: {"name": name, "code": code, "amount": amount},
-        headers: apiHeaders(token));
+        data: {"name": name, "code": code, "amount": amount}, headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
       case 201:
@@ -130,11 +111,9 @@ class EmployeeProvider extends EventApi {
   //=-=-=-=-=-=-= Patch Employee Type =-=-=-=-=-=-=
 
   Future<dynamic> editEmployeeType(
-      {required String token,
-      required int id,
-      required EmployeeTypeRequest data}) async {
-    Response response = await patch('users/employee-type/$id/',
-        data: data.toJson(), headers: apiHeaders(token));
+      {required String token, required int id, required EmployeeTypeRequest data}) async {
+    Response response =
+        await patch('users/employee-type/$id/', data: data.toJson(), headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
       case 201:
@@ -144,12 +123,30 @@ class EmployeeProvider extends EventApi {
     }
   }
 
+  // delete employee type
+  Future<dynamic> deleteEmployeeType({
+    required String token,
+    required int id,
+  }) async {
+    try {
+      Response response = await delete('users/employee-type/$id/', headers: apiHeaders(token));
+      switch (response.statusCode) {
+        case 200:
+        case 204:
+          return true;
+        default:
+          throw Exception('Response Error');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   //=-=-=-=-=-=-= Employee Rating History =-=-=-=-=-=-=
 
   Future<List<EmployeeRatingHistoryResponse>> employeeRatingHistory(
       {required String token, required String category}) async {
-    Response response =
-        await get('users/employee-rating-history/', headers: apiHeaders(token));
+    Response response = await get('users/employee-rating-history/', headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
       case 201:

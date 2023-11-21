@@ -28,7 +28,7 @@ class NewEventController extends ChangeNotifier {
       eventSiteEmployeeRequirement: [],
       eventTypeId: 0,
       venueId: 0,
-      code: '',
+      // code: '',
       customerName: '',
       customerAddress: '',
       customerPhone: '',
@@ -59,7 +59,7 @@ class NewEventController extends ChangeNotifier {
 
   initData() {
     eventModel = NewEventModel(
-      code: "",
+      // code: "",
       customerAddress: '',
       customerName: '',
       customerPhone: '',

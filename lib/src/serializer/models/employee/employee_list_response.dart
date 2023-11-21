@@ -11,24 +11,20 @@ class EmployeeResponse {
     this.results,
   });
 
-  factory EmployeeResponse.fromJson(Map<String, dynamic> json) =>
-      EmployeeResponse(
+  factory EmployeeResponse.fromJson(Map<String, dynamic> json) => EmployeeResponse(
         total: json["total"],
         next: json["next"],
         previous: json["previous"],
         results: json["results"] == null
             ? []
-            : List<EmployeeListResponse>.from(
-                json["results"]!.map((x) => EmployeeListResponse.fromJson(x))),
+            : List<EmployeeListResponse>.from(json["results"]!.map((x) => EmployeeListResponse.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "total": total,
         "next": next,
         "previous": previous,
-        "results": results == null
-            ? []
-            : List<dynamic>.from(results!.map((x) => x.toJson())),
+        "results": results == null ? [] : List<dynamic>.from(results!.map((x) => x.toJson())),
       };
 }
 
@@ -48,8 +44,10 @@ class EmployeeListResponse {
   final int? employeeType;
   final int? user;
   final int? idProofType;
+  final String? employeeName;
 
   EmployeeListResponse({
+    this.employeeName,
     this.id,
     this.createdAt,
     this.updatedAt,
@@ -67,15 +65,11 @@ class EmployeeListResponse {
     this.idProofType,
   });
 
-  factory EmployeeListResponse.fromJson(Map<String, dynamic> json) =>
-      EmployeeListResponse(
+  factory EmployeeListResponse.fromJson(Map<String, dynamic> json) => EmployeeListResponse(
         id: json["id"],
-        createdAt: json["created_at"] == null
-            ? null
-            : DateTime.parse(json["created_at"]),
-        updatedAt: json["updated_at"] == null
-            ? null
-            : DateTime.parse(json["updated_at"]),
+        employeeName: json["employee_name"],
+        createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
         currentRating: json["current_rating"],
         code: json["code"],
         isActive: json["is_active"],
@@ -92,6 +86,7 @@ class EmployeeListResponse {
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        "employee_name": employeeName,
         "created_at": createdAt?.toIso8601String(),
         "updated_at": updatedAt?.toIso8601String(),
         "current_rating": currentRating,

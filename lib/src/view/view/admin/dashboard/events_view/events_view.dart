@@ -175,11 +175,15 @@ class EventsView extends StatelessWidget {
             return InkWell(
               highlightColor: AppColors.transparent,
               splashColor: AppColors.transparent,
-              onTap: () {
-                controller.eventsDetails(
-                    token: authcontroller.accesToken ?? "", id: controller.eventList[index].venue!.id ?? 0);
-                Navigator.pushNamed(context, RouterConstants.eventDetailRoute,
-                    arguments: controller.eventList[index]);
+              onTap: () async {
+                await controller
+                    .getEventDetail(
+                        token: authcontroller.accesToken ?? "", eventId: controller.eventList[index].id ?? 0)
+                    .then((value) {
+                  if (context.mounted) {
+                    Navigator.pushNamed(context, RouterConstants.eventDetailRoute);
+                  }
+                });
               },
               child: EventTile(
                 event: controller.eventList[index],

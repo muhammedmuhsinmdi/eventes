@@ -103,4 +103,17 @@ class RentalItemsController extends ChangeNotifier {
       rentController.text = data.rate;
     }
   }
+
+  // Delete Rental Item
+  Future deleteRentalItem(String token, int settingWageId) async {
+    try {
+      final response = await RentalItemsProvider().deleteRentalItem(token: token, id: settingWageId);
+      if (response == 204) {
+        return true;
+      }
+      return false;
+    } catch (_) {
+      return false;
+    }
+  }
 }

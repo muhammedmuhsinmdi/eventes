@@ -2,6 +2,10 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:evantez/app/app.dart';
+import 'package:evantez/src/model/components/snackbar_widget.dart';
+import 'package:evantez/src/model/core/models/event/event_site_emp_requirement/event_site_emp_req_model.dart';
+import 'package:evantez/src/model/core/models/event/event_site_settings/event_site_settings_model.dart';
 import 'package:evantez/src/model/core/models/event/new_event_model/new_event_model.dart';
 import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 import 'package:evantez/src/providers/dashboard/events_provider.dart';
@@ -14,6 +18,8 @@ import '../../serializer/models/event_site_model.dart';
 
 class EventController extends ChangeNotifier {
   bool _isLoading = false;
+
+  final ValueNotifier<String> selectedeventStatus = ValueNotifier<String>('');
 
   bool get isLoading => _isLoading;
 
@@ -40,6 +46,25 @@ class EventController extends ChangeNotifier {
     } catch (e) {
       log("$e");
       isLoading = false;
+    }
+  }
+
+  String getEventStatus(String status) {
+    switch (status) {
+      case "Upcoming - Hold":
+        return 'hold';
+      case "Upcoming - Open":
+        return "open";
+      case "Upcoming - Filled":
+        return "filled";
+      case "Ongoing":
+        return "ongoing";
+      case "Settlement":
+        return "settlement";
+      case "Completed":
+        return "completed";
+      default:
+        return '';
     }
   }
 
@@ -130,6 +155,12 @@ class EventController extends ChangeNotifier {
     }
   }
 
+  /*  Future updateEventVenue(String token, int venueId) async {
+    try {
+      final response = await EventProvider().updateEventVenue(token, venueId);
+    } catch (_) {}
+  } */
+
   Future deleteEvent({required String token, required int eventId}) async {
     try {
       final response = await EventProvider().deleteEvent(token, eventId);
@@ -140,6 +171,99 @@ class EventController extends ChangeNotifier {
       }
     } catch (_) {
       return false;
+    }
+  }
+
+  // Change Event Status
+  Future updateEvent({required String token, required int id, required EventSiteModel eventSite}) async {
+    try {
+      List<InputEventSiteEmployeeReqModel> empList = [];
+      if (eventSite.eventSiteEmployeeRequirement!.isNotEmpty) {
+        for (var empType in eventSite.eventSiteEmployeeRequirement!) {
+          empList.add(InputEventSiteEmployeeReqModel(
+            charge: empType.charge,
+            eventSite: empType.eventSite,
+            id: empType.id,
+            employeeType: empType.employeeType!.id,
+            requirementCount: empType.requirementCount,
+          ));
+        }
+      } else {
+        empList.add(InputEventSiteEmployeeReqModel(
+          charge: '',
+          employeeType: 0,
+          eventSite: eventSite.id,
+          id: 0,
+          requirementCount: 0,
+        ));
+      }
+
+      NewEventModel event = NewEventModel(
+          customerAddress: eventSite.customerAddress,
+          customerName: eventSite.customerName,
+          customerPhone: eventSite.customerPhone,
+          eventSiteEmployeeRequirement: empList,
+          eventSiteSettings: [],
+          eventTypeId: eventSite.eventType!.id,
+          normalHours: eventSite.normalHours,
+          notes: eventSite.notes,
+          overtimeHourlyCharge: eventSite.overtimeHourlyCharge,
+          status: eventSite.status,
+          venueId: eventSite.venue!.id,
+          // scheduleDateTime: '',
+          code: eventSite.code);
+      if (eventSite.eventSiteSettings!.isNotEmpty) {
+        for (var settings in eventSite.eventSiteSettings!) {
+          event.eventSiteSettings!.add(InputEventSiteSettingsModel(
+            eventSite: settings.eventSite,
+            id: settings.id,
+            service: settings.service.id,
+          ));
+        }
+      }
+
+      final response = await EventProvider().changeStatus(token, event, id);
+      if (response) {
+        await eventsDetails(token: token, id: id);
+        rootScaffoldMessengerKey.currentState!
+            .showSnackBar(snackBarWidget('Event Updated!', color: Colors.green));
+        await Future.delayed(const Duration(seconds: 2));
+      } else {
+        rootScaffoldMessengerKey.currentState!
+            .showSnackBar(snackBarWidget('Event update failed!', color: Colors.red));
+        await Future.delayed(const Duration(seconds: 2));
+      }
+    } catch (_) {}
+  }
+
+  EventSiteModel? eventModel;
+  Future getEventDetail({required String token, required int eventId}) async {
+    try {
+      final response = await EventProvider().getEventDetail(token, eventId);
+      eventModel = response;
+      selectedeventStatus.value = getEventStatusString(eventModel!.status!);
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  String getEventStatusString(String status) {
+    switch (status) {
+      case "hold":
+        return 'Upcoming - Hold';
+      case "open":
+        return "Upcoming - Open";
+      case "filled":
+        return "Upcoming - Filled";
+      case "ongoing":
+        return "Ongoing";
+      case "settlement":
+        return "Settlement";
+      case "completed":
+        return "Completed";
+      default:
+        return '';
     }
   }
 }

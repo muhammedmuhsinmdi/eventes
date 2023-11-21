@@ -1,9 +1,13 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:evantez/app/app.dart';
+import 'package:evantez/src/controller/auth/auth_controller.dart';
 import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
+import 'package:evantez/src/model/components/snackbar_widget.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
+import 'package:evantez/src/view/core/widgets/custom_dialogbox.dart';
 import 'package:evantez/src/view/view/admin/resouces/employee_type/widgets/add_employee_type.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +19,7 @@ class EmployeeTypeTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
+    final authController = context.watch<AuthController>();
     final controller = context.watch<EmployeesController>();
     return Container(
       width: kSize.width,
@@ -44,13 +49,11 @@ class EmployeeTypeTile extends StatelessWidget {
               RichText(
                 text: TextSpan(
                     text: '${controller.employeeTypes[index].code}',
-                    style: AppTypography.poppinsMedium.copyWith(
-                        fontSize: 14,
-                        color: AppColors.secondaryColor.withOpacity(0.5)),
+                    style: AppTypography.poppinsMedium
+                        .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.5)),
                     children: [
                       TextSpan(
-                          text:
-                              '  ${controller.employeeTypes[index].amount}',
+                          text: '  ${controller.employeeTypes[index].amount}',
                           style: AppTypography.poppinsMedium.copyWith(
                             fontSize: 14,
                             color: AppColors.secondaryColor,
@@ -72,9 +75,43 @@ class EmployeeTypeTile extends StatelessWidget {
                 // empTypeState.nameEditingController.text = employeeType.name!;
                 // empTypeState.codeEditingController.text = employeeType.code!;
                 // empTypeState.employeeType = employeeType;
-                controller.initStateLoading(
-                    data: controller.employeeTypes[index]);
-                AddEmployeeType(context, index).show();
+                if (item == 'edit') {
+                  controller.initStateLoading(data: controller.employeeTypes[index]);
+                  AddEmployeeType(context, index).show();
+                }
+
+                if (item == 'delete') {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return CustomDialog(
+                            title: "Are you sure you want this Employee Type?",
+                            onConfirmTxt: "Delete",
+                            onConfirm: () {
+                              // confirm
+                              if (context.mounted) {
+                                Navigator.pop(context);
+                              }
+                              controller
+                                  .deleteEmployeeTyoe(
+                                      token: authController.accesToken!,
+                                      employeeTyoeId: controller.employeeTypes[index].id!)
+                                  .then((value) async {
+                                if (value) {
+                                  await controller.employeeTypesData(token: authController.accesToken!);
+                                  rootScaffoldMessengerKey.currentState!.showSnackBar(
+                                      snackBarWidget('Successfully deleted!', color: Colors.green));
+                                  await Future.delayed(const Duration(seconds: 2));
+                                } else {
+                                  rootScaffoldMessengerKey.currentState!
+                                      .showSnackBar(snackBarWidget('Delete failed!', color: Colors.red));
+                                  await Future.delayed(const Duration(seconds: 2));
+                                }
+                              });
+                            });
+                      });
+                }
+
                 // }
                 // });
               },
@@ -96,6 +133,17 @@ class EmployeeTypeTile extends StatelessWidget {
                   value: "edit",
                   child: Text(
                     'Edit',
+                    textAlign: TextAlign.start,
+                    style: AppTypography.poppinsMedium.copyWith(),
+                  ),
+                ),
+                PopupMenuItem<String>(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: kSize.width * 0.05,
+                  ),
+                  value: "delete",
+                  child: Text(
+                    'Delete',
                     textAlign: TextAlign.start,
                     style: AppTypography.poppinsMedium.copyWith(),
                   ),

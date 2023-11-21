@@ -21,7 +21,7 @@ class CustomDialog extends StatelessWidget {
             borderRadius: BorderRadius.circular(24),
             side: const BorderSide(
               width: 1,
-              color: AppColors.secondaryColor,
+              color: AppColors.primaryColor,
             )),
         title: Text(
           title,
