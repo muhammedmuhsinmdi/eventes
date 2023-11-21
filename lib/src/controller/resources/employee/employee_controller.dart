@@ -135,6 +135,7 @@ class EmployeesController extends ChangeNotifier {
       if (response != null) {
         employeeData = response;
         selectedPosition = types.firstWhere((element) => element.id == employeeData?.employeeType);
+        await employeePaymentDetail(token: token, employeeId: employeeData!.id!);
       }
       isloading = false;
       notifyListeners();
@@ -365,6 +366,23 @@ class EmployeesController extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  //=-=-==-=-=-=-=-=-= Employee Rating History =-=-=-=-=-=
+  List<EmployeePaymentDetail>? employeePaymentDetails = List<EmployeePaymentDetail>.empty(growable: true);
+  Future<void> employeePaymentDetail({required String token, required int employeeId}) async {
+    try {
+      isloading = true;
+      notifyListeners();
+      final response = await EmployeeProvider().employeePaymentDetalis(token: token, employeeId: employeeId);
+      employeePaymentDetails = response;
+    } catch (e) {
+      log('message');
+      isloading = false;
+      notifyListeners();
+    }
+  }
+  
+
 
   //=-=-=-=-=-=-= Init State Loading =-=-=-=-==-=-=-=
   bool isEdit = false;

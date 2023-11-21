@@ -160,4 +160,21 @@ class EmployeeProvider extends EventApi {
         throw Exception('Response Error');
     }
   }
+
+  //=-=-=-=-=-=-= users_employee_payment_detalis_list =-=-=-=-=-=-=
+
+  Future<List<EmployeePaymentDetail>> employeePaymentDetalis(
+      {required String token, required int employeeId}) async {
+    Response response =
+        await get('users/users_employee_payment_detalis_list/?employee=$employeeId', headers: apiHeaders(token));
+    switch (response.statusCode) {
+      case 200:
+      case 201:
+        return (response.data['results'] as List)
+            .map((e) => EmployeePaymentDetail.fromJson(e))
+            .toList();
+      default:
+        throw Exception('Response Error');
+    }
+  }
 }
