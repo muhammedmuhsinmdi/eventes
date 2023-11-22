@@ -6,6 +6,7 @@ import 'package:evantez/src/controller/auth/auth_controller.dart';
 import 'package:evantez/src/controller/events/events_controller.dart';
 import 'package:evantez/src/model/components/snackbar_widget.dart';
 import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
+import 'package:evantez/src/serializer/models/event_model.dart';
 import 'package:evantez/src/serializer/models/event_response.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
@@ -19,7 +20,7 @@ import 'package:provider/provider.dart';
 class EventTile extends StatefulWidget {
   final bool? isBoy;
   final EventSiteModel event;
-  final EventsVenue? eventVenue;
+  final EventVenue? eventVenue;
   const EventTile({super.key, this.isBoy = false, this.eventVenue, required this.event});
 
   @override
@@ -29,7 +30,7 @@ class EventTile extends StatefulWidget {
 class _EventTileState extends State<EventTile> {
   late EventController eventController;
 
-  EventsVenue? eventVenue;
+  EventVenue? eventVenue;
 
   @override
   void initState() {
@@ -98,12 +99,12 @@ class _EventTileState extends State<EventTile> {
                           color: AppColors.secondaryColor,
                         ),
                       ),
-                      eventStatus(),
+                      eventStatus(eventController),
                     ])
                   ],
                 ),
               ),
-              SizedBox(
+              /* SizedBox(
                 width: kSize.width * 0.1,
                 child: PopupMenuButton<String>(
                   initialValue: 'delete',
@@ -165,21 +166,21 @@ class _EventTileState extends State<EventTile> {
                     ),
                   ],
                 ),
-              ),
+              ), */
             ],
           ),
           if (!widget.isBoy!) ...{
             SizedBox(
               height: kSize.height * 0.008,
             ),
-            eventProgressLine(kSize),
+            eventProgressLine(kSize, widget.event.progress!),
           }
         ],
       ),
     );
   }
 
-  Widget eventProgressLine(Size kSize) {
+  Widget eventProgressLine(Size kSize, int progress) {
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
@@ -187,14 +188,14 @@ class _EventTileState extends State<EventTile> {
       ),
       height: kSize.height * 0.005,
       width: kSize.height * 0.085,
-      child: const LinearProgressIndicator(
-        value: 0.86,
+      child: LinearProgressIndicator(
+        value: double.parse("$progress"),
         color: AppColors.statusSuccess,
       ),
     );
   }
 
-  Widget eventStatus() {
+  Widget eventStatus(EventController controller) {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppConstants.marginSpace,

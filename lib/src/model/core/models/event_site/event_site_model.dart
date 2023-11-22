@@ -20,9 +20,9 @@ class EventSiteModel {
   String? customerPhone;
   String? notes;
   String? normalHours;
-  DateTime? scheduledDate;
   String? overtimeHourlyCharge;
   String? status;
+  int? progress;
 
   EventSiteModel({
     this.id,
@@ -41,8 +41,8 @@ class EventSiteModel {
     this.notes,
     this.normalHours,
     this.overtimeHourlyCharge,
-    this.scheduledDate,
     this.status,
+    this.progress,
   });
 
   factory EventSiteModel.fromJson(Map<String, dynamic> json) => EventSiteModel(
@@ -57,7 +57,8 @@ class EventSiteModel {
       createdAt: DateTime.parse(json["created_at"]),
       updatedAt: DateTime.parse(json["updated_at"]),
       code: json["code"],
-      scheduledDatetime: DateTime.parse(json["scheduled_datetime"]),
+      scheduledDatetime:
+          json["scheduled_datetime"] != null ? DateTime.parse(json["scheduled_datetime"]) : DateTime.now(),
       customerName: json["customer_name"],
       customerAddress: json["customer_address"],
       customerPhone: json["customer_phone"],
@@ -65,7 +66,7 @@ class EventSiteModel {
       normalHours: json["normal_hours"],
       overtimeHourlyCharge: json["overtime_hourly_charge"],
       status: json["status"],
-      scheduledDate: json["scheduled_date"]);
+      progress: json["progress"]);
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -78,7 +79,7 @@ class EventSiteModel {
         "created_at": createdAt!.toIso8601String(),
         "updated_at": updatedAt!.toIso8601String(),
         "code": code,
-        "scheduled_datetime": scheduledDatetime!.toIso8601String(),
+        "scheduled_datetime": "${scheduledDatetime!.toUtc()}",
         "customer_name": customerName,
         "customer_address": customerAddress,
         "customer_phone": customerPhone,
@@ -86,6 +87,7 @@ class EventSiteModel {
         "normal_hours": normalHours,
         "overtime_hourly_charge": overtimeHourlyCharge,
         "status": status,
+        "progress": progress ?? 0,
       };
 }
 

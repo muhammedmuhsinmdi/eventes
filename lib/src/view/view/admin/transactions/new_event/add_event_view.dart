@@ -104,7 +104,7 @@ class AddEventView extends StatelessWidget {
                       ) */
                       ,
                     ),
-                    // dateTime(kSize: kSize, controller: addEventContoller),
+                    dateTime(kSize: kSize, controller: addEventContoller),
                     Padding(
                       padding: EdgeInsets.only(top: kSize.height * 0.024, bottom: kSize.height * 0.024),
                       child: CustomTextField(
@@ -352,6 +352,8 @@ class AddEventView extends StatelessWidget {
                     controller.eventTime!.minute);
                 // controller.event.scheduleDateTime = controller.eventDateTime!.toIso8601String();
                 log(controller.eventDateTime!.toIso8601String());
+                controller.event.scheduledDatetime =
+                    DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(controller.eventDateTime!);
                 // DateFormat('yyyy-MM-dd HH:mm:ss').format(controller.eventDateTime!);
                 // log(controller.event.scheduleDateTime!);
                 /*  controller.event.scheduleDateTime = DateTime(

@@ -132,6 +132,8 @@ class _EventDetailViewState extends State<EventDetailView> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             CustomDatePicker(
+                              readOnly: true,
+
                               controller:
                                   controller.scheduledDate, //  TextEditingController(text: "03 Nov, 2023"),
                               label: "Date",
@@ -141,6 +143,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                               },
                             ),
                             CustomDatePicker(
+                              readOnly: true,
                               controller:
                                   controller.scheduledTime, //TextEditingController(text: '02:30PM-11:30 PM'),
                               label: "Time",

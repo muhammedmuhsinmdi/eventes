@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:evantez/src/model/core/models/event/event_site_emp_requirement/event_site_emp_req_model.dart';
+import 'package:evantez/src/model/core/models/event/new_event_model/new_event_model.dart';
 import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
@@ -18,7 +18,7 @@ class CustomServiceCounter extends StatefulWidget {
   final bool? required;
   final Color? labelTextColor;
   final List<EmployeesTypesList> items;
-  final InputEventSiteEmployeeReqModel? employeeRequirement;
+  final EventSiteEmployeeRequirement? employeeRequirement;
   final bool? isEmployeeAssign;
   final Function()? onSelected;
   final Function(int, num)? countCallBack;

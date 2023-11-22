@@ -1,5 +1,4 @@
 import 'package:evantez/app/app.dart';
-import 'package:evantez/app/router/router_constant.dart';
 import 'package:evantez/src/controller/auth/auth_controller.dart';
 import 'package:evantez/src/controller/events/event_type_controller.dart';
 import 'package:evantez/src/model/components/snackbar_widget.dart';
@@ -202,6 +201,8 @@ AppBar appBar(BuildContext context, Size kSize, EventTypeController controller) 
             controller.intiLoading();
             if (context.mounted) {
               showModalBottomSheet(
+                  isScrollControlled: true,
+                  enableDrag: true,
                   shape: const RoundedRectangleBorder(
                       borderRadius:
                           BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24))),

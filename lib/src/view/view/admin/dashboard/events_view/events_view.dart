@@ -170,8 +170,6 @@ class EventsView extends StatelessWidget {
               right: AppConstants.baseBorderRadius),
           itemBuilder: (context, index) {
             log(">>>>>  ${controller.eventList[index].toJson()} ");
-            var eventVenue = controller.eventVenues
-                .firstWhere((element) => element.id == controller.eventList[index].venue!.id);
             return InkWell(
               highlightColor: AppColors.transparent,
               splashColor: AppColors.transparent,
@@ -187,7 +185,7 @@ class EventsView extends StatelessWidget {
               },
               child: EventTile(
                 event: controller.eventList[index],
-                eventVenue: eventVenue,
+                eventVenue: controller.eventList[index].venue,
                 // controller.eventVenues.firstWhere((e) => e.id == controller.eventList[index].venue),
                 // eventVenue:
                 //           ,

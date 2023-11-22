@@ -1,5 +1,3 @@
-
-
 //-=-=-=-=-=-= EventType Model -=-=-=-=-=-=-=-=-=
 
 class Eventtype {
@@ -31,26 +29,15 @@ class Eventtype {
 
 class EventVenue {
   int? id;
-  String? createdAt;
-  String? updatedAt;
   String? name;
   String? image;
   String? lat;
   String? log;
 
-  EventVenue(
-      {this.id,
-      this.createdAt,
-      this.updatedAt,
-      this.name,
-      this.image,
-      this.lat,
-      this.log});
+  EventVenue({this.id, this.name, this.image, this.lat, this.log});
 
   EventVenue.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
     name = json['name'];
     image = json['image'];
     lat = json['lat'];
@@ -59,21 +46,16 @@ class EventVenue {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    data['name'] = this.name;
-    data['image'] = this.image;
-    data['lat'] = this.lat;
-    data['log'] = this.log;
+    data['id'] = id;
+    data['name'] = name;
+    data['image'] = image;
+    data['lat'] = lat;
+    data['log'] = log;
     return data;
   }
 }
 
-
-
 //-=-=-=-=-=-=-=-= EmployeeType Requirement Model -=-=-=-=--=-=-=
-
 
 class EmpType {
   int? id;
@@ -83,13 +65,7 @@ class EmpType {
   String? rate;
   String? code;
 
-  EmpType(
-      {this.id,
-      this.createdAt,
-      this.updatedAt,
-      this.name,
-      this.rate,
-      this.code});
+  EmpType({this.id, this.createdAt, this.updatedAt, this.name, this.rate, this.code});
 
   EmpType.fromJson(Map<String, dynamic> json) {
     id = json['id'];

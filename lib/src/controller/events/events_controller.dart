@@ -1,17 +1,15 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:evantez/app/app.dart';
 import 'package:evantez/src/model/components/snackbar_widget.dart';
-import 'package:evantez/src/model/core/models/event/event_site_emp_requirement/event_site_emp_req_model.dart';
-import 'package:evantez/src/model/core/models/event/event_site_settings/event_site_settings_model.dart';
 import 'package:evantez/src/model/core/models/event/new_event_model/new_event_model.dart';
 import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 import 'package:evantez/src/providers/dashboard/events_provider.dart';
 import 'package:evantez/src/serializer/models/event_details.response.dart';
 import 'package:evantez/src/serializer/models/event_response.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../serializer/models/event_model.dart';
 import '../../serializer/models/event_site_model.dart';
@@ -177,46 +175,39 @@ class EventController extends ChangeNotifier {
   // Change Event Status
   Future updateEvent({required String token, required int id, required EventSiteModel eventSite}) async {
     try {
-      List<InputEventSiteEmployeeReqModel> empList = [];
+      List<EventSiteEmployeeRequirement> empList = [];
       if (eventSite.eventSiteEmployeeRequirement!.isNotEmpty) {
         for (var empType in eventSite.eventSiteEmployeeRequirement!) {
-          empList.add(InputEventSiteEmployeeReqModel(
+          empList.add(EventSiteEmployeeRequirement(
             charge: empType.charge,
-            eventSite: empType.eventSite,
-            id: empType.id,
             employeeType: empType.employeeType!.id,
             requirementCount: empType.requirementCount,
           ));
         }
       } else {
-        empList.add(InputEventSiteEmployeeReqModel(
+        empList.add(EventSiteEmployeeRequirement(
           charge: '',
           employeeType: 0,
-          eventSite: eventSite.id,
-          id: 0,
           requirementCount: 0,
         ));
       }
 
       NewEventModel event = NewEventModel(
-          customerAddress: eventSite.customerAddress,
-          customerName: eventSite.customerName,
-          customerPhone: eventSite.customerPhone,
-          eventSiteEmployeeRequirement: empList,
-          eventSiteSettings: [],
-          eventTypeId: eventSite.eventType!.id,
-          normalHours: eventSite.normalHours,
-          notes: eventSite.notes,
-          overtimeHourlyCharge: eventSite.overtimeHourlyCharge,
-          status: eventSite.status,
-          venueId: eventSite.venue!.id,
-          // scheduleDateTime: '',
-          code: eventSite.code);
+        customerAddress: eventSite.customerAddress,
+        customerName: eventSite.customerName,
+        customerPhone: eventSite.customerPhone,
+        eventSiteEmployeeRequirement: empList,
+        eventSiteSettings: [],
+        eventTypeId: eventSite.eventType!.id,
+        normalHours: eventSite.normalHours,
+        notes: eventSite.notes,
+        overtimeHourlyCharge: eventSite.overtimeHourlyCharge,
+        status: eventSite.status,
+        venueId: eventSite.venue!.id,
+      );
       if (eventSite.eventSiteSettings!.isNotEmpty) {
         for (var settings in eventSite.eventSiteSettings!) {
-          event.eventSiteSettings!.add(InputEventSiteSettingsModel(
-            eventSite: settings.eventSite,
-            id: settings.id,
+          event.eventSiteSettings!.add(EventSiteSetting(
             service: settings.service.id,
           ));
         }
@@ -241,6 +232,8 @@ class EventController extends ChangeNotifier {
     try {
       final response = await EventProvider().getEventDetail(token, eventId);
       eventModel = response;
+      scheduledDate.text = DateFormat("dd MMM, yyyy").format(eventModel!.scheduledDatetime!);
+      scheduledTime.text = DateFormat('hh:mm a').format(eventModel!.scheduledDatetime!);
       selectedeventStatus.value = getEventStatusString(eventModel!.status!);
       notifyListeners();
     } catch (e) {

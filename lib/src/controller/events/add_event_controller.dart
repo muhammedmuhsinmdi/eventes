@@ -22,19 +22,16 @@ class AddEventController extends ChangeNotifier {
     selectedEventType = null;
     selectedEventVenue = null;
     event = NewEventModel()
-      // ..scheduleDateTime = DateTime.now()
-      ..code = ''
+      ..scheduledDatetime = ""
       ..eventTypeId = null
       ..eventSiteSettings = []
       ..status = 'hold'
       ..venueId = 0
       ..eventSiteSettings = []
       ..eventSiteEmployeeRequirement = [
-        InputEventSiteEmployeeReqModel(
+        EventSiteEmployeeRequirement(
           charge: '',
           employeeType: 0,
-          eventSite: 0,
-          id: 0,
           requirementCount: 0,
         )
       ];
@@ -51,33 +48,28 @@ class AddEventController extends ChangeNotifier {
     normalHours.text = response.normalHours!;
     overTimeRate.text = response.overtimeHourlyCharge!;
     customerPhone.text = response.customerPhone!;
-    if (response.scheduledDate != null) {
-      scheduledDate.text = DateFormat('dd MMM, yyyy').format(response.scheduledDate!);
-      scheduledTime.text = DateFormat('hh:mm a').format(response.scheduledDate!);
+    if (response.scheduledDatetime != null) {
+      scheduledDate.text = DateFormat('dd MMM, yyyy').format(response.scheduledDatetime!);
+      scheduledTime.text = DateFormat('hh:mm a').format(response.scheduledDatetime!);
     }
-    List<InputEventSiteEmployeeReqModel> empList = [];
+    List<EventSiteEmployeeRequirement> empList = [];
     if (response.eventSiteEmployeeRequirement!.isNotEmpty) {
       for (var empType in response.eventSiteEmployeeRequirement!) {
-        empList.add(InputEventSiteEmployeeReqModel(
+        empList.add(EventSiteEmployeeRequirement(
           charge: empType.charge,
-          eventSite: empType.eventSite,
-          id: empType.id,
           employeeType: empType.employeeType!.id,
           requirementCount: empType.requirementCount,
         ));
       }
     } else {
-      empList.add(InputEventSiteEmployeeReqModel(
+      empList.add(EventSiteEmployeeRequirement(
         charge: '',
         employeeType: 0,
-        eventSite: response.id,
-        id: 0,
         requirementCount: 0,
       ));
     }
 
     event = NewEventModel(
-      code: response.code,
       /*  scheduleDateTime: response.scheduledDate != null
           ? DateFormat('yyyy-MM-dd HH:mm:ss').format(response.scheduledDate!)
           : "", */
@@ -97,9 +89,7 @@ class AddEventController extends ChangeNotifier {
     );
     if (response.eventSiteSettings!.isNotEmpty) {
       for (var settings in response.eventSiteSettings!) {
-        event.eventSiteSettings!.add(InputEventSiteSettingsModel(
-          eventSite: settings.eventSite,
-          id: settings.id,
+        event.eventSiteSettings!.add(EventSiteSetting(
           service: settings.service.id,
         ));
       }

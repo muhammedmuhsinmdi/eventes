@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:evantez/src/controller/events/add_event_controller.dart';
 import 'package:evantez/src/model/core/models/event/event_service_boys/event_service_boys_model.dart';
 import 'package:evantez/src/model/core/models/event/event_site_emp_requirement/event_site_emp_req_model.dart';
+import 'package:evantez/src/model/core/models/event/new_event_model/new_event_model.dart';
 import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 
 import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
@@ -87,12 +88,10 @@ class _ServiceBoysState extends State<ServiceBoys> {
                       if (serviceBoysCount.value < serviceItems.length) {
                         serviceBoysCount.value++;
                         addEventController.event.eventSiteEmployeeRequirement!
-                            .add(InputEventSiteEmployeeReqModel(
+                            .add(EventSiteEmployeeRequirement(
                           charge: '',
                           employeeType: 0,
                           requirementCount: 0,
-                          eventSite: addEventController.eventId != 0 ? addEventController.eventId : 0,
-                          id: 0,
                         ));
                         log(" list count >>> ${addEventController.event.eventSiteEmployeeRequirement!.length}");
                         // newEventController.eventModel.eventSiteEmployeeRequirement!.add(employeeReqModel!);
