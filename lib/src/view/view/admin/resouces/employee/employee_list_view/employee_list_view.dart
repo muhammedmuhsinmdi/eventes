@@ -1,4 +1,5 @@
 import 'package:evantez/app/router/router_constant.dart';
+import 'package:evantez/src/controller/resources/employee/employee_details_controller.dart';
 import 'package:evantez/src/model/helper/debounce.dart';
 import 'package:evantez/src/controller/auth/auth_controller.dart';
 import 'package:evantez/src/controller/resources/employee/add_employee_controller.dart';
@@ -141,11 +142,11 @@ class EmployeeListView extends StatelessWidget {
                       context: context,
                       builder: (context) {
                         return EmployeeFilter();
-                      }).then((value)  {
-                        if(value){
-                          controller.employeeList(token: auth.accesToken!);
-                        }
-                      });
+                      }).then((value) {
+                    if (value) {
+                      controller.employeeList(token: auth.accesToken!);
+                    }
+                  });
                   // EmployeeFilter(context).show();
                 },
                 child: SvgPicture.asset(
@@ -173,20 +174,21 @@ class EmployeeListView extends StatelessWidget {
               return InkWell(
                 highlightColor: AppColors.transparent,
                 splashColor: AppColors.transparent,
-                onTap: () {
+                onTap: () async {
                   //
-
-                  controller.employeeDetails(
-                      token: auth.accesToken ?? '',
-                      id: controller.employeeLists[index].id ?? 0);
-                  controller.employeePayments(
-                      token: auth.accesToken ?? '',
-                      id: controller.employeeLists[index].id ?? 0);
-                  Navigator.pushNamed(
-                    context,
-                    RouterConstants.employeeDetailViewRoute,
-                    arguments: controller.employeeLists[index].id ?? 0,
-                  );
+                  await context
+                      .read<EmployeeDetasilController>()
+                      .getEmployeeDetails(
+                          token: auth.accesToken ?? '',
+                          employeeId: controller.employeeLists[index].id ?? 0);
+                  if (context.mounted) {
+                    Navigator.pushNamed(
+                      context,
+                      RouterConstants.employeeDetailViewRoute,
+                      arguments:  context
+                      .read<EmployeeDetasilController>().employeeDetailsModel,
+                    ).then((value) async => await controller.employeeList(token: auth.accesToken??""));
+                  }
                 },
                 child: EmployeeTile(
                   index: index,

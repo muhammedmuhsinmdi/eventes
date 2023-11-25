@@ -1,9 +1,11 @@
 import 'package:evantez/app/router/router_constant.dart';
 import 'package:evantez/src/model/core/models/menu/menu_model.dart';
 import 'package:evantez/src/model/core/models/signin/pm_signin.dart';
+import 'package:evantez/src/serializer/models/employee/employee_details/employee_details_model.dart';
 import 'package:evantez/src/view/view/admin/catering/food_items/widgets/food_item_filter.dart';
 import 'package:evantez/src/view/view/admin/dashboard/profile_view/admin_profile_edit/admin_profile_edit_view.dart';
 import 'package:evantez/src/view/view/admin/resouces/employee/add_employee_view/add_employee_view.dart';
+import 'package:evantez/src/view/view/admin/resouces/employee/employee_view/employee_detail_view.dart';
 import 'package:evantez/src/view/view/admin/resouces/event_types/event_type_list.dart';
 import 'package:evantez/src/view/view/admin/resouces/event_venues/event_venue_listing.dart';
 import 'package:evantez/src/view/view/admin/resouces/event_venues/new_event_venue.dart';
@@ -91,9 +93,9 @@ class AppRouter {
           builder: (_) => const EmployeeListView(),
         );
       case RouterConstants.employeeDetailViewRoute:
-        final args = settings.arguments as int;
-        return MaterialPageRoute<EmployeeDetailView>(
-          builder: (_) => EmployeeDetailView(id: args),
+      final args = settings.arguments as EmployeeDetailsModel;
+        return MaterialPageRoute<EmployeeDetailsView>(
+          builder: (_) => EmployeeDetailsView(employeeDetails: args),
         );
       case RouterConstants.addEmployeeViewRoute:
         return MaterialPageRoute<AddEmployeeView>(

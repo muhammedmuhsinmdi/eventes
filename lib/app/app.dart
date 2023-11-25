@@ -7,6 +7,7 @@ import 'package:evantez/src/controller/catering/food_items_repository.dart';
 import 'package:evantez/src/controller/events/new_event_venue_controller.dart';
 import 'package:evantez/src/controller/resources/employee/add_employee_controller.dart';
 import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
+import 'package:evantez/src/controller/resources/employee/employee_details_controller.dart';
 import 'package:evantez/src/controller/resources/rentalitem_controller.dart';
 import 'package:evantez/src/controller/resources/settingswages_controller.dart';
 import 'package:evantez/src/controller/auth/auth_controller.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AddEventController()),
         ChangeNotifierProvider(create: (_) => EventVenueController()),
         ChangeNotifierProvider(create: (_) => EventTypeController()),
+        ChangeNotifierProvider(create: (_) => EmployeeDetasilController()),
       ],
       child: MaterialApp(
         scaffoldMessengerKey: rootScaffoldMessengerKey,

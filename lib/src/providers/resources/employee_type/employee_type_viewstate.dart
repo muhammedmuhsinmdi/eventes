@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:evantez/src/model/core/base_api_utilities.dart';
+import 'package:evantez/src/serializer/models/employee/employee_details/employee_details_model.dart';
 import 'package:evantez/src/serializer/models/employee/employee_details_response.dart';
 import 'package:evantez/src/serializer/models/employee/employee_filter_model.dart';
 import 'package:evantez/src/serializer/models/employee/employee_list_response.dart';
@@ -54,6 +55,18 @@ class EmployeeProvider extends EventApi {
     }
   }
 
+  //=-=-=-=-=-=-=-= Employees Types =-=-=-=-=-=-=
+  Future<EmployeesTypesList> getEmployeeType({required String token, required int typeId}) async {
+    Response response = await get('users/employee-type/$typeId', headers: apiHeaders(token));
+    switch (response.statusCode) {
+      case 200:
+        return EmployeesTypesList.fromJson(response.data);
+
+      default:
+        throw Exception('Response Error');
+    }
+  }
+
   //=-=-=-=-=-=-= Employee Details =-=-=-=-=-=-=
   Future<EmployeeBank> employeePayment({required String token, required int id}) async {
     Response response = await get('users/employee-payment-detail/$id', headers: apiHeaders(token));
@@ -71,6 +84,21 @@ class EmployeeProvider extends EventApi {
     var dd = json.encode(jsonData);
     Response response =
         await post('users/employee/', data: json.encode(jsonData), headers: apiHeaders(token));
+    switch (response.statusCode) {
+      case 200:
+      case 201:
+        return EmployeeDetails.fromJson(response.data);
+      default:
+        throw Exception('Response Error');
+    }
+  }
+
+   //=-=-=-=-=-=-= Employee Edit =-=-=-=-=-=-=
+  Future<EmployeeDetails> editEmployee({required String token, required EmployeeDetailsModel data}) async {
+    var jsonData = data.toJson();
+    var dd = json.encode(jsonData);
+    Response response =
+        await patch('users/employee/${data.id}/', data: json.encode(jsonData), headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
       case 201:
@@ -163,7 +191,7 @@ class EmployeeProvider extends EventApi {
   Future<List<EmployeePaymentDetail>> employeePaymentDetalis(
       {required String token, required int employeeId}) async {
     Response response =
-        await get('users/users_employee_payment_detalis_list/?employee=$employeeId', headers: apiHeaders(token));
+        await get('users/employee-payment-detalis/?employee=$employeeId', headers: apiHeaders(token));
     switch (response.statusCode) {
       case 200:
       case 201:

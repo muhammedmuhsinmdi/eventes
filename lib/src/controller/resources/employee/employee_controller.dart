@@ -131,16 +131,25 @@ class EmployeesController extends ChangeNotifier {
     try {
       isloading = true;
       selectedPosition = null;
-      final response = await EmployeeProvider().loadEmployeeDetails(token: token, id: 1);
+      final response = await EmployeeProvider().loadEmployeeDetails(token: token, id: id);
       if (response != null) {
         employeeData = response;
-        selectedPosition = types.firstWhere((element) => element.id == employeeData?.employeeType);
         await employeePaymentDetail(token: token, employeeId: employeeData!.id!);
+        selectedPosition = types.firstWhere((element) => element.id == employeeData?.employeeType);
       }
       isloading = false;
       notifyListeners();
     } catch (e) {
       log('message');
+      isloading = false;
+    }
+  }
+
+  Future getEmployeeDetails({required String token, required int employeeId}) async{
+    try {
+      isloading = true;
+      
+    } catch (e) {
       isloading = false;
     }
   }

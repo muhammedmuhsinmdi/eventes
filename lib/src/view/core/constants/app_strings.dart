@@ -51,6 +51,7 @@ class AppStrings {
   static const String bankDetails = "Bank Details";
   static const String panCardText = 'Id Number';
   static const String totalEarningsText = "Total Earnings";
+  static const String totalDueText = "Total Due";
   static const String employeeTypeText = 'Employee Type';
   static const String changePositionEmp = 'Change Position';
   static const String applicationText = "Application";
