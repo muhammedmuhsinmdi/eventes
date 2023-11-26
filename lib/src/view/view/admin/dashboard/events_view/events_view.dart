@@ -169,7 +169,7 @@ class EventsView extends StatelessWidget {
               left: AppConstants.baseBorderRadius,
               right: AppConstants.baseBorderRadius),
           itemBuilder: (context, index) {
-            log(">>>>>  ${controller.eventList[index].toJson()} ");
+            // log(">>>>>  ${controller.eventList[index].toJson()} ");
             return InkWell(
               highlightColor: AppColors.transparent,
               splashColor: AppColors.transparent,
@@ -186,9 +186,6 @@ class EventsView extends StatelessWidget {
               child: EventTile(
                 event: controller.eventList[index],
                 eventVenue: controller.eventList[index].venue,
-                // controller.eventVenues.firstWhere((e) => e.id == controller.eventList[index].venue),
-                // eventVenue:
-                //           ,
               ),
             );
           }),

@@ -1,5 +1,7 @@
 import 'package:evantez/app/router/router_constant.dart';
 import 'package:evantez/src/controller/events/events_controller.dart';
+import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
+import 'package:evantez/src/serializer/models/employee/employee_list_response.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
@@ -18,6 +20,7 @@ class EventFilledSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final employeeController = context.watch<EmployeesController>();
     final eventController = context.watch<EventController>();
     final kSize = MediaQuery.of(context).size;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -64,7 +67,7 @@ class EventFilledSlot extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '3/${eventController.eventModel!.eventSiteEmployeeRequirement![index].requirementCount}',
+                          '${eventController.getEventEmployeesByEventType(eventController.eventModel!.eventSiteEmployeeRequirement![index].employeeType!.id!, employeeController.employeeLists, employeeController.employeeTypes).length}/${eventController.eventModel!.eventSiteEmployeeRequirement![index].requirementCount}',
                           style: AppTypography.poppinsRegular.copyWith(
                             color: AppColors.secondaryColor.withOpacity(0.6),
                             fontSize: 16,
@@ -77,8 +80,19 @@ class EventFilledSlot extends StatelessWidget {
                     ),
                     Column(
                       children: List.generate(
-                        2,
-                        (index) => Container(
+                          eventController
+                              .getEventEmployeesByEventType(
+                                  eventController
+                                      .eventModel!.eventSiteEmployeeRequirement![index].employeeType!.id!,
+                                  employeeController.employeeLists,
+                                  employeeController.employeeTypes)
+                              .length, (empIndex) {
+                        EmployeeListResponse selectedEmployee = eventController.getEventEmployeesByEventType(
+                            eventController
+                                .eventModel!.eventSiteEmployeeRequirement![index].employeeType!.id!,
+                            employeeController.employeeLists,
+                            employeeController.employeeTypes)[empIndex];
+                        return Container(
                           clipBehavior: Clip.antiAlias,
                           padding: EdgeInsets.symmetric(
                             horizontal: kSize.height * 0.01,
@@ -167,7 +181,7 @@ class EventFilledSlot extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Suhail',
+                                      selectedEmployee.employeeName ?? '',
                                       overflow: TextOverflow.ellipsis,
                                       style: AppTypography.poppinsMedium.copyWith(
                                         fontSize: 14,
@@ -180,7 +194,7 @@ class EventFilledSlot extends StatelessWidget {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          'Head',
+                                          "${selectedEmployee.empType!.name}",
                                           overflow: TextOverflow.ellipsis,
                                           style: AppTypography.poppinsRegular.copyWith(
                                             fontSize: 12,
@@ -203,8 +217,9 @@ class EventFilledSlot extends StatelessWidget {
                                       height: kSize.height * 0.01,
                                       width: kSize.height * 0.01,
                                       decoration: BoxDecoration(
-                                        color:
-                                            index != 2 ? AppColors.statusSuccess : AppColors.statusCritical,
+                                        color: selectedEmployee.eventSiteEmp!.isCaptain!
+                                            /* index != 2 */ ? AppColors.statusSuccess
+                                            : AppColors.statusCritical,
                                         shape: BoxShape.circle,
                                       ),
                                     ),
@@ -216,8 +231,8 @@ class EventFilledSlot extends StatelessWidget {
                               ),
                             ],
                           ),
-                        ),
-                      ),
+                        );
+                      }),
                     ),
                     SizedBox(
                       height: kSize.height * 0.016,

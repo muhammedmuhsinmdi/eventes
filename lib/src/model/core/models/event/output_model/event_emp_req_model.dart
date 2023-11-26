@@ -1,13 +1,14 @@
 import 'package:evantez/src/model/core/models/event/event_type/event_type_model.dart';
 
-class EventSiteEmployeeRequirement {
+class ResponseEventSiteEmployeeRequirement {
   int? id;
   int? requirementCount;
   String? charge;
   int? eventSite;
   EventTypeModel? employeeType;
+  
 
-  EventSiteEmployeeRequirement({
+  ResponseEventSiteEmployeeRequirement({
     this.id,
     this.requirementCount,
     this.charge,
@@ -15,7 +16,8 @@ class EventSiteEmployeeRequirement {
     this.employeeType,
   });
 
-  factory EventSiteEmployeeRequirement.fromJson(Map<String, dynamic> json) => EventSiteEmployeeRequirement(
+  factory ResponseEventSiteEmployeeRequirement.fromJson(Map<String, dynamic> json) =>
+      ResponseEventSiteEmployeeRequirement(
         id: json["id"],
         requirementCount: json["requirement_count"],
         charge: json["charge"],

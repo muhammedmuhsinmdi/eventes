@@ -80,9 +80,9 @@ class NewEventType extends StatelessWidget {
                   },
                 ),
                 SizedBox(
-                  height: kSize.height * 0.1,
+                  height: kSize.height * 0.08,
                 ),
-                // const Spacer(),
+                // const Spacer(), 
                 newEventTypeController.isLoading
                     ? const Center(
                         child: CircularProgressIndicator(color: AppColors.primaryColor),

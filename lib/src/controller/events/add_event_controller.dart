@@ -29,11 +29,11 @@ class AddEventController extends ChangeNotifier {
       ..venueId = 0
       ..eventSiteSettings = []
       ..eventSiteEmployeeRequirement = [
-        EventSiteEmployeeRequirement(
+        /* EventSiteEmployeeRequirement(
           charge: '',
           employeeType: 0,
           requirementCount: 0,
-        )
+        ) */
       ];
   }
 

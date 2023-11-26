@@ -1,3 +1,7 @@
+import 'package:evantez/src/model/core/models/employee/assing_event_employee.dart';
+import 'package:evantez/src/model/core/models/employeetype/employeetype_model.dart';
+import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
+
 class EmployeeResponse {
   final int? total;
   final dynamic next;
@@ -45,6 +49,8 @@ class EmployeeListResponse {
   final int? user;
   final int? idProofType;
   final String? employeeName;
+  EventAssignEmployee? eventSiteEmp;
+  EmployeesTypesList? empType;
 
   EmployeeListResponse({
     this.employeeName,
@@ -63,6 +69,8 @@ class EmployeeListResponse {
     this.employeeType,
     this.user,
     this.idProofType,
+    this.eventSiteEmp,
+    this.empType,
   });
 
   factory EmployeeListResponse.fromJson(Map<String, dynamic> json) => EmployeeListResponse(

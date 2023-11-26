@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:evantez/app/app.dart';
+import 'package:evantez/src/model/core/models/employeetype/employeetype_model.dart';
 import 'package:evantez/src/model/helper/debounce.dart';
 import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
 import 'package:evantez/src/serializer/models/employee/employee_details_response.dart';
@@ -145,10 +146,9 @@ class EmployeesController extends ChangeNotifier {
     }
   }
 
-  Future getEmployeeDetails({required String token, required int employeeId}) async{
+  Future getEmployeeDetails({required String token, required int employeeId}) async {
     try {
       isloading = true;
-      
     } catch (e) {
       isloading = false;
     }
@@ -403,8 +403,6 @@ class EmployeesController extends ChangeNotifier {
       notifyListeners();
     }
   }
-  
-
 
   //=-=-=-=-=-=-= Init State Loading =-=-=-=-==-=-=-=
   bool isEdit = false;
@@ -421,4 +419,17 @@ class EmployeesController extends ChangeNotifier {
       amount.text = data.amount ?? '';
     }
   }
+
+  /* getEmployeeTypeById(int empType) async {
+    EmployeesTypesList? employeeType;
+    if (employeeTypes.isNotEmpty) {
+      employeeType = employeeTypes.firstWhere((e) => e.id == empType);
+    } else {
+      await employeeTypesData(token: token);
+      if (employeeTypes.isNotEmpty) {
+        employeeType = employeeTypes.firstWhere((e) => e.id == empType);
+      }
+    }
+    return employeeType!;
+  } */
 }

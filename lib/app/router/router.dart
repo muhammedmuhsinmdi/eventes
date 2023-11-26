@@ -32,7 +32,6 @@ import 'package:evantez/src/view/view/admin/reports/event_dues/event_dues_report
 import 'package:evantez/src/view/view/admin/reports/event_profit/employee_profit_report.dart';
 import 'package:evantez/src/view/view/admin/resouces/employee/employee_application_view/employee_application_view.dart';
 import 'package:evantez/src/view/view/admin/resouces/employee/employee_list_view/employee_list_view.dart';
-import 'package:evantez/src/view/view/admin/resouces/employee/employee_view/employee_view.dart';
 import 'package:evantez/src/view/view/admin/dashboard/event_detail_view/emp_performace/emp_performance.dart';
 import 'package:evantez/src/view/view/admin/dashboard/event_detail_view/event_detail_view.dart';
 import 'package:evantez/src/view/view/admin/dashboard/notification_view/notificaton_view.dart';

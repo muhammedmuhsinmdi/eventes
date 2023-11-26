@@ -12,8 +12,8 @@ class EventSite {
   String? notes;
   String? normalHours;
   String? overtimeHourlyCharge;
-  List<EventSiteSettings>? eventSiteSettings;
-  List<EventSiteEmployeeRequirement>? eventSiteEmployeeRequirement;
+  List<ResponseEventSiteSettings>? eventSiteSettings;
+  List<ResponseEventSiteEmployeeRequirement>? eventSiteEmployeeRequirement;
   String? code;
   String? status;
 
@@ -44,15 +44,15 @@ class EventSite {
     normalHours = json['normal_hours'];
     overtimeHourlyCharge = json['overtime_hourly_charge'];
     if (json['event_site_settings'] != null) {
-      eventSiteSettings = <EventSiteSettings>[];
+      eventSiteSettings = <ResponseEventSiteSettings>[];
       json['event_site_settings'].forEach((v) {
-        eventSiteSettings!.add(EventSiteSettings.fromJson(v));
+        eventSiteSettings!.add(ResponseEventSiteSettings.fromJson(v));
       });
     }
     if (json['event_site_employee_requirement'] != null) {
-      eventSiteEmployeeRequirement = <EventSiteEmployeeRequirement>[];
+      eventSiteEmployeeRequirement = <ResponseEventSiteEmployeeRequirement>[];
       json['event_site_employee_requirement'].forEach((v) {
-        eventSiteEmployeeRequirement!.add(EventSiteEmployeeRequirement.fromJson(v));
+        eventSiteEmployeeRequirement!.add(ResponseEventSiteEmployeeRequirement.fromJson(v));
       });
     }
     code = json['code'];
@@ -82,22 +82,23 @@ class EventSite {
   }
 }
 
-EventSiteSettings eventSiteSettingsFromJson(String str) => EventSiteSettings.fromJson(json.decode(str));
+ResponseEventSiteSettings eventSiteSettingsFromJson(String str) =>
+    ResponseEventSiteSettings.fromJson(json.decode(str));
 
-String eventSiteSettingsToJson(EventSiteSettings data) => json.encode(data.toJson());
+String eventSiteSettingsToJson(ResponseEventSiteSettings data) => json.encode(data.toJson());
 
-class EventSiteSettings {
+class ResponseEventSiteSettings {
   int id;
   int eventSite;
   ServiceModel service;
 
-  EventSiteSettings({
+  ResponseEventSiteSettings({
     required this.id,
     required this.eventSite,
     required this.service,
   });
 
-  factory EventSiteSettings.fromJson(Map<String, dynamic> json) => EventSiteSettings(
+  factory ResponseEventSiteSettings.fromJson(Map<String, dynamic> json) => ResponseEventSiteSettings(
         id: json["id"],
         eventSite: json["event_site"],
         service: ServiceModel.fromJson(json["service"]),

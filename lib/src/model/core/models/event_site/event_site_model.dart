@@ -6,8 +6,8 @@ import 'package:evantez/src/serializer/models/event_site_model.dart';
 
 class EventSiteModel {
   int? id;
-  List<EventSiteSettings>? eventSiteSettings;
-  List<EventSiteEmployeeRequirement>? eventSiteEmployeeRequirement;
+  List<ResponseEventSiteSettings>? eventSiteSettings;
+  List<ResponseEventSiteEmployeeRequirement>? eventSiteEmployeeRequirement;
   EventTypeModel? eventType;
   EventVenue? venue;
   String? availableSlots;
@@ -47,10 +47,11 @@ class EventSiteModel {
 
   factory EventSiteModel.fromJson(Map<String, dynamic> json) => EventSiteModel(
       id: json["id"],
-      eventSiteSettings:
-          List<EventSiteSettings>.from(json["event_site_settings"].map((x) => EventSiteSettings.fromJson(x))),
-      eventSiteEmployeeRequirement: List<EventSiteEmployeeRequirement>.from(
-          json["event_site_employee_requirement"].map((x) => EventSiteEmployeeRequirement.fromJson(x))),
+      eventSiteSettings: List<ResponseEventSiteSettings>.from(
+          json["event_site_settings"].map((x) => ResponseEventSiteSettings.fromJson(x))),
+      eventSiteEmployeeRequirement: List<ResponseEventSiteEmployeeRequirement>.from(
+          json["event_site_employee_requirement"]
+              .map((x) => ResponseEventSiteEmployeeRequirement.fromJson(x))),
       eventType: EventTypeModel.fromJson(json["event_type"]),
       venue: EventVenue.fromJson(json["venue"]),
       // availableSlots: json["available_slots"] ?? "",

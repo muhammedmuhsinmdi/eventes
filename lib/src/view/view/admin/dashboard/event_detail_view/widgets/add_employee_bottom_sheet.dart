@@ -1,11 +1,16 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:evantez/app/app.dart';
 import 'package:evantez/src/controller/auth/auth_controller.dart';
+import 'package:evantez/src/controller/events/events_controller.dart';
 import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
+import 'package:evantez/src/model/core/models/employee/assing_event_employee.dart';
 import 'package:evantez/src/serializer/models/employee/employee_list_response.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +24,7 @@ class AddEmployeeSheet {
 
   Future<void> show() async {
     await showModalBottomSheet(
+        isDismissible: false,
         context: parentContext,
         backgroundColor: AppColors.accentDark,
         isScrollControlled: true,
@@ -40,11 +46,12 @@ class AddingEmployeeSheet extends StatefulWidget {
 }
 
 class _AddingEmployeeSheetState extends State<AddingEmployeeSheet> {
-  List<String> empList = <String>['Olive Yew', 'Aida Bugg', "Roshan", "Suhail", "Muhsin", "Sameer"];
+  List<EventAssignEmployee> empList = [];
   final ValueNotifier<List<String>> selectedEmpList = ValueNotifier<List<String>>([]);
 
   @override
   Widget build(BuildContext context) {
+    final eventController = context.watch<EventController>();
     final authContorller = context.watch<AuthController>();
     final employeeController = context.watch<EmployeesController>();
     final kSize = MediaQuery.of(context).size;
@@ -93,50 +100,101 @@ class _AddingEmployeeSheetState extends State<AddingEmployeeSheet> {
                     runSpacing: 8.0,
                     crossAxisAlignment: WrapCrossAlignment.start,
                     children: List.generate(
-                      selectedEmpList.value.length,
-                      (index) => selecteEmployeeTile(kSize, selectedEmpList.value[index]),
+                      empList.length,
+                      (index) {
+                        selectedEmpList.value.add(employeeController.employeeLists
+                            .firstWhere((e) => e.id == empList[index].employee)
+                            .employeeName!);
+                        return selecteEmployeeTile(kSize, selectedEmpList.value[index]);
+                      },
                     ),
                   ),
                 ),
                 SizedBox(
                   height: kSize.height * 0.024,
                 ),
-                FutureBuilder(
-                    future: employeeController.employeeList(token: authContorller.accesToken!),
-                    initialData: [],
-                    builder: (context, snapshot) {
-                      return SizedBox(
-                        height: kSize.height * 0.5,
-                        child: Scrollbar(
-                          interactive: true,
-                          thumbVisibility: true,
-                          trackVisibility: true,
-                          child: ListView.builder(
-                              itemCount: employeeController.employeeLists.length,
-                              itemBuilder: (context, index) {
-                                return InkWell(
-                                    highlightColor: AppColors.transparent,
-                                    splashColor: AppColors.transparent,
-                                    onTap: () {
-                                      setState(() {
-                                        if (selectedEmpList.value.contains(empList[index])) {
-                                          selectedEmpList.value.remove(empList[index]);
-                                          if (kDebugMode) {
-                                            print(selectedEmpList.value.length);
+                SizedBox(
+                  height: kSize.height * 0.5,
+                  child: Scrollbar(
+                    interactive: true,
+                    thumbVisibility: true,
+                    trackVisibility: true,
+                    child: ListView.builder(
+                        itemCount: employeeController.employeeLists.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                              highlightColor: AppColors.transparent,
+                              splashColor: AppColors.transparent,
+                              onTap: () {
+                                // if (eventController.addedEmployees.isEmpty) {
+                                EventAssignEmployee assignedEmp = EventAssignEmployee(
+                                    employee: employeeController.employeeLists[index].id,
+                                    eventSite: eventController.eventModel!.id,
+                                    isCaptain: false);
+                                eventController
+                                    .addEmployee(token: authContorller.accesToken!, assignedEmp: assignedEmp)
+                                    .then((value) async {
+                                  if (value != null) {
+                                    // setState(() {
+
+                                    EventAssignEmployee emp =
+                                        EventAssignEmployee.fromJson(json.decode(value));
+                                    eventController.addedEmployees.add(emp);
+                                    log("${eventController.addedEmployees.length}");
+                                    if (!empList.contains(assignedEmp)) {
+                                      empList.add(assignedEmp);
+                                    }
+                                    // });
+                                  }
+                                  await eventController
+                                      .getEventDetail(
+                                          token: authContorller.accesToken!,
+                                          eventId: eventController.eventModel!.id!)
+                                      .then((value) {
+                                    Navigator.pop(context);
+                                  });
+                                });
+                                /* } else {
+                                  EventAssignEmployee assignedEmp = EventAssignEmployee(
+                                      employee: employeeController.employeeLists[index].id,
+                                      eventSite: eventController.eventModel!.id,
+                                      isCaptain: false);
+                                  for (var addEmp in eventController.addedEmployees) {
+                                    if (addEmp.employee != assignedEmp.employee) {
+                                      eventController
+                                          .addEmployee(
+                                              token: authContorller.accesToken!, assignedEmp: assignedEmp)
+                                          .then((value) async {
+                                        if (value != null) {
+                                          // setState(() {
+                                          if (!empList.contains(assignedEmp)) {
+                                            empList.add(assignedEmp);
                                           }
-                                        } else {
-                                          selectedEmpList.value.add(empList[index]);
-                                          if (kDebugMode) {
-                                            print(selectedEmpList.value.length);
-                                          }
+                                          // });
                                         }
+                                        await eventController
+                                            .getEventDetail(
+                                                token: authContorller.accesToken!,
+                                                eventId: eventController.eventModel!.id!)
+                                            .then((value) {
+                                          Navigator.pop(context);
+                                        });
                                       });
-                                    },
-                                    child: employeeTile(kSize, employeeController.employeeLists[index]));
-                              }),
-                        ),
-                      );
-                    }),
+                                    } else {
+                                      Navigator.pop(context);
+                                      rootScaffoldMessengerKey.currentState!.showSnackBar(const SnackBar(
+                                        content: Text("Employee Already Added!"),
+                                        backgroundColor: AppColors.statusCritical,
+                                      ));
+                                    }
+                                  }
+                                } */
+                              },
+                              child: employeeTile(
+                                  kSize, employeeController.employeeLists[index], employeeController));
+                        }),
+                  ),
+                ),
               ],
             );
           },
@@ -144,7 +202,8 @@ class _AddingEmployeeSheetState extends State<AddingEmployeeSheet> {
   }
 }
 
-Widget employeeTile(Size kSize, EmployeeListResponse emp) {
+Widget employeeTile(Size kSize, EmployeeListResponse emp, EmployeesController controller) {
+  String employeeType = controller.employeeTypes.firstWhere((e) => e.id == emp.employeeType).name!;
   return Container(
     margin: const EdgeInsets.only(bottom: 8, right: AppConstants.marginSpace),
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -159,7 +218,7 @@ Widget employeeTile(Size kSize, EmployeeListResponse emp) {
             ),
             children: [
           TextSpan(
-              text: 'Supervisor',
+              text: employeeType,
               style: AppTypography.poppinsRegular.copyWith(
                   fontSize: 16,
                   color: AppColors.secondaryColor.withOpacity(

@@ -3,11 +3,15 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:evantez/app/app.dart';
 import 'package:evantez/src/model/components/snackbar_widget.dart';
+import 'package:evantez/src/model/core/models/employee/assing_event_employee.dart';
 import 'package:evantez/src/model/core/models/event/new_event_model/new_event_model.dart';
 import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 import 'package:evantez/src/providers/dashboard/events_provider.dart';
+import 'package:evantez/src/serializer/models/employee/employee_list_response.dart';
+import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
 import 'package:evantez/src/serializer/models/event_details.response.dart';
 import 'package:evantez/src/serializer/models/event_response.dart';
+import 'package:evantez/src/view/core/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -214,15 +218,17 @@ class EventController extends ChangeNotifier {
       }
 
       final response = await EventProvider().changeStatus(token, event, id);
-      if (response) {
+      if (response != null) {
         await eventsDetails(token: token, id: id);
         rootScaffoldMessengerKey.currentState!
             .showSnackBar(snackBarWidget('Event Updated!', color: Colors.green));
         await Future.delayed(const Duration(seconds: 2));
+        return true;
       } else {
         rootScaffoldMessengerKey.currentState!
             .showSnackBar(snackBarWidget('Event update failed!', color: Colors.red));
         await Future.delayed(const Duration(seconds: 2));
+        return false;
       }
     } catch (_) {}
   }
@@ -235,6 +241,7 @@ class EventController extends ChangeNotifier {
       scheduledDate.text = DateFormat("dd MMM, yyyy").format(eventModel!.scheduledDatetime!);
       scheduledTime.text = DateFormat('hh:mm a').format(eventModel!.scheduledDatetime!);
       selectedeventStatus.value = getEventStatusString(eventModel!.status!);
+      await getAddedEmployeeList(token);
       notifyListeners();
     } catch (e) {
       rethrow;
@@ -258,5 +265,80 @@ class EventController extends ChangeNotifier {
       default:
         return '';
     }
+  }
+
+  Color getEventStatusColor(String status) {
+    switch (status) {
+      case "Upcoming - Hold":
+        return AppColors.statusCritical;
+      case "Upcoming - Open":
+        return AppColors.statusSuccess;
+      case "Upcoming - Filled":
+        return AppColors.statusWarning;
+      case "Ongoing":
+        return AppColors.statusSuccess;
+      case "Settlement":
+        return AppColors.statusBlue;
+      case "Completed":
+        return AppColors.statusPending;
+      default:
+        return AppColors.transparent;
+    }
+  }
+
+  Future addEmployee({required String token, required EventAssignEmployee assignedEmp}) async {
+    try {
+      final response = await EventProvider().addEventEmployee(
+        token: token,
+        model: assignedEmp,
+      );
+      if (response != null) {
+        return response;
+      }
+    } catch (_) {}
+  }
+
+  List<EventAssignEmployee> addedEmployees = [];
+  Future getAddedEmployeeList(String token) async {
+    try {
+      addedEmployees = [];
+      List<EventAssignEmployee> response = await EventProvider().getAddedEmplyeeList(token, eventModel!.id!);
+      if (response.isNotEmpty) {
+        addedEmployees.addAll(response);
+        for (var emp in addedEmployees) {
+          log("${emp.toJson()}");
+          log("/////");
+        }
+      }
+    } catch (_) {}
+  }
+
+  /*  getEventEmployeeList({required List<EmployeeListResponse> employeesList, required int eventEmpRequired}) {
+      for (var addedEmp in addedEmployees) {
+        for (var employee in employeesList) {
+          if(employee.id == addedEmp.employee) {
+            
+          }
+        }
+        
+
+
+      }
+  } */
+
+  List<EmployeeListResponse> getEventEmployeesByEventType(
+      int employeeType, List<EmployeeListResponse> employeeList, List<EmployeesTypesList> employeeTypeList) {
+    List<EmployeeListResponse> selectedEmp = [];
+    if (addedEmployees.isNotEmpty) {
+      for (var addEmp in addedEmployees) {
+        EmployeeListResponse employee = employeeList.firstWhere((emp) => emp.id == addEmp.employee);
+        if (employee.employeeType == employeeType) {
+          employee.eventSiteEmp = addEmp;
+          employee.empType = employeeTypeList.firstWhere((e) => e.id == employee.employeeType);
+          selectedEmp.add(employee);
+        }
+      }
+    }
+    return selectedEmp;
   }
 }

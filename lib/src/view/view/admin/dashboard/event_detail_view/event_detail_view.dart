@@ -4,10 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:evantez/app/router/router_constant.dart';
 import 'package:evantez/src/controller/auth/auth_controller.dart';
 import 'package:evantez/src/controller/events/add_event_controller.dart';
-import 'package:evantez/src/controller/events/add_event_controller.dart';
 import 'package:evantez/src/controller/events/events_controller.dart';
 import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
-import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//widgets/custom_back_btn.dart';
 import 'package:evantez/src/view/core//widgets/custom_date_picker.dart';
@@ -50,6 +48,7 @@ class _EventDetailViewState extends State<EventDetailView> {
 
   @override
   Widget build(BuildContext context) {
+    final employeeController = context.watch<EmployeesController>();
     final authController = context.watch<AuthController>();
     final controller = context.watch<EventController>();
     final kSize = MediaQuery.of(context).size;
@@ -122,8 +121,10 @@ class _EventDetailViewState extends State<EventDetailView> {
                                     eventSite: controller.eventModel!,
                                     token: authController.accesToken!)
                                 .then((value) {
-                              controller.selectedeventStatus.value = dropdownValue;
-                              ;
+                              log("$value");
+                              if (value) {
+                                controller.selectedeventStatus.value = dropdownValue;
+                              }
                             });
                           },
                         ),
@@ -185,8 +186,16 @@ class _EventDetailViewState extends State<EventDetailView> {
                             fillColor: AppColors.transparent,
                             label: AppStrings.addEmployeeText,
                             onTap: () {
-                              //
-                              AddEmployeeSheet(context).show();
+                              /*  controller.addEmployee(token: authController.accesToken!).then((value) {
+                                log('added');
+                              });
+                              // */
+                              employeeController.employeeTypesData(token: authController.accesToken!);
+                              employeeController
+                                  .employeeList(token: authController.accesToken!)
+                                  .then((value) {
+                                AddEmployeeSheet(context).show();
+                              });
                             },
                           ),
                           SizedBox(height: kSize.height * 0.024),

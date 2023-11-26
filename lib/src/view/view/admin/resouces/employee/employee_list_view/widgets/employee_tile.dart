@@ -50,9 +50,7 @@ class EmployeeTile extends StatelessWidget {
             Container(
               // margin: EdgeInsets.only(bottom: kSize.height * 0),
               clipBehavior: Clip.antiAlias,
-              padding: EdgeInsets.symmetric(
-                  horizontal: kSize.height * 0.016,
-                  vertical: kSize.height * 0.016),
+              padding: EdgeInsets.symmetric(horizontal: kSize.height * 0.016, vertical: kSize.height * 0.016),
               width: kSize.width,
               decoration: BoxDecoration(
                 color: AppColors.accentDark,
@@ -80,7 +78,7 @@ class EmployeeTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        controller.employeeLists[index].homeContact ?? '',
+                        controller.employeeLists[index].employeeName ?? '',
                         overflow: TextOverflow.ellipsis,
                         style: AppTypography.poppinsMedium.copyWith(
                           fontSize: 14,
@@ -92,16 +90,13 @@ class EmployeeTile extends StatelessWidget {
                       RichText(
                           text: TextSpan(
                               text: 'EM ',
-                              style: AppTypography.poppinsMedium.copyWith(
-                                  fontSize: 14,
-                                  color: AppColors.secondaryColor
-                                      .withOpacity(0.6)),
+                              style: AppTypography.poppinsMedium
+                                  .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.6)),
                               children: [
                             TextSpan(
                                 text: controller.employeeLists[index].code,
-                                style: AppTypography.poppinsMedium.copyWith(
-                                    color: AppColors.secondaryColor,
-                                    fontSize: 14))
+                                style: AppTypography.poppinsMedium
+                                    .copyWith(color: AppColors.secondaryColor, fontSize: 14))
                           ])),
                       SizedBox(
                         height: kSize.height * 0.004,
@@ -109,23 +104,18 @@ class EmployeeTile extends StatelessWidget {
                       RichText(
                           text: TextSpan(
                               text: 'ID ',
-                              style: AppTypography.poppinsMedium.copyWith(
-                                  fontSize: 14,
-                                  color: AppColors.secondaryColor
-                                      .withOpacity(0.6)),
+                              style: AppTypography.poppinsMedium
+                                  .copyWith(fontSize: 14, color: AppColors.secondaryColor.withOpacity(0.6)),
                               children: [
                             TextSpan(
-                                text: controller
-                                    .employeeLists[index].idProofNumber,
-                                style: AppTypography.poppinsMedium.copyWith(
-                                    color: AppColors.secondaryColor,
-                                    fontSize: 14))
+                                text: controller.employeeLists[index].idProofNumber,
+                                style: AppTypography.poppinsMedium
+                                    .copyWith(color: AppColors.secondaryColor, fontSize: 14))
                           ])),
                     ],
                   )),
                   Container(
-                    margin: EdgeInsets.only(
-                        right: kSize.width * 0.02, top: kSize.height * 0.005),
+                    margin: EdgeInsets.only(right: kSize.width * 0.02, top: kSize.height * 0.005),
                     height: kSize.height * 0.01,
                     width: kSize.height * 0.01,
                     decoration: BoxDecoration(
@@ -136,9 +126,7 @@ class EmployeeTile extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    controller.employeeLists[index].isActive == true
-                        ? "Active"
-                        : 'Inactive',
+                    controller.employeeLists[index].isActive == true ? "Active" : 'Inactive',
                     style: AppTypography.poppinsRegular.copyWith(
                       fontSize: 12,
                       color: AppColors.secondaryColor.withOpacity(0.6),

@@ -3,9 +3,11 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:evantez/src/model/core/base_api_utilities.dart';
+import 'package:evantez/src/model/core/models/employee/assing_event_employee.dart';
 import 'package:evantez/src/model/core/models/event/event_type/event_type_model.dart';
 import 'package:evantez/src/model/core/models/event/new_event_model/new_event_model.dart';
 import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
+import 'package:evantez/src/serializer/models/employee/employee_list_response.dart';
 import 'package:evantez/src/serializer/models/event_details.response.dart';
 import 'package:evantez/src/serializer/models/event_response.dart';
 import 'package:evantez/src/view/core/event_api.dart';
@@ -46,7 +48,7 @@ class EventProvider extends EventApi {
   //-=-=-=-=-=-=-=-=-=  Event Type -=-=-=-=-=-=-
   Future addEventType({required String token, required String eventadd}) async {
     Response response =
-        await post('events/event-type/', headers: apiHeaders(token), data: {'name': '$eventadd'});
+        await post('events/event-type/', headers: apiHeaders(token), data: {'name': eventadd});
     switch (response.statusCode) {
       case 201:
         return response.data;
@@ -232,6 +234,33 @@ class EventProvider extends EventApi {
       return false;
     } catch (_) {
       return false;
+    }
+  }
+
+  Future addEventEmployee({required String token, required EventAssignEmployee model}) async {
+    try {
+      Response response = await post(
+        "events/event-site-employee/",
+        data: model.toJson(),
+        headers: apiHeaders(token),
+      );
+      if (response.statusCode == 201) {
+        return response;
+      }
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future getAddedEmplyeeList(String token, int eventId) async {
+    try {
+      Response response = await get("events/event-site-employee/?$eventId", headers: apiHeaders(token));
+      if (response.statusCode == 200) {
+        return (response.data['results'] as List).map((e) => EventAssignEmployee.fromJson(e)).toList();
+      }
+      return null;
+    } catch (_) {
+      return null;
     }
   }
 }

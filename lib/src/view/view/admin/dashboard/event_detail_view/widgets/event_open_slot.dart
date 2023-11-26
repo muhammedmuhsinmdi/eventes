@@ -1,4 +1,8 @@
+import 'dart:developer';
+
+import 'package:evantez/src/controller/auth/auth_controller.dart';
 import 'package:evantez/src/controller/events/events_controller.dart';
+import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
 import 'package:evantez/src/view/core//constants/app_images.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
@@ -6,12 +10,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
-class EventOpenSlot extends StatelessWidget {
+class EventOpenSlot extends StatefulWidget {
   final String eventStatus;
   const EventOpenSlot({super.key, required this.eventStatus});
 
   @override
+  State<EventOpenSlot> createState() => _EventOpenSlotState();
+}
+
+class _EventOpenSlotState extends State<EventOpenSlot> {
+  late AuthController authController;
+  late EmployeesController employeeController;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await employeeController.employeeList(token: authController.accesToken!);
+      log("${employeeController.employeeLists.length}");
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    authController = context.watch<AuthController>();
+    employeeController = context.watch<EmployeesController>();
     final eventController = context.watch<EventController>();
     final kSize = MediaQuery.of(context).size;
     return Column(
@@ -21,7 +44,7 @@ class EventOpenSlot extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              getTitle(eventStatus),
+              getTitle(widget.eventStatus),
               style: AppTypography.poppinsMedium.copyWith(
                 color: AppColors.secondaryColor,
                 fontSize: 18,
@@ -77,7 +100,12 @@ class EventOpenSlot extends StatelessWidget {
                                   width: getCountWidth(eventController
                                       .eventModel!.eventSiteEmployeeRequirement![index].requirementCount!),
                                   decoration: BoxDecoration(
-                                    color: /* index < 3 ? AppColors.statusSuccess : */
+                                    color: /* eventController.getEventEmployeesByEventType(
+                                            eventController.eventModel!.eventSiteEmployeeRequirement![index]
+                                                .employeeType!.id!,
+                                            employeeController.employeeLists) */
+                                        /* ? AppColors.statusSuccess
+                                        : */
                                         AppColors.statusCritical,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -87,7 +115,7 @@ class EventOpenSlot extends StatelessWidget {
                         height: kSize.height * 0.016,
                       ),
                       Text(
-                        '3/${eventController.eventModel!.eventSiteEmployeeRequirement![index].requirementCount!}',
+                        '${eventController.getEventEmployeesByEventType(eventController.eventModel!.eventSiteEmployeeRequirement![index].employeeType!.id!, employeeController.employeeLists, employeeController.employeeTypes).length}/${eventController.eventModel!.eventSiteEmployeeRequirement![index].requirementCount!}',
                         style: AppTypography.poppinsRegular.copyWith(
                           color: AppColors.secondaryColor.withOpacity(0.6),
                           fontSize: 16,
