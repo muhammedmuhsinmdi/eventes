@@ -1,10 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:evantez/app/app.dart';
 import 'package:evantez/src/model/components/snackbar_widget.dart';
+import 'package:evantez/src/model/core/extensions/date_extensions.dart';
 import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
+import 'package:evantez/src/serializer/models/employee/employee_details/employee_details_model.dart';
 import 'package:evantez/src/serializer/models/employee/employee_type/employee_model.dart';
 import 'package:evantez/src/serializer/models/employee_detail_reponse.dart';
 import 'package:evantez/src/view/core/widgets/drop_down_value.dart';
@@ -288,7 +289,10 @@ class AddEmployeeController extends ChangeNotifier {
   //=-=-=-=-=-=-= Employee Init State Loading =-=-=-=-==-=-=-=
 
   bool isEdit = false;
-  void employeeInitStateLoading({EmployeeDetailResponse? data, int? index}) {
+  Future<void> employeeInitStateLoading(
+      {EmployeeDetailResponse? data, String token = ""}) async {
+    await employeeIdList(token: token);
+    await employeeTypesData(token: token);
     if (data == null) {
       nameController.clear();
       phoneController.clear();
@@ -298,11 +302,33 @@ class AddEmployeeController extends ChangeNotifier {
       emailTextController.clear();
       codeController.clear();
       idNumberTxtController.clear();
+      dobController.clear();
       selectedIdType = null;
       selectedEmpType = null;
       isEdit = false;
     } else {
       isEdit = true;
+      employee = EmployeeModel(
+        address: data.address,
+        bloodGroup: data.bloodGroup,
+        code: data.code,
+        createdAt: data.createdAt!.toIso8601String(),
+        currentRating: data.currentRating,
+        dob: data.dob!.toIso8601String(),
+        email: data.email,
+        employeeMobile: data.employeeMobile,
+        employeeName: data.employeeName,
+        employeeType: data.employeeType,
+        homeContact: data.homeContact,
+        id: data.id,
+        idProofNumber: data.idProofNumber,
+        idProofType: data.idProofType,
+        image: data.image,
+        isActive: data.isActive,
+        totalEarnings: data.totalEarnings,
+        updatedAt: data.updatedAt!.toIso8601String(),
+        user: data.user
+      );
       nameController.text = data.employeeName ?? '';
       phoneController.text = data.employeeMobile ?? '';
       addressContactTxtController.text = data.address ?? '';
@@ -311,6 +337,48 @@ class AddEmployeeController extends ChangeNotifier {
       emailTextController.text = data.email ?? '';
       codeController.text = data.code ?? '';
       idNumberTxtController.text = data.idProofNumber ?? '';
+      dobController.text = formatDate(data.dob!);
+      selectedEmpType = types.singleWhere((x) => x.id == data.employeeType!);
+      selectedIdType =
+          employeeIdLists.singleWhere((x) => x.id == data.idProofType!);
+    }
+  }
+
+  Future<void> editEmployee(
+      {required String token, required BuildContext context}) async {
+    if (employeeForm.currentState!.validate()) {
+      employeeForm.currentState!.save();
+      EmployeeDetailsModel itemToUpdate = EmployeeDetailsModel();
+      itemToUpdate.address = employee.address;
+      itemToUpdate.bloodGroup = employee.bloodGroup;
+      itemToUpdate.code = employee.code;
+      itemToUpdate.createdAt = DateTime.parse(employee.createdAt!);
+      itemToUpdate.currentRating = employee.currentRating;
+      itemToUpdate.dob = employee.dob!.toDate();
+      itemToUpdate.email = employee.email;
+      itemToUpdate.employeeMobile = employee.employeeMobile;
+      itemToUpdate.employeeName = employee.employeeName;
+      itemToUpdate.employeeType = employee.employeeType;
+      itemToUpdate.homeContact = employee.homeContact;
+      itemToUpdate.id = employee.id;
+      itemToUpdate.idProofNumber = employee.idProofNumber;
+      itemToUpdate.idProofType = employee.idProofType;
+      itemToUpdate.image = employee.image;
+      itemToUpdate.isActive = employee.isActive;
+      itemToUpdate.totalEarnings = employee.totalEarnings;
+      itemToUpdate.updatedAt = DateTime.parse(employee.updatedAt!);
+      itemToUpdate.user = employee.user;
+      final response = await EmployeeProvider()
+          .editEmployee(token: token, data: itemToUpdate);
+      if (response != null) {
+        rootScaffoldMessengerKey.currentState!.showSnackBar(
+            snackBarWidget('Successfully Updated!', color: Colors.green));
+        if (context.mounted) {
+          Navigator.pop(context);
+        }
+        notifyListeners();
+      }
+      isloading = false;
     }
   }
 }

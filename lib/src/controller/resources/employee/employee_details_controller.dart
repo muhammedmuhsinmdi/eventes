@@ -1,5 +1,6 @@
 import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
 import 'package:evantez/src/serializer/models/employee/employee_details/employee_details_model.dart';
+import 'package:evantez/src/serializer/models/employee/employee_type/employee_model.dart';
 import 'package:flutter/material.dart';
 
 class EmployeeDetasilController extends ChangeNotifier {
@@ -104,7 +105,7 @@ class EmployeeDetasilController extends ChangeNotifier {
   }
 
   Future onChangeEmployeeState(value, token) async {
-    employeeDetailsModel!.isActive = value;
+    employeeDetailsModel!.isActive = value;    
     await _employeeProvider.editEmployee(token: token, data: employeeDetailsModel!);  
     notifyListeners();
   }

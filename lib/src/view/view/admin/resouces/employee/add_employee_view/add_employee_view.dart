@@ -237,14 +237,22 @@ class AddEmployeeView extends StatelessWidget {
                     height: kSize.height * 0.040,
                   ),
                   FooterButton(
-                    label: 'Add Employee',
+                    label:empController.employee.id! > 0? 'Update Employee': 'Add Employee',
                     onTap: () {
-                      log(auth.accesToken!);
-                      empController
+                      if(empController.isEdit){
+                        empController
+                          .editEmployee(
+                              token: auth.accesToken ?? '', context: context)
+                          .then((value) => controller.employeeList(
+                              token: auth.accesToken ?? ''));
+                      } else {
+                        empController
                           .addEmployee(
                               token: auth.accesToken ?? '', context: context)
                           .then((value) => controller.employeeList(
                               token: auth.accesToken ?? ''));
+                      }
+                      
                     },
                   ),
                   SizedBox(
