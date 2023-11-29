@@ -5,13 +5,16 @@ import 'package:evantez/app/app.dart';
 import 'package:evantez/src/model/components/snackbar_widget.dart';
 import 'package:evantez/src/model/core/models/employee/assing_event_employee.dart';
 import 'package:evantez/src/model/core/models/event/new_event_model/new_event_model.dart';
+import 'package:evantez/src/model/core/models/event/output_model/event_emp_req_model.dart';
 import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
 import 'package:evantez/src/providers/dashboard/events_provider.dart';
+import 'package:evantez/src/providers/resources/employee_type/employee_type_viewstate.dart';
 import 'package:evantez/src/serializer/models/employee/employee_list_response.dart';
 import 'package:evantez/src/serializer/models/employee/employee_types_response.dart';
 import 'package:evantez/src/serializer/models/event_details.response.dart';
 import 'package:evantez/src/serializer/models/event_response.dart';
 import 'package:evantez/src/view/core/themes/colors.dart';
+import 'package:evantez/src/view/core/themes/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -238,9 +241,13 @@ class EventController extends ChangeNotifier {
     try {
       final response = await EventProvider().getEventDetail(token, eventId);
       eventModel = response;
+      for (var requiurement in eventModel!.eventSiteEmployeeRequirement!) {
+        requiurement.assignedEmployeeList = [];
+      }
       scheduledDate.text = DateFormat("dd MMM, yyyy").format(eventModel!.scheduledDatetime!);
       scheduledTime.text = DateFormat('hh:mm a').format(eventModel!.scheduledDatetime!);
       selectedeventStatus.value = getEventStatusString(eventModel!.status!);
+      await getEmployeeList(token);
       await getAddedEmployeeList(token);
       notifyListeners();
     } catch (e) {
@@ -288,57 +295,143 @@ class EventController extends ChangeNotifier {
 
   Future addEmployee({required String token, required EventAssignEmployee assignedEmp}) async {
     try {
-      final response = await EventProvider().addEventEmployee(
-        token: token,
-        model: assignedEmp,
-      );
-      if (response != null) {
-        return response;
+      // check selected employe -> employee type
+      var requirement = eventModel!.eventSiteEmployeeRequirement!
+          .firstWhere((element) => element.employeeType!.id == assignedEmp.employee!.employeeType);
+      if (requirement != null) {
+        var existEmployee = requirement.assignedEmployeeList!
+            .firstWhere((element) => element.employee!.id == assignedEmp.employee!.id);
+        if (existEmployee == null) {
+          if (requirement.assignedEmployeeList!.length < requirement!.requirementCount!) {
+            final response = await EventProvider().addEventEmployee(
+              token: token,
+              model: assignedEmp,
+            );
+            if (response != null) {
+              requirement.assignedEmployeeList!.add(assignedEmp);
+              return response;
+            }
+          } else {
+            String message = "${requirement.employeeType!.name} exceeded";
+            rootScaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
+              content: Text(
+                message,
+                style: AppTypography.poppinsMedium.copyWith(
+                  color: AppColors.secondaryColor,
+                ),
+              ),
+              backgroundColor: AppColors.statusCritical,
+            ));
+            // employee
+          }
+        } else {
+          String message = "${assignedEmp.employee!.employeeName} already added";
+          rootScaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
+            content: Text(
+              message,
+              style: AppTypography.poppinsMedium.copyWith(
+                color: AppColors.secondaryColor,
+              ),
+            ),
+            backgroundColor: AppColors.statusCritical,
+          ));
+        }
+      } else {
+        // selected employee not required in this event
+        String message = "Selected Employee not required!";
+        rootScaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
+          content: Text(
+            message,
+            style: AppTypography.poppinsMedium.copyWith(
+              color: AppColors.secondaryColor,
+            ),
+          ),
+          backgroundColor: AppColors.statusCritical,
+        ));
       }
+    } catch (e) {
+      log("$e");
+    }
+  }
+
+  List<EmployeeListResponse> employeeList = [];
+  Future<void> getEmployeeList(String token) async {
+    try {
+      employeeList = await EmployeeProvider().loadEmployee(token: token);
+      log("EmployeeList Count >>> ${employeeList.length}");
+    } catch (e) {
+      log("$e");
+    }
+  }
+
+  List<EmployeesTypesList> employeeTypeList = [];
+  Future<void> getEmployeeTypeList(String token) async {
+    try {
+      var employeeTypes = await EmployeeProvider().loadEmployeesTypes(token: token);
+
+      eventModel!.eventSiteEmployeeRequirement!.forEach((req) {
+        EmployeesTypesList empType = employeeTypes.firstWhere((type) => type.id == req.employeeType!.id);
+        req.employeeType!.id = empType.id;
+        req.employeeType!.name = empType.name!;
+      });
     } catch (_) {}
   }
 
   List<EventAssignEmployee> addedEmployees = [];
-  Future getAddedEmployeeList(String token) async {
+  Future<void> getAddedEmployeeList(String token) async {
     try {
       addedEmployees = [];
       List<EventAssignEmployee> response = await EventProvider().getAddedEmplyeeList(token, eventModel!.id!);
       if (response.isNotEmpty) {
         addedEmployees.addAll(response);
-        for (var emp in addedEmployees) {
-          log("${emp.toJson()}");
-          log("/////");
+
+        for (var req in eventModel!.eventSiteEmployeeRequirement!) {
+          var addedEmps = addedEmployees
+              .where((element) => element.employee!.employeeType == req.employeeType!.id)
+              .toList();
+          req.assignedEmployeeList = addedEmps;
         }
+      }
+    } catch (e) {
+      log("${e}");
+    }
+  }
+
+  Color getSlotColor(int requirment, int added) {
+    Color retColor = AppColors.statusCritical;
+
+    if (requirment < added) {
+      retColor = AppColors.statusSuccess;
+    }
+    return retColor;
+  }
+
+  // Make Captain Function
+  Future makeEmployeeCaptain(EventAssignEmployee data, String token) async {
+    try {
+      Response response = await EventProvider().setCaptain(data, eventModel!.id!, token);
+      if (response.statusCode == 200) {
+        rootScaffoldMessengerKey.currentState!
+            .showSnackBar(snackBarWidget('Employee set as Captain!', color: Colors.green));
+        getEventDetail(token: token, eventId: eventModel!.id!);
+      } else {
+        rootScaffoldMessengerKey.currentState!
+            .showSnackBar(snackBarWidget('Unable to set Captain', color: Colors.red));
       }
     } catch (_) {}
   }
 
-  /*  getEventEmployeeList({required List<EmployeeListResponse> employeesList, required int eventEmpRequired}) {
-      for (var addedEmp in addedEmployees) {
-        for (var employee in employeesList) {
-          if(employee.id == addedEmp.employee) {
-            
-          }
-        }
-        
-
-
+  Future deleteAssignedEmployee(int employeeId, String token) async {
+    try {
+      Response response = await EventProvider().deleteAssignedEmployee(employeeId, eventModel!.id!, token);
+      if (response.statusCode == 204) {
+        rootScaffoldMessengerKey.currentState!
+            .showSnackBar(snackBarWidget('Employee Deleted Successfully!', color: Colors.green));
+        getEventDetail(token: token, eventId: eventModel!.id!);
+      } else {
+        rootScaffoldMessengerKey.currentState!
+            .showSnackBar(snackBarWidget('Employee delete failed!', color: Colors.red));
       }
-  } */
-
-  List<EmployeeListResponse> getEventEmployeesByEventType(
-      int employeeType, List<EmployeeListResponse> employeeList, List<EmployeesTypesList> employeeTypeList) {
-    List<EmployeeListResponse> selectedEmp = [];
-    if (addedEmployees.isNotEmpty) {
-      for (var addEmp in addedEmployees) {
-        EmployeeListResponse employee = employeeList.firstWhere((emp) => emp.id == addEmp.employee);
-        if (employee.employeeType == employeeType) {
-          employee.eventSiteEmp = addEmp;
-          employee.empType = employeeTypeList.firstWhere((e) => e.id == employee.employeeType);
-          selectedEmp.add(employee);
-        }
-      }
-    }
-    return selectedEmp;
+    } catch (_) {}
   }
 }

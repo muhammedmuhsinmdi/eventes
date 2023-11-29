@@ -219,7 +219,9 @@ class AddEventView extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: kSize.height * 0.018),
                       child: FilterBoysRating(
+                        intialRating: addEventContoller.event.rating ?? "",
                         onSelected: (rating) {
+                          addEventContoller.event.rating = rating;
                           log(rating);
                         },
                       ),
@@ -344,12 +346,17 @@ class AddEventView extends StatelessWidget {
                 ); */
               },
               onSaved: (value) {
+                log("${controller.eventDateTime}");
                 controller.eventDateTime = DateTime(
                     controller.eventDateTime!.year,
                     controller.eventDateTime!.month,
                     controller.eventDateTime!.day,
-                    controller.eventTime!.hour,
-                    controller.eventTime!.minute);
+                    controller.eventTime != null
+                        ? controller.eventTime!.hour
+                        : controller.eventDateTime!.hour,
+                    controller.eventTime != null
+                        ? controller.eventTime!.minute
+                        : controller.eventDateTime!.minute);
                 // controller.event.scheduleDateTime = controller.eventDateTime!.toIso8601String();
                 log(controller.eventDateTime!.toIso8601String());
                 controller.event.scheduledDatetime =

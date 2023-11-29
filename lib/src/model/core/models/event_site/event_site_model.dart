@@ -1,4 +1,3 @@
-import 'package:evantez/src/model/core/models/event/event_site_settings/event_site_settings_model.dart';
 import 'package:evantez/src/model/core/models/event/event_type/event_type_model.dart';
 import 'package:evantez/src/model/core/models/event/output_model/event_emp_req_model.dart';
 import 'package:evantez/src/serializer/models/event_model.dart';
@@ -23,6 +22,7 @@ class EventSiteModel {
   String? overtimeHourlyCharge;
   String? status;
   int? progress;
+  String? rating;
 
   EventSiteModel({
     this.id,
@@ -43,6 +43,7 @@ class EventSiteModel {
     this.overtimeHourlyCharge,
     this.status,
     this.progress,
+    this.rating,
   });
 
   factory EventSiteModel.fromJson(Map<String, dynamic> json) => EventSiteModel(
@@ -67,7 +68,8 @@ class EventSiteModel {
       normalHours: json["normal_hours"],
       overtimeHourlyCharge: json["overtime_hourly_charge"],
       status: json["status"],
-      progress: json["progress"]);
+      progress: json["progress"],
+      rating: json["rating"]);
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -89,6 +91,7 @@ class EventSiteModel {
         "overtime_hourly_charge": overtimeHourlyCharge,
         "status": status,
         "progress": progress ?? 0,
+        "rating": rating,
       };
 }
 

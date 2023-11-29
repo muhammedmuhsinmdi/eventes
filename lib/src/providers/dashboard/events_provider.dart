@@ -7,7 +7,6 @@ import 'package:evantez/src/model/core/models/employee/assing_event_employee.dar
 import 'package:evantez/src/model/core/models/event/event_type/event_type_model.dart';
 import 'package:evantez/src/model/core/models/event/new_event_model/new_event_model.dart';
 import 'package:evantez/src/model/core/models/event_site/event_site_model.dart';
-import 'package:evantez/src/serializer/models/employee/employee_list_response.dart';
 import 'package:evantez/src/serializer/models/event_details.response.dart';
 import 'package:evantez/src/serializer/models/event_response.dart';
 import 'package:evantez/src/view/core/event_api.dart';
@@ -260,6 +259,35 @@ class EventProvider extends EventApi {
       }
       return null;
     } catch (_) {
+      return null;
+    }
+  }
+
+  Future setCaptain(EventAssignEmployee data, int eventId, String token) async {
+    try {
+      var jsonData = data.toJson();
+      // log(jsonData);
+      Response response =
+          await post("events/event-site/$eventId/set_captain/", data: jsonData, headers: apiHeaders(token));
+      if (response.statusCode == 200) {
+        return response;
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future deleteAssignedEmployee(int employeeId, int eventSite, String token) async {
+    try {
+      var data = json.encode({"id": employeeId});
+      Response response =
+          await delete("events/event-site-employee/$eventSite/", data: data, headers: apiHeaders(token));
+      if (response.statusCode == 204) {
+        return response;
+      }
+      return null;
+    } catch (e) {
       return null;
     }
   }

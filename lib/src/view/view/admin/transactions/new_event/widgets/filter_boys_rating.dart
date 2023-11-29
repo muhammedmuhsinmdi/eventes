@@ -10,10 +10,12 @@ import '../../../../../core/constants/constants.dart';
 import '../../../../../core/themes/typography.dart';
 
 class FilterBoysRating extends StatefulWidget {
+  final String? intialRating;
   final Function(String) onSelected;
   const FilterBoysRating({
     super.key,
     required this.onSelected,
+    this.intialRating,
   });
 
   @override
@@ -27,7 +29,11 @@ class _FilterBoysRatingState extends State<FilterBoysRating> {
 
   @override
   void initState() {
-    widget.onSelected(ratingWidgets.first);
+    // widget.onSelected(ratingWidgets.first);
+    if (widget.intialRating != null && widget.intialRating!.isNotEmpty) {
+      filterValue.value = double.parse(widget.intialRating!);
+      widget.onSelected("${filterValue.value}");
+    }
     super.initState();
   }
 
@@ -51,7 +57,7 @@ class _FilterBoysRatingState extends State<FilterBoysRating> {
                           filterValue.value = ratingValue;
                           widget.onSelected("$ratingValue");
                         },
-                        initialRating: double.parse(val),
+                        initialRating: filterValue.value,
                       ),
                       Text(
                         double.parse(val).toString(),

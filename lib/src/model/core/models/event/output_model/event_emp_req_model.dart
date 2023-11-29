@@ -1,3 +1,4 @@
+import 'package:evantez/src/model/core/models/employee/assing_event_employee.dart';
 import 'package:evantez/src/model/core/models/event/event_type/event_type_model.dart';
 
 class ResponseEventSiteEmployeeRequirement {
@@ -6,7 +7,8 @@ class ResponseEventSiteEmployeeRequirement {
   String? charge;
   int? eventSite;
   EventTypeModel? employeeType;
-  
+
+  List<EventAssignEmployee>? assignedEmployeeList;
 
   ResponseEventSiteEmployeeRequirement({
     this.id,
@@ -14,6 +16,7 @@ class ResponseEventSiteEmployeeRequirement {
     this.charge,
     this.eventSite,
     this.employeeType,
+    this.assignedEmployeeList,
   });
 
   factory ResponseEventSiteEmployeeRequirement.fromJson(Map<String, dynamic> json) =>

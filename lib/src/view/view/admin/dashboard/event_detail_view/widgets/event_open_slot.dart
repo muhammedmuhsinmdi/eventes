@@ -100,13 +100,9 @@ class _EventOpenSlotState extends State<EventOpenSlot> {
                                   width: getCountWidth(eventController
                                       .eventModel!.eventSiteEmployeeRequirement![index].requirementCount!),
                                   decoration: BoxDecoration(
-                                    color: /* eventController.getEventEmployeesByEventType(
-                                            eventController.eventModel!.eventSiteEmployeeRequirement![index]
-                                                .employeeType!.id!,
-                                            employeeController.employeeLists) */
-                                        /* ? AppColors.statusSuccess
-                                        : */
-                                        AppColors.statusCritical,
+                                    color: eventController.getSlotColor(empIndex,
+                                        eventController.eventModel!.eventSiteEmployeeRequirement![index]
+                                            .assignedEmployeeList!.length),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                 ))),
@@ -115,7 +111,7 @@ class _EventOpenSlotState extends State<EventOpenSlot> {
                         height: kSize.height * 0.016,
                       ),
                       Text(
-                        '${eventController.getEventEmployeesByEventType(eventController.eventModel!.eventSiteEmployeeRequirement![index].employeeType!.id!, employeeController.employeeLists, employeeController.employeeTypes).length}/${eventController.eventModel!.eventSiteEmployeeRequirement![index].requirementCount!}',
+                        '${eventController.eventModel!.eventSiteEmployeeRequirement![index].assignedEmployeeList!.length}/${eventController.eventModel!.eventSiteEmployeeRequirement![index].requirementCount!}',
                         style: AppTypography.poppinsRegular.copyWith(
                           color: AppColors.secondaryColor.withOpacity(0.6),
                           fontSize: 16,

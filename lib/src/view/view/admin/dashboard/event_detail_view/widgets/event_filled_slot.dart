@@ -1,7 +1,9 @@
+import 'dart:developer';
+
 import 'package:evantez/app/router/router_constant.dart';
+import 'package:evantez/src/controller/auth/auth_controller.dart';
 import 'package:evantez/src/controller/events/events_controller.dart';
 import 'package:evantez/src/controller/resources/employee/employee_controller.dart';
-import 'package:evantez/src/serializer/models/employee/employee_list_response.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
 import 'package:evantez/src/view/core//themes/colors.dart';
 import 'package:evantez/src/view/core//themes/typography.dart';
@@ -20,6 +22,7 @@ class EventFilledSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authController = context.watch<AuthController>();
     final employeeController = context.watch<EmployeesController>();
     final eventController = context.watch<EventController>();
     final kSize = MediaQuery.of(context).size;
@@ -67,7 +70,7 @@ class EventFilledSlot extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '${eventController.getEventEmployeesByEventType(eventController.eventModel!.eventSiteEmployeeRequirement![index].employeeType!.id!, employeeController.employeeLists, employeeController.employeeTypes).length}/${eventController.eventModel!.eventSiteEmployeeRequirement![index].requirementCount}',
+                          '${eventController.eventModel!.eventSiteEmployeeRequirement![index].assignedEmployeeList!.length}/${eventController.eventModel!.eventSiteEmployeeRequirement![index].requirementCount}',
                           style: AppTypography.poppinsRegular.copyWith(
                             color: AppColors.secondaryColor.withOpacity(0.6),
                             fontSize: 16,
@@ -80,18 +83,13 @@ class EventFilledSlot extends StatelessWidget {
                     ),
                     Column(
                       children: List.generate(
-                          eventController
-                              .getEventEmployeesByEventType(
-                                  eventController
-                                      .eventModel!.eventSiteEmployeeRequirement![index].employeeType!.id!,
-                                  employeeController.employeeLists,
-                                  employeeController.employeeTypes)
-                              .length, (empIndex) {
-                        EmployeeListResponse selectedEmployee = eventController.getEventEmployeesByEventType(
-                            eventController
-                                .eventModel!.eventSiteEmployeeRequirement![index].employeeType!.id!,
-                            employeeController.employeeLists,
-                            employeeController.employeeTypes)[empIndex];
+                          eventController.eventModel!.eventSiteEmployeeRequirement![index]
+                              .assignedEmployeeList!.length, (empIndex) {
+                        if (eventController.eventModel!.eventSiteEmployeeRequirement![index]
+                            .assignedEmployeeList![empIndex].isCaptain!) {
+                          log(" Captain >> ${eventController.eventModel!.eventSiteEmployeeRequirement![index].assignedEmployeeList![empIndex].employee!.toJson()}");
+                        }
+
                         return Container(
                           clipBehavior: Clip.antiAlias,
                           padding: EdgeInsets.symmetric(
@@ -112,14 +110,22 @@ class EventFilledSlot extends StatelessWidget {
                                 child: PopupMenuButton<String>(
                                   initialValue: 'make captain',
                                   // Callback that sets the selected popup menu item.
-                                  onSelected: (item) {
+                                  onSelected: (item) async {
                                     if (item == 'see profile') {
                                       Navigator.pushNamed(context, RouterConstants.empPerformanceRoute,
                                           arguments: eventStatus);
                                     }
-                                    // setState(() {
-                                    // log(item);
-                                    // });
+                                    if (item == 'captain') {
+                                      await eventController.makeEmployeeCaptain(
+                                          eventController.addedEmployees[empIndex],
+                                          authController.accesToken!);
+                                    }
+
+                                    if (item == "delete") {
+                                      await eventController.deleteAssignedEmployee(
+                                          eventController.addedEmployees[empIndex].employeeId!,
+                                          authController.accesToken!);
+                                    }
                                   },
                                   clipBehavior: Clip.antiAlias,
                                   padding: EdgeInsets.zero, //symmetric(horizontal: kSize.height * 0.024),
@@ -139,7 +145,7 @@ class EventFilledSlot extends StatelessWidget {
                                       padding: EdgeInsets.symmetric(
                                         horizontal: kSize.width * 0.05,
                                       ),
-                                      // value: "make captain",
+                                      value: "captain",
                                       child: Text(
                                         'Make Captain',
                                         textAlign: TextAlign.start,
@@ -153,6 +159,17 @@ class EventFilledSlot extends StatelessWidget {
                                       value: "see profile",
                                       child: Text(
                                         'See Profile',
+                                        textAlign: TextAlign.start,
+                                        style: AppTypography.poppinsMedium.copyWith(),
+                                      ),
+                                    ),
+                                    PopupMenuItem<String>(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: kSize.width * 0.05,
+                                      ),
+                                      value: "delete",
+                                      child: Text(
+                                        'Delete',
                                         textAlign: TextAlign.start,
                                         style: AppTypography.poppinsMedium.copyWith(),
                                       ),
@@ -181,7 +198,8 @@ class EventFilledSlot extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      selectedEmployee.employeeName ?? '',
+                                      eventController.eventModel!.eventSiteEmployeeRequirement![index]
+                                          .assignedEmployeeList![empIndex].employee!.employeeName!,
                                       overflow: TextOverflow.ellipsis,
                                       style: AppTypography.poppinsMedium.copyWith(
                                         fontSize: 14,
@@ -194,7 +212,8 @@ class EventFilledSlot extends StatelessWidget {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          "${selectedEmployee.empType!.name}",
+                                          eventController.eventModel!.eventSiteEmployeeRequirement![index]
+                                              .employeeType!.name!,
                                           overflow: TextOverflow.ellipsis,
                                           style: AppTypography.poppinsRegular.copyWith(
                                             fontSize: 12,
@@ -217,8 +236,13 @@ class EventFilledSlot extends StatelessWidget {
                                       height: kSize.height * 0.01,
                                       width: kSize.height * 0.01,
                                       decoration: BoxDecoration(
-                                        color: selectedEmployee.eventSiteEmp!.isCaptain!
-                                            /* index != 2 */ ? AppColors.statusSuccess
+                                        color: eventController
+                                                .eventModel!
+                                                .eventSiteEmployeeRequirement![index]
+                                                .assignedEmployeeList![empIndex]
+                                                .employee!
+                                                .isActive!
+                                            ? AppColors.statusSuccess
                                             : AppColors.statusCritical,
                                         shape: BoxShape.circle,
                                       ),
@@ -226,6 +250,24 @@ class EventFilledSlot extends StatelessWidget {
                                     SizedBox(
                                       height: kSize.height * 0.016,
                                     ),
+                                    if (eventController.eventModel!.eventSiteEmployeeRequirement![index]
+                                        .assignedEmployeeList![empIndex].isCaptain!)
+                                      IntrinsicWidth(
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 2,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.statusSuccess,
+                                            border:
+                                                Border.all(color: AppColors.secondaryColor.withOpacity(0.4)),
+                                            borderRadius: BorderRadius.circular(kSize.height * 0.03),
+                                          ),
+                                          child: Text("Captain",
+                                              style: AppTypography.poppinsRegular.copyWith(fontSize: 12)),
+                                        ),
+                                      )
                                   ],
                                 ),
                               ),

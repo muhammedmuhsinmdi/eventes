@@ -19,8 +19,7 @@ class EmployeeProvider extends EventApi {
   Future<List<EmployeeListResponse>> loadEmployee(
       {required String token, EmployeeFilterInputModel? filterMode}) async {
     ///?${filterMode!.toQueryParam()}
-    filterMode!.limit = 50;
-    filterMode.offset = 0;
+    filterMode ??= EmployeeFilterInputModel();
     var queryParam = filterMode.toQueryParam();
     Response response = await get('users/employee/?$queryParam', headers: apiHeaders(token));
     switch (response.statusCode) {
@@ -93,7 +92,7 @@ class EmployeeProvider extends EventApi {
     }
   }
 
-   //=-=-=-=-=-=-= Employee Edit =-=-=-=-=-=-=
+  //=-=-=-=-=-=-= Employee Edit =-=-=-=-=-=-=
   Future<EmployeeDetails> editEmployee({required String token, required EmployeeDetailsModel data}) async {
     var jsonData = data.toJson();
     var dd = json.encode(jsonData);
@@ -195,9 +194,7 @@ class EmployeeProvider extends EventApi {
     switch (response.statusCode) {
       case 200:
       case 201:
-        return (response.data['results'] as List)
-            .map((e) => EmployeePaymentDetail.fromJson(e))
-            .toList();
+        return (response.data['results'] as List).map((e) => EmployeePaymentDetail.fromJson(e)).toList();
       default:
         throw Exception('Response Error');
     }

@@ -22,6 +22,7 @@ class NewEventModel {
   List<EventSiteEmployeeRequirement>? eventSiteEmployeeRequirement;
   String? status;
   int? progress;
+  String? rating;
 
   NewEventModel({
     this.eventTypeId,
@@ -37,6 +38,7 @@ class NewEventModel {
     this.eventSiteEmployeeRequirement,
     this.status,
     this.progress,
+    this.rating,
   });
 
   factory NewEventModel.fromJson(Map<String, dynamic> json) => NewEventModel(
@@ -54,7 +56,8 @@ class NewEventModel {
       eventSiteEmployeeRequirement: List<EventSiteEmployeeRequirement>.from(
           json["event_site_employee_requirement"].map((x) => EventSiteEmployeeRequirement.fromJson(x))),
       status: json["status"],
-      progress: json["progress"]);
+      progress: json["progress"],
+      rating: json["rating"]);
 
   Map<String, dynamic> toJson() => {
         "event_type_id": eventTypeId,
@@ -71,6 +74,7 @@ class NewEventModel {
             List<dynamic>.from(eventSiteEmployeeRequirement!.map((x) => x.toJson())),
         "status": status,
         "progress": progress ?? 0,
+        "rating": rating
       };
 }
 

@@ -28,6 +28,7 @@ class AddEventController extends ChangeNotifier {
       ..status = 'hold'
       ..venueId = 0
       ..eventSiteSettings = []
+      ..rating = ""
       ..eventSiteEmployeeRequirement = [
         /* EventSiteEmployeeRequirement(
           charge: '',
@@ -48,7 +49,9 @@ class AddEventController extends ChangeNotifier {
     normalHours.text = response.normalHours!;
     overTimeRate.text = response.overtimeHourlyCharge!;
     customerPhone.text = response.customerPhone!;
+
     if (response.scheduledDatetime != null) {
+      eventDateTime = response.scheduledDatetime;
       scheduledDate.text = DateFormat('dd MMM, yyyy').format(response.scheduledDatetime!);
       scheduledTime.text = DateFormat('hh:mm a').format(response.scheduledDatetime!);
     }
@@ -86,6 +89,7 @@ class AddEventController extends ChangeNotifier {
       overtimeHourlyCharge: response.overtimeHourlyCharge,
       status: response.status,
       venueId: response.venue!.id,
+      rating: response.rating,
     );
     if (response.eventSiteSettings!.isNotEmpty) {
       for (var settings in response.eventSiteSettings!) {

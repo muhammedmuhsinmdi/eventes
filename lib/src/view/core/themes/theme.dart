@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class AppThemes {
   static final darkTheme = ThemeData(
+    useMaterial3: true,
     scaffoldBackgroundColor: AppColors.darkBgColor1,
     brightness: Brightness.dark,
     primaryColor: AppColors.primaryColor,

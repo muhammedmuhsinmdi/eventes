@@ -128,22 +128,23 @@ class _AddingEmployeeSheetState extends State<AddingEmployeeSheet> {
                               onTap: () {
                                 // if (eventController.addedEmployees.isEmpty) {
                                 EventAssignEmployee assignedEmp = EventAssignEmployee(
-                                    employee: employeeController.employeeLists[index].id,
+                                    employeeId: eventController.employeeList[index].id,
                                     eventSite: eventController.eventModel!.id,
-                                    isCaptain: false);
+                                    isCaptain: false,
+                                    employee: eventController.employeeList[index]);
                                 eventController
                                     .addEmployee(token: authContorller.accesToken!, assignedEmp: assignedEmp)
                                     .then((value) async {
                                   if (value != null) {
                                     // setState(() {
 
-                                    EventAssignEmployee emp =
+                                    /* EventAssignEmployee emp =
                                         EventAssignEmployee.fromJson(json.decode(value));
                                     eventController.addedEmployees.add(emp);
                                     log("${eventController.addedEmployees.length}");
                                     if (!empList.contains(assignedEmp)) {
                                       empList.add(assignedEmp);
-                                    }
+                                    } */
                                     // });
                                   }
                                   await eventController
