@@ -105,7 +105,7 @@ class BoyProfileView extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '1231348567496789\nIFHDF123\nHDFC BANK\Thondayad Branch',
+                      '1231348567496789\nIFHDF123\nHDFC BANK\nThondayad Branch',
                       style: AppTypography.poppinsRegular.copyWith(
                         color: AppColors.secondaryColor.withOpacity(0.6),
                         fontSize: 16,

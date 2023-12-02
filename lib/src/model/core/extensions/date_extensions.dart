@@ -1,10 +1,10 @@
 extension DateExtension on DateTime {
   String formattedDate() {
-    return "${this.year}-${_twoDigits(this.month)}-${_twoDigits(this.day)}";
+    return "$year-${_twoDigits(month)}-${_twoDigits(day)}";
   }
 
   String formattedTime() {
-    return "${_twoDigits(this.hour)}:${_twoDigits(this.minute)}:${_twoDigits(this.second)}";
+    return "${_twoDigits(hour)}:${_twoDigits(minute)}:${_twoDigits(second)}";
   }
 
   String formattedDateTime() {
@@ -21,12 +21,12 @@ extension DateExtension on DateTime {
 extension StringToDateExtension on String {
   DateTime toDate() {
     try {
-      if (this.contains('T')) {
+      if (contains('T')) {
         // Parse the "2023-11-21T00:00:00.000" format
         return DateTime.parse(this);
       } else {
         // Parse the "10-Nov-2023" format
-        final List<String> parts = this.split('-');
+        final List<String> parts = split('-');
         final int day = int.parse(parts[0]);
         final int month = _getMonthNumber(parts[1]);
         final int year = int.parse(parts[2]);

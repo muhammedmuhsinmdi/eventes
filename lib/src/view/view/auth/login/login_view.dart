@@ -10,13 +10,15 @@ import 'package:evantez/src/view/core//widgets/custom_textfield.dart';
 import 'package:evantez/src/view/core//widgets/footer_button.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 class LoginView extends StatelessWidget {
   LoginView({super.key});
 
-  final formKey = GlobalKey<FormState>();
-  final phoneController = TextEditingController();
+  final emailformKey = GlobalKey<FormState>();
+  final phoneformKey = GlobalKey<FormState>();
 
   final ValueNotifier<bool> isloading = ValueNotifier<bool>(false);
   @override
@@ -38,25 +40,25 @@ class LoginView extends StatelessWidget {
             ),
           )),
       body: Form(
-        key: formKey,
+        key: controller.phone ? phoneformKey : emailformKey,
         child: SizedBox(
           height: kSize.height,
           width: kSize.width,
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: AppConstants.baseBorderRadius),
+            padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Spacer(),
                 Image.asset(AppImages.appLogo),
                 const Spacer(),
-                CustomTextField(
-                    controller: controller.signInEmailController,
-                    text: 'Email'),
-                CustomTextField(
-                    controller: controller.signInPasswordController,
-                    text: 'Password'),
+                if (controller.phone) ...{
+                  phoneLogin(controller)
+                } else ...{
+                  CustomTextField(controller: controller.signInEmailController, text: 'Email'),
+                  CustomTextField(controller: controller.signInPasswordController, text: 'Password'),
+                },
+
                 // CustomTextField(
                 //   keyboardType: TextInputType.phone,
                 //   inputFormatters: [
@@ -93,18 +95,28 @@ class LoginView extends StatelessWidget {
                         return FooterButton(
                           label: AppStrings.loginText,
                           onTap: () async {
-                            if (formKey.currentState!.validate()) {
-                              formKey.currentState!.save();
-                              isloading.value = true;
-                              // var result = await loginState.login(context);
-                              // log(result);
-                              // if (result == "Ok") {
-                              //   if (context.mounted) {
-                              //     navigate(context, RouterConstants.bottomNavRoute);
-                              //   }
-                              // } else {}
-                              await controller.login(context);
-                              isloading.value = false;
+                            if (controller.phone) {
+                              if (phoneformKey.currentState!.validate()) {
+                                phoneformKey.currentState!.save();
+                                isloading.value = true;
+                                await controller.loginPhone(context);
+                                isloading.value = false;
+                              }
+                            } else {
+                              if (emailformKey.currentState!.validate()) {
+                                emailformKey.currentState!.save();
+                                isloading.value = true;
+                                // var result = await loginState.login(context);
+                                // log(result);
+                                // if (result == "Ok") {
+                                //   if (context.mounted) {
+                                //     navigate(context, RouterConstants.bottomNavRoute);
+                                //   }
+                                // } else {}
+
+                                await controller.login(context);
+                                isloading.value = false;
+                              }
                             }
                           },
                         );
@@ -113,11 +125,51 @@ class LoginView extends StatelessWidget {
                 SizedBox(
                   height: kSize.height * 0.024,
                 ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Divider(
+                        color: AppColors.secondaryColor.withOpacity(0.4),
+                      ),
+                    ),
+                    SizedBox(
+                      width: kSize.width * 0.02,
+                    ),
+                    Text(
+                      "Or",
+                      style: AppTypography.poppinsMedium.copyWith(
+                        color: AppColors.secondaryColor.withOpacity(0.4),
+                      ),
+                    ),
+                    SizedBox(
+                      width: kSize.width * 0.02,
+                    ),
+                    Expanded(
+                      child: Divider(
+                        color: AppColors.secondaryColor.withOpacity(0.4),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: kSize.height * 0.024,
+                ),
+                FooterButton(
+                  label: controller.phone ? "Email" : "Phone",
+                  fillColor: AppColors.transparent,
+                  onTap: () {
+                    //
+                    controller.phone = !controller.phone;
+                  },
+                ),
+                SizedBox(
+                  height: kSize.height * 0.024,
+                ),
                 RichText(
                     text: TextSpan(
                         text: AppStrings.registerUser,
-                        style: AppTypography.poppinsMedium.copyWith(
-                            color: AppColors.secondaryColor.withOpacity(0.4)),
+                        style: AppTypography.poppinsMedium
+                            .copyWith(color: AppColors.secondaryColor.withOpacity(0.4)),
                         children: [
                       TextSpan(
                           recognizer: TapGestureRecognizer()
@@ -126,8 +178,7 @@ class LoginView extends StatelessWidget {
                               controller.login(context);
                             },
                           text: "  ${AppStrings.signUpText}",
-                          style: AppTypography.poppinsMedium
-                              .copyWith(color: AppColors.primaryColor))
+                          style: AppTypography.poppinsMedium.copyWith(color: AppColors.primaryColor))
                     ])),
                 const Spacer(),
               ],
@@ -135,6 +186,33 @@ class LoginView extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget phoneLogin(AuthController controller) {
+    return Column(
+      children: [
+        CustomTextField(
+          keyboardType: TextInputType.phone,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+          ],
+          text: AppStrings.phoneText,
+          hintText: AppStrings.phoneHint,
+          prefixIcon: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: SvgPicture.asset(
+              AppImages.call,
+              colorFilter: const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
+            ),
+          ),
+          validator: controller.phoneValidator,
+          onSave: (value) {
+            // loginState.pmSignin.phone = value;
+          },
+          controller: controller.phoneController,
+        ),
+      ],
     );
   }
 }

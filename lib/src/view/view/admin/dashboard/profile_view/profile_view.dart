@@ -1,7 +1,12 @@
 import 'package:evantez/app/router/router_constant.dart';
+import 'package:evantez/src/controller/auth/auth_controller.dart';
 import 'package:evantez/src/view/core//constants/constants.dart';
+import 'package:evantez/src/view/core/widgets/custom_dialogbox.dart';
+import 'package:evantez/src/view/core/widgets/footer_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/constants/app_images.dart';
 import '../../../../core/constants/app_strings.dart';
@@ -13,6 +18,7 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authController = context.watch<AuthController>();
     final kSize = MediaQuery.of(context).size;
     return SizedBox(
       height: kSize.height,
@@ -84,6 +90,26 @@ class ProfileView extends StatelessWidget {
                     Divider(
                       color: AppColors.secondaryColor.withOpacity(0.1),
                     ),
+                    SizedBox(
+                      height: kSize.height * 0.024,
+                    ),
+                    FooterButton(
+                        fillColor: AppColors.transparent,
+                        borderColor: AppColors.statusCritical,
+                        width: kSize.width,
+                        label: "Log Out",
+                        onTap: () async {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return CustomDialog(
+                                    title: "Are you sure you want to Log Out?",
+                                    onConfirmTxt: "Log Out",
+                                    onConfirm: () async {
+                                      await authController.logOutUser(context);
+                                    });
+                              });
+                        }),
                   ],
                 ),
               ),
@@ -106,21 +132,6 @@ class ProfileView extends StatelessWidget {
           color: AppColors.secondaryColor,
         ),
       ),
-      actions: [
-        /* IconButton(
-          onPressed: () {
-            //
-            Navigator.pushNamed(context, RouterConstants.adminProfileRoute);
-          },
-          icon: SvgPicture.asset(
-            AppImages.edit,
-            colorFilter: const ColorFilter.mode(
-              AppColors.primaryColor,
-              BlendMode.srcIn,
-            ),
-          ),
-        ) */
-      ],
     );
   }
 

@@ -15,8 +15,8 @@ class AdminEditProfileView extends StatelessWidget {
       body: SizedBox(
         height: kSize.height,
         width: kSize.width,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
+        child: const Padding(
+          padding:  EdgeInsets.symmetric(horizontal: AppConstants.baseBorderRadius),
           child: Column(
             children: [
               

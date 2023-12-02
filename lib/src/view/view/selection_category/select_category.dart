@@ -19,7 +19,7 @@ class SelectCategory extends StatelessWidget {
                 //
                 Navigator.pushNamed(context, RouterConstants.dashboardRoute);
               },
-              child: Text(
+              child:  Text(
                 'Admin Side',
               ),
             ),
